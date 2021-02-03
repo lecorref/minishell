@@ -22,7 +22,7 @@
 
 * Write description and documentation
 * Write the main loop and exit buitin
-* Write the env, setenv and unset builtins
+* Write the env, export and unset builtins
 * Execute binaries with fork() and execve()
 * Builtin cd, pwd, echo and resolve PATH in execve() (see getcwd() chdir() and stat())
 * Write a lexer/parser (Atree? double linked list?)
