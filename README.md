@@ -7,6 +7,10 @@
 * Org repo: https://github.com/Shell-s-Heel/minishell
 
 ## Ressources
+* https://www.geeksforgeeks.org/fork-system-call/
+* https://www.geeksforgeeks.org/wait-system-call-c/
+* https://www.geeksforgeeks.org/signals-c-language/
+* https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
 
 ### Workflow
 * https://gist.github.com/Chaser324/ce0505fbed06b947d962
