@@ -1,6 +1,4 @@
-#include "../includes/struct.h"
-#include "../includes/minishell.h"
-#include "../libft/includes/libft.h"
+#include "minishell.h"
 
 void	free_env(void *env, size_t size)
 {
