@@ -4,6 +4,7 @@
 {
 	if (ac > 1)
 		printf("%s", *av);
+	/* env function test
     char    **test;
     t_list    *list;
     list = create_env_list(ep);
@@ -24,6 +25,28 @@
         printf("%s\n", *test);
         test++;
     }
+*/
+	t_command *cmd;
+	(void)ep;
+	int			i = 0;
 
+	cmd = malloc(sizeof(t_command));
+	cmd->command = NULL;
+	cmd->args = malloc(sizeof(char *) * 6);
+	bzero(cmd->args, (sizeof(char *) * 6));
+	while (i < 3)
+	{
+		cmd->fd[i] = i;
+		i++;
+	}
+	cmd->args[0] = "-n";
+	cmd->args[1] = "test";
+	cmd->args[2] = "nice";
+	cmd->args[3] = "yop";
+	cmd->args[4] = "lulz";
+	echo_builtin(NULL, cmd);
+	cmd->args -= 5;
+	cmd->args[0] = "n";
+	echo_builtin(NULL, cmd);
     return(0);
 }*/
