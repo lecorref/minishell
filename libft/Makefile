@@ -6,17 +6,18 @@
 #    By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/24 10:43:20 by jfreitas          #+#    #+#              #
-#    Updated: 2021/01/26 23:56:38 by jfreitas         ###   ########.fr        #
+#    Updated: 2021/02/06 13:36:38 by jle-corr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 
-CC = gcc
-
+CC = clang
 CFLAGS = -Wall -Wextra -Werror -g
+INCPATH = includes/
+DEPS = $(INCPATH)/libft.h
 
-INC = -I.
+OBJDIR = srcs/libftobj
 
 SRCS = srcs/ft_atoi.c \
 	   srcs/ft_bzero.c \
@@ -87,21 +88,33 @@ SRCS = srcs/ft_atoi.c \
 	   srcs/ft_lstiter.c \
 	   srcs/ft_lstmap.c \
 
-OBJS = $(subst .c,.o,$(SRCS))
+OBJ = $(SRCS:srcs/%.c=$(OBJDIR)/%.o)
 
-all: $(NAME)
 
-$(NAME): $(OBJS)
-	@ar rc $(NAME) $(OBJS)
-	@ranlib $(NAME)
-	@mkdir objs
-	@mv ./srcs/*.o ./objs/
+#RULES
+all: mk_objdir $(NAME)
 
+mk_objdir :
+	@if [ ! -d $(OBJDIR) ]; then mkdir $(OBJDIR); fi
+
+$(OBJDIR)/%.o : srcs/%.c $(DEPS)
+	@$(CC) $(CFLAGS) -I $(INCPATH) -c $< -o $@
+
+$(NAME): message $(OBJ)
+	@echo "\033[1;36mBuilding $@\033[0m"
+	@ar rcs $@ $(OBJ)
+	@echo "\033[1;36m$@ is built !\033[0m"
+
+message :
+	@echo "\n\033[1;36mBuilding $(NAME) objects\033[0m"
+
+#CLEAN
 clean:
-	@rm -rf ./objs
-	@rm -f a.out
+	@rm -rf $(OBJ)
+	@echo "\033[1;33m$(NAME) objects removed.\033[0m"
 
 fclean: clean
 	@rm -f $(NAME)
+	@echo "\033[1;33m$(NAME) removed.\033[0m"
 
 re: fclean all

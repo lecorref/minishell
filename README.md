@@ -7,10 +7,19 @@
 * Org repo: https://github.com/Shell-s-Heel/minishell
 
 ## Ressources
+### Doc
 * https://www.geeksforgeeks.org/fork-system-call/
 * https://www.geeksforgeeks.org/wait-system-call-c/
 * https://www.geeksforgeeks.org/signals-c-language/
 * https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
+* https://www.thegeekstuff.com/2012/03/catch-signals-sample-c-code/
+* https://www.geeksforgeeks.org/dup-dup2-linux-system-call/?ref=rp
+* https://www.geeksforgeeks.org/pipe-system-call/?ref=rp
+* https://www.tutorialspoint.com/unix/unix-signals-traps.htm
+
+### Testers
+* https://github.com/cacharle/minishell_test
+* https://github.com/thallard/minishell_tester
 
 ### Workflow
 * https://gist.github.com/Chaser324/ce0505fbed06b947d962
