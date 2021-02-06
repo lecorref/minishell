@@ -2,10 +2,11 @@
 #include "../includes/minishell.h"
 #include "../libft/includes/libft.h"
 
-void	free_env(t_env *env)
+void	free_env(void *env, size_t size)
 {
-	free(env->key);
-	free(env->value);
+	(void)size;
+	free(((t_env *)env)->key);
+	free(((t_env *)env)->value);
 	free(env);
 }
 
@@ -20,7 +21,7 @@ void    delete_env_variable(t_list **list, char *key)
 		if (!ft_strcmp(key, ENV_KEY(env->next)))
 		{
 			tmp = env->next->next;
-			free_env(env->next->content);
+			free_env(env->next->content, sizeof(env));
 			free(env->next);
 			env->next = tmp;
 			break;
@@ -30,9 +31,8 @@ void    delete_env_variable(t_list **list, char *key)
 	if (!ft_strcmp(key, ENV_KEY(*list)))
 	{
 		tmp = (*list)->next;
-		free_env((*list)->content);
+		free_env((*list)->content, sizeof(env));
 		free(*list);
 		*list = tmp;
 	}
 }
-
