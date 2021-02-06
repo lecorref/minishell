@@ -1,6 +1,4 @@
-#include "../includes/struct.h"
-#include "../includes/minishell.h"
-#include "../libft/includes/libft.h"
+#include "minishell.h"
 
 static void	create_env_struct(char **keyvalue, t_env *env)
 {

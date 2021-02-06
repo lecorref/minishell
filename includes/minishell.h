@@ -1,8 +1,13 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "struct.h"
-# include "../libft/includes/libft.h"
+# include "libft.h"
 
+# include<stdio.h> 
+# include<unistd.h> 
+# include<stdlib.h> 
+# include<signal.h> 
+# include<sys/wait.h> 
 /*
  * Environment control
  */

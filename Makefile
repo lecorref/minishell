@@ -7,11 +7,14 @@ GREEN = \033[1;36m
 RED = \033[1;31m
 END = \033[0m
 
-#INCLUDE
-INCLUDEPATH = includes
-LIBFTPATH = libft
 
-INCLUDES = $(INCLUDEPATH)/*.h
+LIBFTPATH = libft
+#INCLUDE
+INC_MINISHELL = includes
+INC_LIBFT = $(LIBFTPATH)/includes
+
+#INCLUDES DEPENDENCIES  ---  any modif in any .h will alert makefile to compile again
+INC_DEP = $(INC_MINISHELL)/*.h
 
 #LIB
 LIBFT = $(LIBFTPATH)/libft.a
@@ -24,8 +27,8 @@ FLAGS = -Wall -Wextra -Werror
 SRCPATH = ./srcs
 OBJPATH = $(SRCPATH)/obj
 
-#SRCS --- *.c is temporary but I think usefull at dvpmt time
-SRCS = $(addprefix $(SRCPATH)/, *.c)
+#SRCS
+SRCS = $(addprefix $(SRCPATH)/, environment.c environment_2.c maintest.c)
 
 #OBJS
 OBJ = $(SRCS:$(SRCPATH)/%.c=$(OBJPATH)/%.o)
@@ -37,7 +40,6 @@ OBJ = $(SRCS:$(SRCPATH)/%.c=$(OBJPATH)/%.o)
 all : mk_objdir mk_libft $(NAME)
 
 
-
 mk_objdir:
 	@if [ ! -d $(OBJPATH) ]; then mkdir $(OBJPATH); fi
 
@@ -46,8 +48,7 @@ mk_libft :
 	@make -C $(LIBFTPATH)
 
 
-
-$(NAME) : message $(OBJ) $(INCLUDES)
+$(NAME) : message $(OBJ) $(INC_DEP)
 	@echo "\n$(END)$(BLUE)Making $(NAME)$(END)$(GREY)"
 	$(CC) -o $@ $(OBJ) $(LIBFT)
 	@echo "\n$(END)$(GREEN)$(NAME) is built$(END)"
@@ -56,9 +57,8 @@ message :
 	@echo "\n$(END)$(BLUE)Making $(NAME) objects$(END)$(GREY)"
 
 
-
-$(OBJPATH)/%.o : $(SRCPATH)/%.c $(INCLUDES)
-	$(CC) $(FLAGS) -I $(LIBFTPATH) -I $(INCLUDEPATH) -c $< -o $@
+$(OBJPATH)/%.o : $(SRCPATH)/%.c $(INC_DEP)
+	$(CC) $(FLAGS) -I $(INC_LIBFT) -I $(INC_MINISHELL) -c $< -o $@
 
 
 
