@@ -31,6 +31,33 @@
 
 * Use fork and MR to contribute to the project
 
+##### Git workflow :point_down:
+
+- On working branch, commit changes I want to have on the main branch:
+```sh
+$ git add
+$ git commit -m "message"
+$ git checkout main     //go to main to fetch this commit
+```
+- pick-up commit made from working branch to main branch
+```sh
+$ git reflog            //copy your commit ID
+$ git cherry-pick ID    //paste the ID
+```
+- Before pushing & pull request, update your local folders
+```sh
+$ git fetch upstream        //fetch upstream data
+$ git merge upstream/main   //merge data I fetched (apply changes)
+$ gco working_branch        //go back on the working branch
+$ git rebase main           //apply update to working branch
+```
+- Then push to your repo & make a pull request
+```sh
+$ gco main            //go back to main branch
+$ git push            //push your updated folder + ur new commits
+```
+- Then, go to your github personnal repo to ask for a pull request to the general repo.
+
 ### Mandatory
 
 * Write description and documentation
