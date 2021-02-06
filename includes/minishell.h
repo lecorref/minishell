@@ -34,6 +34,11 @@ char	*find_env_value(t_list **env, char *key);
  */
 void	delete_env_variable(t_list **env, char *key);
 
+/*
+ * Will be used inside ft_lstdel
+ */
+void	free_env(void *env, size_t size);
+
 /* ------------------------------------------------------------------------- */
 
 /*
