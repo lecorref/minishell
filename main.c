@@ -17,11 +17,14 @@ int main(int ac, char *av[], char **ep)
 	delete_env_variable(&list, "TITI");
 	test = env_list_to_tab(list);
 
+	ft_lstdel(&list, free_env);
+
 
 	while (*test != NULL)
 	{
 		printf("%s\n", *test);
 		test++;
 	}
+
     return(0);
 }
