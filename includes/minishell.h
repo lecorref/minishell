@@ -7,8 +7,8 @@
  * Environment control
  */
 
-# define ENV_KEY ((t_env *)(env->content))->key
-# define ENV_VALUE ((t_env *)(env->content))->value
+# define ENV_KEY(NAME) ((t_env *)((NAME)->content))->key
+# define ENV_VALUE(NAME) ((t_env *)((NAME)->content))->value
 /*
  * Create and store environment in a linked list of t_env from envp variable.
  * The function should split on \n first, then split on '=';
@@ -18,7 +18,7 @@ t_list  *create_env_list(char **envp);
 /*
  * This function should not destroy the list
  */
-char	**env_list_to_tab(t_list **env);
+char	**env_list_to_tab(t_list *env);
 
 /*
  * This add a new env variable inside the list, or replace it if the key
