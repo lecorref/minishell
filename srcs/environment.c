@@ -60,6 +60,7 @@ void    add_env_variable(t_list **list, char *var)
 	{
 		if (!ft_strcmp(new->key, ENV_KEY(env)))
 		{
+			free(ENV_VALUE(env));
 			ENV_VALUE(env) = new->value;
 			break;
 		}
