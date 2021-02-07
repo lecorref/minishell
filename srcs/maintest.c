@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int main(int ac, char *av[], char **ep)
+/*int main(int ac, char *av[], char **ep)
 {
 	if (ac > 1)
 		printf("%s", *av);
@@ -26,4 +26,4 @@ int main(int ac, char *av[], char **ep)
     }
 
     return(0);
-}
+}*/
