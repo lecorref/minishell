@@ -48,7 +48,6 @@ char    **env_list_to_tab(t_list *env)
 	return new_env;
 }
 
-
 void    add_env_variable(t_list **list, char *var)
 {
 	t_env	*new;
