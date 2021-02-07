@@ -30,8 +30,14 @@ LIBFT = $(LIBFTPATH)/libft.a
 CC = clang
 FLAGS = -Wall -Wextra -Werror
 
-##### SRCS #####
-SRCS = $(addprefix $(SRCPATH)/, environment.c environment_2.c main.c main_loop.c)
+<<<<<<< HEAD
+<<<<<<< HEAD
+#SRC & OBJ PATH
+SRCPATH = ./srcs
+OBJPATH = $(SRCPATH)/obj
+
+#SRCS
+SRCS = $(addprefix $(SRCPATH)/, builtins_1.c environment.c environment_2.c main.c main_loop.c)
 
 ##### OBJS #####
 OBJ = $(SRCS:$(SRCPATH)/%.c=$(OBJPATH)/%.o)

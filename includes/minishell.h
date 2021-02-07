@@ -82,7 +82,7 @@ char	*find_env_value(t_list **head, char *key);
  *	- t_list **head: a pointer to the first link of the list
  *	- char *key: a string that will be compared against t_env->key
  */
-void	delete_env_variable(t_list **env, char *key);
+void	delete_env_variable(t_list **head, char *key);
 
 /*
  * Free each string from the t_env structure then free the structure. The
@@ -119,7 +119,7 @@ t_list  tokenize_line(char *buff);
  * This function will find if the command is a builtin and execute it, or
  * execute said command in execve
  */
-void    execute_command(t_command *command, t_list **env);
+void    execute_command(t_command *command, t_list **head);
 
 void    free_command_list(t_list **command);
 
@@ -129,16 +129,16 @@ void    free_command_list(t_list **command);
  * Builtins (not realted to env)
  */
 
-void    pwd_builtin(t_list **env, t_command *cmd);
+void    pwd_builtin(t_list **head, t_command *cmd);
 
-void    cd_builtin(t_list **env, t_command *cmd);
+void    cd_builtin(t_list **head, t_command *cmd);
 
-void    exit_builtin(t_list **env, t_command *cmd);
+void    exit_builtin(t_list **head, t_command *cmd);
 
-void    echo_builtin(t_list **env, t_command *cmd);
-void    export_builtin(t_list **env, t_command *cmd);
-void    unset_builtin(t_list **env, t_command *cmd);
-void    env_builtin(t_list **env, t_command *cmd);
+void    echo_builtin(t_list **head, t_command *cmd);
+void    export_builtin(t_list **head, t_command *cmd);
+void    unset_builtin(t_list **head, t_command *cmd);
+void    env_builtin(t_list **head, t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
 
