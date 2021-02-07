@@ -35,7 +35,7 @@ SRCPATH = ./srcs
 OBJPATH = $(SRCPATH)/obj
 
 #SRCS
-SRCS = $(addprefix $(SRCPATH)/, echo.c environment.c environment_2.c maintest.c main_loop.c)
+SRCS = $(addprefix $(SRCPATH)/, builtins_1.c environment.c environment_2.c main.c main_loop.c)
 
 ##### OBJS #####
 OBJ = $(SRCS:$(SRCPATH)/%.c=$(OBJPATH)/%.o)
