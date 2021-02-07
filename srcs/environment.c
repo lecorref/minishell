@@ -1,9 +1,14 @@
 #include "minishell.h"
 
-static void	create_env_struct(char **keyvalue, t_env *env)
+static int	create_env_struct(char *keyvalue, t_env *env)
 {
-	env->key = keyvalue[0];
-	env->value = keyvalue[1];
+	char	*needle;
+
+	if (!(needle = ft_strrchr(keyvalue, '=')))
+		return (0);
+	env->key = ft_substr(keyvalue, 0, needle - keyvalue);
+	env->value = ft_strdup(needle + 1);
+	return (1);
 }
 
 t_list  *create_env_list(char **envp)
@@ -16,13 +21,13 @@ t_list  *create_env_list(char **envp)
 	list = NULL;
 	while (*envp != NULL)
 	{
-		create_env_struct(ft_strsplit(*envp, '='), new);
+		create_env_struct(*envp, new);
 		tmp = ft_lstnew(new, sizeof(t_env));
 		ft_lstadd(&list, tmp);
 		envp++;
 	}
 	free(new);
-	return list;
+	return (list);
 }
 
 char    **env_list_to_tab(t_list *env)
@@ -54,12 +59,14 @@ void    add_env_variable(t_list **list, char *var)
 	t_list	*env;
 
 	new = (t_env*)malloc(sizeof(t_env));
-	create_env_struct(ft_strsplit(var, '='), new);
+	if (!create_env_struct(var, new))
+			return ;
 	env = *list;
 	while (env)
 	{
 		if (!ft_strcmp(new->key, ENV_KEY(env)))
 		{
+			free(new->key);
 			free(ENV_VALUE(env));
 			ENV_VALUE(env) = new->value;
 			break;
