@@ -12,14 +12,17 @@
 * https://www.geeksforgeeks.org/wait-system-call-c/
 * https://www.geeksforgeeks.org/signals-c-language/
 * https://www.geeksforgeeks.org/exec-family-of-functions-in-c/
+* https://www.thegeekstuff.com/2012/03/linux-signals-fundamentals/
 * https://www.thegeekstuff.com/2012/03/catch-signals-sample-c-code/
 * https://www.geeksforgeeks.org/dup-dup2-linux-system-call/?ref=rp
 * https://www.geeksforgeeks.org/pipe-system-call/?ref=rp
 * https://www.tutorialspoint.com/unix/unix-signals-traps.htm
+* https://www.tutorialspoint.com/unix_system_calls/execve.htm
 
 ### Testers
 * https://github.com/cacharle/minishell_test
 * https://github.com/thallard/minishell_tester
+* https://raw.githubusercontent.com/matboivin/ft_sh/main/tests/test_list.txt
 
 ### Workflow
 * https://gist.github.com/Chaser324/ce0505fbed06b947d962
