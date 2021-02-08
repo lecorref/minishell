@@ -32,7 +32,7 @@
  * @return:
  *	t_list *: a pointer to the head of a list.
  */
-t_list  *create_env_list(char **envp);
+t_list	*create_env_list(char **envp);
 
 
 /*
@@ -103,42 +103,40 @@ void	free_env(void *env, size_t size);
 /*
  * This loop should only exit on ctrlD, sigkill and "exit"
  */
-int     main_loop(t_list *env);
+int		main_loop(t_list *env);
 
 /*
  * This can be replaced by GNL
  */
-int     get_line(char **buff);
+int		get_line(char **buff);
 
 /*
  * This function will create a list of t_command from the input line.
  */
-t_list  tokenize_line(char *buff);
+t_list	tokenize_line(char *buff);
 
 /*
  * This function will find if the command is a builtin and execute it, or
  * execute said command in execve
  */
-void    execute_command(t_command *command, t_list **head);
+void	execute_command(t_command *command, t_list **head);
 
-void    free_command_list(t_list **command);
+void	free_command_list(t_list **command);
 
 /* ------------------------------------------------------------------------- */
 
 /*
- * Builtins (not realted to env)
+ * Builtins
  */
 
-void    pwd_builtin(t_list **head, t_command *cmd);
+int		pwd_builtin(t_list **head, t_command *cmd);
+int		cd_builtin(t_list **head, t_command *cmd);
+int		exit_builtin(t_list **head, t_command *cmd);
 
-void    cd_builtin(t_list **head, t_command *cmd);
-
-void    exit_builtin(t_list **head, t_command *cmd);
-
-void    echo_builtin(t_list **head, t_command *cmd);
-void    export_builtin(t_list **head, t_command *cmd);
-void    unset_builtin(t_list **head, t_command *cmd);
-void    env_builtin(t_list **head, t_command *cmd);
+int		echo_builtin(t_list **head, t_command *cmd);
+int		export_builtin(t_list **head, t_command *cmd);
+int		unset_builtin(t_list **head, t_command *cmd);
+int		env_builtin(t_list **head, t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
 
