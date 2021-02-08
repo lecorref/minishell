@@ -39,7 +39,7 @@ SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, maintest.c)
 
 # below, add program files from ./srcs folder, that u wanna test with your main
 # test added above, in this one. It can be empty
-SRCS_PGM = $(addprefix $(SRC_PATH)/, environment.c environment_2.c)
+SRCS_PGM = $(addprefix $(SRC_PATH)/, builtins_1.c environment.c environment_2.c)
 
 
 
