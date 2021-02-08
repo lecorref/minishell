@@ -30,8 +30,6 @@ LIBFT = $(LIBFTPATH)/libft.a
 CC = clang
 FLAGS = -Wall -Wextra -Werror
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 #SRC & OBJ PATH
 SRCPATH = ./srcs
 OBJPATH = $(SRCPATH)/obj
