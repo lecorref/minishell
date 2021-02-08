@@ -10,10 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
-// ENV_KEY(NAME) ((t_env *)((NAME)->content))->key
-// ENV_VALUE(NAME) ((t_env *)((NAME)->content))->value
+//void	ope(t_list **head, t_command *cmd, void (func)(t_list *, t_command *))
+//{
+//	(func)(head, cmd);
+//} ???? I DON'T KNOW HOW TO DO IT WITH POINTER TO FUNCITONS SO I DID AS DOWN BELOW LOL :/ HELLLLP
+void	execute_command(t_list **head, t_command *cmd)
+{
+	while (cmd->commad)
+	{
+		if (ft_strcmp(cmd->command[0], "echo") == 0)
+			echo_builtin(head, cmd);
+		else if (ft_strcmp(cmd->command[0], "cd") == 0)
+			cd_builtin(head, cmd);
+		else if (ft_strcmp(cmd->command[0], "pwd") == 0)
+			pwd_builtin(head, cmd);
+		else if (ft_strcmp(cmd->command[0], "export") == 0)
+			export_builtin(head, cmd);
+		else if (ft_strcmp(cmd->command[0], "unset") == 0)
+			unset_builtin(head, cmd);
+		else if (ft_strcmp(cmd->comman[0]d, "env") == 0)
+			env_builtin(head, cmd);
+		else if (ft_strcmp(cmd->command[0], "exit") == 0)
+			exit_builtin(head, cmd);
+		else
+			executables_builtin(head, cmd);
+	}
+}
 
 /*
 ** Printing the propt by searching for the SESSION_MANAGER environmetal
@@ -40,21 +64,6 @@ int		prompt(t_list *list)//or t_env *env?
 		free(session_manager);
 		return (0);
 	}
-}
-
-
-// void	signal(int signum, int handler);
-void	ctrl_back_slash_handler(int signal)
-{
-	(void)signal;
-	ft_putstr_fd("\b\b  \b\b", 2);// \b means backspace for printf
-}
-
-void	ctrl_d_handler(void)
-{
-	ft_putstr_fd("exit\n", 2);// change fd to cmd->fd[1]??
-	exit(0);
-	//OBS: IT'S NOT EXITING ON THE IRST CRTLD .. ONLY ON THE SECOND ONE
 }
 
 /*
@@ -99,6 +108,8 @@ int		main_loop(t_list *list)// or t_env *env?
 // 2. void execute_command(t_command *command, t_list **env); has to be called to find if the command is a builtin and execute it, otherwise, execute command in execve (using absolute path ->ex: /bin/ls or without path ->ex: ls)
 //    2.1. Also deal with the errors for those functions
 // 3. void free_command_list(t_list **command) and ft_lstdel(&list, free_env); -> at the very end of everything???
+	
+	execute_command(t_list **head, t_command *command);
 
 	free(line);
 //	free(line);??
