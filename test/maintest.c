@@ -39,8 +39,8 @@ int main(int ac, char *av[], char **ep)
 		cmd->fd[i] = i;
 		i++;
 	}
-	cmd->args[0] = "-n";
-	cmd->args[1] = "test";
+	cmd->args[0] = "-nnnnnn";
+	cmd->args[1] = "-n";
 	cmd->args[2] = "nice";
 	cmd->args[3] = "yop";
 	cmd->args[4] = "lulz";
