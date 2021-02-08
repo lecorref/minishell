@@ -19,16 +19,17 @@ int			echo_builtin(t_list **head, t_command *cmd)
 
 	flag = 0;
 	(void)head;
-	while (!echo_n_parser(*(cmd->args)))
+	cmd->command++;
+	while (!echo_n_parser(*(cmd->command)))
 	{
 		flag = 1;
-		cmd->args++;
+		cmd->command++;
 	}
-	while (*(cmd->args) != NULL)
+	while (*(cmd->command) != NULL)
 	{
-		ft_putstr_fd(*(cmd->args), cmd->fd[1]);
+		ft_putstr_fd(*(cmd->command), cmd->fd[1]);
 		ft_putchar_fd(' ', cmd->fd[1]);
-		cmd->args++;
+		cmd->command++;
 	}
 	if (!flag)
 		ft_putchar_fd('\n', cmd->fd[1]);
@@ -55,14 +56,14 @@ int			env_builtin(t_list **head, t_command *cmd)
 
 int			export_builtin(t_list **head, t_command *cmd)
 {
-	if (cmd->args[0])
-		add_env_variable(head, cmd->args[0]);
+	if (cmd->command[0])
+		add_env_variable(head, cmd->command[1]);
 	return (0);
 }
 
 int			unset_builtin(t_list **head, t_command *cmd)
 {
-	if (cmd->args[0])
-		delete_env_variable(head, cmd->args[0]);
+	if (cmd->command[0])
+		delete_env_variable(head, cmd->command[1]);
 	return (0);
 }
