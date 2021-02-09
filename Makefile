@@ -3,7 +3,7 @@ NAME = minishell
 
 ##### COLORS #####
 BLUE = \033[1;35m
-GREY = \033[8;90m
+GREY = \033[1;31m
 GREEN = \033[1;37m
 RED = \033[1;31m
 END = \033[0m
