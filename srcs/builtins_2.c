@@ -6,8 +6,8 @@ int	    pwd_builtin(t_list **head, t_command *cmd)
 
 	(void)head;
 	stored = getcwd(NULL, 0);
-	ft_putstr_fd(stored, cmd=>fd[1]);
-	ft_putchar_fd('\n', cmd=>fd[1]);
+	ft_putstr_fd(stored, cmd->fd[1]);
+	ft_putchar_fd('\n', cmd->fd[1]);
 	free(stored);
 	return (0);
 }
