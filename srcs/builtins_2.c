@@ -12,13 +12,6 @@ int	    pwd_builtin(t_list **head, t_command *cmd)
 	return (0);
 }
 
-int	    exit_builtin(t_list **head, t_command *cmd)
-{
-	(void)head;
-	(void)cmd;
-	return (-1);
-}
-
 int    cd_builtin(t_list **head, t_command *cmd)
 {
         char    *tmp;
@@ -45,4 +38,27 @@ int    cd_builtin(t_list **head, t_command *cmd)
         free(tmp);
         free(pwd);
 		return (0);
+}
+
+/*
+ * exit <nb less than long long>
+ * output: exit\n
+ * echo $? = if nb > 255 < long long, it starts over again to count from 0 to 255
+ *
+ * exit <any string or number bigger than a long long>
+ * output: exit\nbash: exit: <argv>: numeric argument required\n
+ * echo $? = 2
+ *
+ * exit <nb less than long long> <nb less than long long>
+ * output: exit: too many arguments\n
+ * IT DOES EXIT THE SHELL
+ * echo $? = 1
+ *
+ * If <argv> is omitted, the exit status is that of the last command executed.
+*/
+int		exit_builtin(t_list **head, t_command *cmd)
+{
+	(void)head;
+	(void)cmd;
+	return (-1);
 }
