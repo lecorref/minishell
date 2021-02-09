@@ -67,7 +67,7 @@ $(OBJPATH)/%.o : $(SRCPATH)/%.c $(INC_DEP)
 	$(CC) $(FLAGS) -I $(INC_LIBFT) -I $(INC_MINISHELL) -c $< -o $@
 
 testit :
-	@make -C $(TESTPATH)
+	@$(MAKE) -C $(TESTPATH)
 
 
 ### CLEAN ###

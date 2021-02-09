@@ -35,11 +35,11 @@ FLAGS = -Wall -Wextra -Werror
 ##### SRCS FOR TESTING PURPOSE #####
 ################################################################################
 # add your own main_test & test files if needed, from ./test folder, in this one
-SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, maintest.c)
+SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, cd_test.c)
 
 # below, add program files from ./srcs folder, that u wanna test with your main
 # test added above, in this one. It can be empty
-SRCS_PGM = $(addprefix $(SRC_PATH)/, builtins_1.c environment.c environment_2.c)
+SRCS_PGM = $(addprefix $(SRC_PATH)/, builtins_2.c environment.c environment_2.c)
 
 
 
@@ -67,7 +67,7 @@ $(NAME) : message $(OBJ) $(INC_DEP)
 	@echo "\n$(END)$(BLUE)Making $(NAME)$(END)$(GREY)"
 	$(CC) -o $@ $(OBJ) $(LIBFT)
 	@echo "\n$(END)$(GREEN)$(NAME) is built$(END)"
-	@mv $(NAME) ..
+	@cp $(NAME) ..
 
 message :
 	@echo "\n$(END)$(BLUE)Making $(NAME) objects$(END)$(GREY)"
@@ -90,7 +90,7 @@ clean :
 
 fclean : clean
 	@echo "$(END)$(RED)\nremoving $(NAME)$(END)$(GREY)"
-	@rm -f ../$(NAME)
+	@rm -f ../$(NAME); rm -f $(NAME)
 	@echo "$(END)$(RED)\nremoving libft.a$(END)"
 	@make fclean -C $(LIBFTPATH)
 
