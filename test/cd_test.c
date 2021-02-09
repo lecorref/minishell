@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-void	cd_builtin_jb(t_list **head, t_command *cmd);
-
 int		main(int ac, char *av[], char *ep[])
 {
 	t_command	cmd;
