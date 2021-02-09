@@ -123,7 +123,7 @@ t_list	tokenize_line(char *buff);
  * This function will find if the command is a builtin and execute it, or
  * execute said command in execve
  */
-void	execute_command(t_command *command, t_list **head);
+void	execute_command(t_list **head ,t_command *command);
 
 void	free_command_list(t_list **command);
 
@@ -139,6 +139,7 @@ int		exit_builtin(t_list **head, t_command *cmd);
 int		echo_builtin(t_list **head, t_command *cmd);
 int		export_builtin(t_list **head, t_command *cmd);
 int		unset_builtin(t_list **head, t_command *cmd);
+int		env_builtin(t_list **head, t_command *cmd);
 int		executable_builtin(t_list **head, t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
