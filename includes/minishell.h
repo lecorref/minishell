@@ -3,12 +3,15 @@
 # include "struct.h"
 # include "libft.h"
 
-# include<stdio.h>
-# include<unistd.h>
-# include<stdlib.h>
-# include<signal.h>
-# include<sys/wait.h>
-#include <sys/errno.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <signal.h>
+# include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <sys/errno.h>
 
 /* ------------------------------------------------------------------------- */
 
@@ -133,16 +136,27 @@ void	free_command_list(t_list **command);
 int		pwd_builtin(t_list **head, t_command *cmd);
 int		cd_builtin(t_list **head, t_command *cmd);
 int		exit_builtin(t_list **head, t_command *cmd);
-
 int		echo_builtin(t_list **head, t_command *cmd);
 int		export_builtin(t_list **head, t_command *cmd);
 int		unset_builtin(t_list **head, t_command *cmd);
-int		env_builtin(t_list **head, t_command *cmd);
+int		executable_builtin(t_list **head, t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
 
 /*
  * Lexer/parser function that will buid t_command structure
  */
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * errors/signal handlins/exits functions
+ */
+
+void	error_message(t_command *cmd, char *error_message, int writes_bash);
+void	ctrl_back_slash_handler(int signal);
+void	ctrl_d_handler(int signal);
+
+/* ------------------------------------------------------------------------- */
 
 #endif
