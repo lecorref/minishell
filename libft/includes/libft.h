@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/02 21:40:52 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/09 18:26:37 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 ** Macros
 */
 # define FD_MAX 256
+# define MAX_FD 25
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 100
@@ -101,6 +102,8 @@ int					ft_tolower(int c);
 int					ft_toupper(int c);
 
 int					get_next_line(int fd, char **line);
+int					get_next_line_jb(int fd, char **line);
+int					join_newstr(char **str, const char *src);
 
 int					add_prime_sum(unsigned int n);
 size_t				ft_intlen(int n);
