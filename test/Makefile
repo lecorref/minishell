@@ -35,11 +35,11 @@ FLAGS = -Wall -Wextra -Werror
 ##### SRCS FOR TESTING PURPOSE #####
 ################################################################################
 # add your own main_test & test files if needed, from ./test folder, in this one
-SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, loop_test.c)
+SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, maintest.c)
 
 # below, add program files from ./srcs folder, that u wanna test with your main
 # test added above, in this one. It can be empty
-SRCS_PGM = $(addprefix $(SRC_PATH)/, builtins_2.c environment.c environment_2.c)
+SRCS_PGM = $(addprefix $(SRC_PATH)/,builtins_1.c builtins_2.c environment.c environment_2.c)
 
 
 
