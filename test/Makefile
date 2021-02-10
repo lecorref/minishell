@@ -28,14 +28,14 @@ LIBFT = $(LIBFTPATH)/libft.a
 
 ##### FLAG #####
 CC = clang
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 
 
 
 ##### SRCS FOR TESTING PURPOSE #####
 ################################################################################
 # add your own main_test & test files if needed, from ./test folder, in this one
-SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, maintest.c)
+SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, cd_test.c)
 
 # below, add program files from ./srcs folder, that u wanna test with your main
 # test added above, in this one. It can be empty
