@@ -38,19 +38,12 @@ int			echo_builtin(t_list **head, t_command *cmd)
 
 int			env_builtin(t_list **head, t_command *cmd)
 {
-	char	**env;
-	char	**ptr;
-
-	env = env_list_to_tab(*head);
-	ptr = env;
-	while (*env != NULL)
-	{
-		ft_putstr_fd(*env, cmd->fd[1]);
-		ft_putchar_fd('\n', cmd->fd[1]);
-		free(*env);
-		env++;
-	}
-	free(ptr);
+	if ((*head)->next != NULL)
+		env_builtin(&((*head)->next), cmd);
+	ft_putstr_fd(ENV_KEY(*head), cmd->fd[1]);
+	ft_putchar_fd('=', cmd->fd[1]);
+	ft_putstr_fd(ENV_VALUE(*head), cmd->fd[1]);
+	ft_putchar_fd('\n', cmd->fd[1]);
 	return (0);
 }
 
