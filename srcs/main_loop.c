@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/10 15:28:54 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/10 15:54:19 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	execute_command(t_list **head, t_command *cmd)
 		env_builtin(head, cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
 		exit_builtin(head, cmd);
-	else
-		executable_builtin(head, cmd);
+//	else
+//		executable_builtin(head, cmd);
 }
 
 /*
