@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/10 00:57:39 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/10 15:28:54 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,14 @@ int		main_loop(t_list *list)
 {
 	char	*line;
 	int		ret_gnl;
+	////////////////////////joy's tests - initialization of t_command
+	t_command	*cmd;
+
+	cmd = (t_command*)malloc(sizeof(t_command));
+	cmd->fd[0] = 0;
+	cmd->fd[1] = 1;
+	cmd->fd[2] = 2;
+///////////////////////////
 
 	ret_gnl = 1;
 	prompt(list, cmd);
@@ -115,6 +123,12 @@ int		main_loop(t_list *list)
 // 2.1. and double quotes (and weird use of \ for double quotes, and enrironment variabes - NO need to try multilines)
 // 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
 // 4. handle $? and send it to a function
+
+////////////////////////joy's tests - initialization of t_command
+
+		cmd->command = ft_strsplit(&line[0], ' ');
+
+///////////////////////
 
 		execute_command(&list, cmd); // has to be called to find if the command is a builtin and execute it, otherwise, execute command in execve (using absolute path ->ex: /bin/ls or without path ->ex: ls or relative path)
 //    ->  Also deal with the errors for those functions

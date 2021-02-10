@@ -154,7 +154,7 @@ int		executable_builtin(t_list **head, t_command *cmd);
  * errors/signal handlins/exits functions
  */
 
-void	error_message(t_command *cmd, char *error_message, int writes_bash);
+void	error_message(t_command *cmd, int writes_bash);
 void	ctrl_back_slash_handler(int signal);
 void	ctrl_d_handler(int signal);
 
