@@ -18,11 +18,11 @@ int    cd_builtin(t_list **head, t_command *cmd)
         char    *pwd;
         char    *old_pwd;
 
-        if ((chdir(cmd->command[0])) == -1)
+        if ((chdir(cmd->command[1])) == -1)
         {
                 tmp = strerror(errno);
                 write(2, "bash: cd: ", 11);
-                write(2, cmd->command[0], ft_strlen(cmd->command[0]));
+                write(2, cmd->command[1], ft_strlen(cmd->command[1]));
                 write(2, ": ", 3);
                 write(2, tmp, ft_strlen(tmp));
                 write(2, "\n", 2);
