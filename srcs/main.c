@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/09 20:53:50 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/11 15:54:30 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,6 @@ int		main(int ac, char **av, char **ep)
 	main_loop(list);
 	//ft_lstdel(&list, free_env); ?????
 	//free_command_list(t_list **command);??
+//	system("leaks a.out");
 	return (0);
 }
