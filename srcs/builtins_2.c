@@ -12,6 +12,10 @@ int		pwd_builtin(t_list **head, t_command *cmd)
 	return (0);
 }
 
+//cd : if cd has no arguments, it must be replaced by the '~'. instead of what
+//there would be a segfault (if command[1] == NULL) or
+//an error (if *command[1] == '\0')
+
 int		cd_builtin(t_list **head, t_command *cmd)
 {
 	char    *tmp;
