@@ -6,14 +6,14 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 14:52:42 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/12 21:36:12 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 //#include "../includes/minishell.h"
 
-//////////////////////////////// STILL WORKING ON IT ////////////////////////////////
+//////////////////////////////// STILL WORKING ON IT ///////////////////////////
 void	executable_parent(pid_t fork_pid)
 {
 	int		wstatus;
@@ -27,7 +27,9 @@ void	executable_parent(pid_t fork_pid)
 	signal(SIGQUIT, ctrl_back_slash_handler);
 }
 
-// A child created via fork(2) inherits a copy of its parent's signal dispositions.  During an execve(2), the dispositions of handled  signals  are reset to the default; the dispositions of ignored signals are left unchanged.
+// A child created via fork(2) inherits a copy of its parent's signal
+// dispositions.  During an execve(2), the dispositions of handled  signals  are
+// reset to the default; the dispositions of ignored signals are left unchanged.
 char	*find_absolute_path(char *cmd, char *env_path)
 {
 	char	**each_path_dir;
@@ -98,10 +100,10 @@ int		executable_builtin(t_list **head, t_command *cmd)
 	env = env_list_to_tab(*head);
 	path_to_cmd = path_to_executable(head ,cmd);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-	if ((fork_pid = fork()) == -1)//On failure, -1 is returned in  the  parent, no child process is created, and errno is set appropriately.
-		exit(2);//or -1? or errno???
-	else if (fork_pid == 0)//  On success, the PID of the child process is returned in the parent, and 0 is returned in the child
-	{
+	if ((fork_pid = fork()) == -1)//On failure, -1 is returned in  the  parent, 
+		exit(2);//or -1? or errno?//no child process is created, and errno is set appropriately.
+	else if (fork_pid == 0)//  On success, the PID of the child process is
+	{//returned in the parent, and 0 is returned in the child
 		if (execve(path_to_cmd, cmd->command, env) == -1)
 		{
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
@@ -112,7 +114,9 @@ int		executable_builtin(t_list **head, t_command *cmd)
 	}
 	else
 	{
-		free(cmd->command[0]);//later to be replaced for a function that frees the t_cmd (or at least the **command?)
+		free(cmd->command[0]);
+		//later to be replaced for a function that frees the t_cmd
+		//(or at least the **command?)
 		executable_parent(fork_pid);
 	}
 	return (0);
