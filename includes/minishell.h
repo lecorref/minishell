@@ -12,6 +12,8 @@
 # include <sys/stat.h>
 # include <fcntl.h>
 # include <sys/errno.h>
+# include <errno.h>
+# include <linux/errno.h>
 
 /* ------------------------------------------------------------------------- */
 
