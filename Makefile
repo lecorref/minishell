@@ -28,7 +28,7 @@ LIBFT = $(LIBFTPATH)/libft.a
 
 ##### FLAG #####
 CC = clang
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g# -fsanitize=address
 
 #SRC & OBJ PATH
 SRCPATH = ./srcs
