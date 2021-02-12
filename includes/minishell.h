@@ -3,11 +3,15 @@
 # include "struct.h"
 # include "libft.h"
 
-# include<stdio.h>
-# include<unistd.h>
-# include<stdlib.h>
-# include<signal.h>
-# include<sys/wait.h>
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <signal.h>
+# include <sys/wait.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <sys/errno.h>
 
 /* ------------------------------------------------------------------------- */
 
@@ -119,7 +123,7 @@ t_list	tokenize_line(char *buff);
  * This function will find if the command is a builtin and execute it, or
  * execute said command in execve
  */
-void	execute_command(t_command *command, t_list **head);
+void	execute_command(t_list **head ,t_command *command);
 
 void	free_command_list(t_list **command);
 
@@ -132,16 +136,31 @@ void	free_command_list(t_list **command);
 int		pwd_builtin(t_list **head, t_command *cmd);
 int		cd_builtin(t_list **head, t_command *cmd);
 int		exit_builtin(t_list **head, t_command *cmd);
-
 int		echo_builtin(t_list **head, t_command *cmd);
 int		export_builtin(t_list **head, t_command *cmd);
 int		unset_builtin(t_list **head, t_command *cmd);
 int		env_builtin(t_list **head, t_command *cmd);
+int		executable_builtin(t_list **head, t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
 
 /*
  * Lexer/parser function that will buid t_command structure
  */
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * errors/signal handlins/exits functions
+ */
+
+void	error_msg_bash(t_command *cmd, int errnb, char *err_msg);
+void	error_msg(t_command *cmd, int errnb, char *err_msg);
+void	ctrl_back_slash_handler(int signal);
+void	ctrl_back_slash_handler_quit(int signal);
+void	ctrl_c_handler(int signal);
+void	ctrl_d_handler(char *line);
+
+/* ------------------------------------------------------------------------- */
 
 #endif

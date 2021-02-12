@@ -4,7 +4,7 @@
 typedef struct	s_command
 {
 	char		**command;
-	int			fd[2];
+	int			*fd;
 }				t_command;
 
 
