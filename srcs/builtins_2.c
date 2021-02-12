@@ -16,12 +16,35 @@ int		pwd_builtin(t_list **head, t_command *cmd)
 //there would be a segfault (if command[1] == NULL) or
 //an error (if *command[1] == '\0')
 
+char	*expand_tilde(t_list **head, char *arg)
+{
+	char	*expanded;
+	char	*env_home;
+	int		i;
+
+	i = 0;
+	if (arg[i] == '~')
+	{
+		while (arg[++i])
+			if (arg[i] != '/')
+				return (arg);
+		env_home = find_env_value(head, "HOME");
+		if (!(expanded = (char*)malloc(sizeof(char) * (ft_strlen(env_home) + 1))))
+			return (NULL);
+		ft_strlcpy(expanded, env_home, ft_strlen(env_home) + 1);
+		free(arg);
+		return (expanded);
+	}
+	return (arg);
+}
+
 int		cd_builtin(t_list **head, t_command *cmd)
 {
 	char    *tmp;
 	char    *pwd;
 	char    *old_pwd;
 
+	cmd->command[1] = expand_tilde(head, cmd->command[1]);
 	if ((chdir(cmd->command[1])) == -1)
 	{
 		tmp = strerror(errno);

@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/09 18:26:37 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:14:58 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ char				*ft_strmapi(char const *s, char (*f)(unsigned int, char));
 char				*ft_strncat(char *s1, char const *s2, size_t n);
 int					ft_strncmp(char const *s1, char const *s2, size_t n);
 char				*ft_strncpy(char *dest, char const *src, size_t len);
+size_t				ft_strlcpy(char *dst, const char *src, size_t dstsize);
 int					ft_strnequ(char const *s1, char const *s2, size_t n);
 char				*ft_strnew(size_t size);
 char				*ft_strnstr(char const *haystack, char const *needle, size_t len);
