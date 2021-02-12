@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 23:40:27 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:45:39 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,9 @@ void	executable_parent(t_command *cmd, pid_t fork_pid)
 	signal(SIGQUIT, ctrl_back_slash_handler);
 }
 
-// A child created via fork(2) inherits a copy of its parent's signal dispositions.  During an execve(2), the dispositions of handled  signals  are reset to the default; the dispositions of ignored signals are left unchanged.
+// A child created via fork(2) inherits a copy of its parent's signal
+// dispositions.  During an execve(2), the dispositions of handled  signals  are
+// reset to the default; the dispositions of ignored signals are left unchanged.
 char	*find_absolute_path(char *cmd, char *env_path)
 {
 	char	**each_path_dir;
