@@ -6,7 +6,7 @@
 #    By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/24 10:43:20 by jfreitas          #+#    #+#              #
-#    Updated: 2021/02/09 18:30:29 by jle-corr         ###   ########.fr        #
+#    Updated: 2021/02/12 23:13:55 by jle-corr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,6 +89,7 @@ SRCS = srcs/ft_atoi.c \
 	   srcs/ft_lstmap.c \
 	   srcs/get_next_line_jb.c \
 	   srcs/join_newstr.c \
+	   srcs/ft_strlcpy.c \
 
 OBJ = $(SRCS:srcs/%.c=$(OBJDIR)/%.o)
 

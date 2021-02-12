@@ -16,6 +16,8 @@ int		main(int ac, char *av[], char *ep[])
 	printf("Values before :\n-- PWD\t\t%s\n-- OLDPWD\t%s\n", key_pwd, key_oldpwd);
 	cmd.command = (char**)malloc(sizeof(char*) * 2);
 	cmd.command[1] = av[1]; 
+	cmd.command[1] = malloc(sizeof(char) * 18);
+	ft_strlcpy(cmd.command[1], "~////", 8);
 	pwd = getcwd(NULL, 0);
 	printf("\ncurrent dir before: %s\n\n", pwd);
 	free(pwd);
