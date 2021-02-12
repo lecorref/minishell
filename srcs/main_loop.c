@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/10 15:28:54 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/12 14:41:38 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	execute_command(t_list **head, t_command *cmd)
 		env_builtin(head, cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
 		exit_builtin(head, cmd);
+	//else if cmd == $ ??
 	else
 		executable_builtin(head, cmd);
 }
@@ -55,8 +56,10 @@ int		prompt(t_list *head, t_command *cmd)
 		find_env = ft_strchr(find_env, '/');
 		line = ft_strsplit(find_env, '/');
 		session_manager = ft_strsplit(line[0], ':');
+		ft_putstr_fd("\033[1;32m", cmd->fd[1]);
 		ft_putstr_fd(session_manager[0], cmd->fd[1]);
 		ft_putstr_fd("% ", cmd->fd[1]);
+		ft_putstr_fd("\033[0m", cmd->fd[1]);
 		free(line);
 		free(session_manager);
 		return (0);
@@ -94,19 +97,31 @@ int		main_loop(t_list *list)
 
 	while (ret_gnl == 1)
 	{
-		get_next_line(0, &line);
-		if (!line[0])
+		ret_gnl = get_next_line_jb(0, &line);
+		if (!line[0] && ret_gnl == 1)// ret_gnl = 1 when \n
 		{
 			free(line);
-			if (ret_gnl)// if no line, only return(\n)
-				prompt(list, cmd);
-			else if (!ret_gnl)// ctrlD handler if no line and gnl does not return 1
-				ctrl_d_handler(cmd->fd[2]);// Before the user input something, if ctrlD is typed, the string "exit" is written after the prompt, then the shell closes, and $SHLVL environment variable is decreased
-// Inside the loop, if ctrlD is typed, it has a different comportament)
+			prompt(list, cmd);
+			continue ;
+		}
+
+//////////////////////////// ctrlD on a line that exists is NOT WORKING HERE
+
+		if (ret_gnl == 0 && !line[0])// ctrlD handler if no line and gnl does not return 1
+			ctrl_d_handler(line);// Before the user input something, if ctrlD is typed, the string "exit" is written after the prompt, then the shell closes, and $SHLVL environment variable is decreased
+		if (ret_gnl == 0 && line)
+		{
+		//	here it should do nothing.. wait for return () to be pressed, so gnl would return 1 and the line could be then parsed and executed
+			printf("\n->%d\n", ret_gnl);
+		//	prompt(list, cmd);
+		}
+
+//////////////////////////// ctrlD on a line that exists is NOT WORKING HERE
+
+// after any input, if ctrlD is typed, it has a different comportament:
 // 1. if a blocking command is typed, ctrlD stops the command and goes to a new line - i.e.: shows the prompt)
 // 2. if something is typed and ctrlD is typed before the return button, it does nothing
 		//	continue ;
-		}
 
 // As ctrlC will just pr:int ^C and go to the new line AT ANYTIME, we can handle it inside the loop for when:
 // 1. a blocking command is typed, for example: grep h
@@ -115,7 +130,7 @@ int		main_loop(t_list *list)
 
 // The exit builtin can be inside the get_next_line function since it will be called only after the user writes the word "exit". Then it'll do a new line, write the string "exit", then exit the shell and decrease the $SHLVL environment variable
 
-		printf("----------------------------call tokenize_line funciton and so on----------------------------\n\n");
+		printf("------------------call tokenize_line funciton and so on------------------\n\n");
 	//	tokenize_line(line);//
 	// inside this tokenize_line function -> to do:
 // 1.split it by | or ; or > or < or >>  and save it to the t_cmd cmd->command (multiples of the same redirection has to fail) - try to mix pipes and redirections 
@@ -129,13 +144,16 @@ int		main_loop(t_list *list)
 		cmd->command = ft_strsplit(&line[0], ' ');
 
 ///////////////////////
-
-		execute_command(&list, cmd); // has to be called to find if the command is a builtin and execute it, otherwise, execute command in execve (using absolute path ->ex: /bin/ls or without path ->ex: ls or relative path)
+		if (ret_gnl == 1 && line)
+			execute_command(&list, cmd); // has to be called to find if the command is a builtin and execute it, otherwise, execute command in execve (using absolute path ->ex: /bin/ls or without path ->ex: ls or relative path)
 //    ->  Also deal with the errors for those functions
 
 		prompt(list, cmd);
 
 	// void free_command_list(t_list **command) and ft_lstdel(&list, free_env); -> at the very end of everything??? inside the loop????
+		free(line);//free t_cmd function here??
+	//	free(cmd);
+		line = NULL;
 	}
 	free(line);
 	return (0);
