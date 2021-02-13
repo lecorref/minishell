@@ -3,7 +3,7 @@ NAME = minishell
 
 ##### COLORS #####
 BLUE = \033[1;35m
-GREY = \033[1;31m
+GREY = \033[3;31m
 GREEN = \033[1;37m
 RED = \033[1;31m
 END = \033[0m
@@ -29,6 +29,16 @@ LIBFT = $(LIBFTPATH)/libft.a
 ##### FLAG #####
 CC = clang
 FLAGS = -Wall -Wextra -Werror -g# -fsanitize=address
+
+##### OSTYPE #####
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
+	# mac
+	FLAGS += -D DARWIN
+else
+	#Linus and others...
+	FLAGS += -D LINUX
+endif
 
 #SRC & OBJ PATH
 SRCPATH = ./srcs
