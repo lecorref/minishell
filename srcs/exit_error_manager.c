@@ -6,12 +6,11 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:34:20 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 14:50:13 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/12 23:41:00 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-//#include "../includes/minishell.h"
 
 void	error_msg_bash(t_command *cmd, int errnb, char *err_msg)
 {
