@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 22:08:50 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/13 04:14:19 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ int		main_loop(t_list *list)
 		// it'll do a new line, write the string "exit", then exit the shell and
 		// decrease the $SHLVL environment variable
 
-		printf("------------------call tokenize_line funciton and so on------------------\n\n");
+		//printf("------------------call tokenize_line funciton and so on------------------\n\n");
 		//	tokenize_line(line);//
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the

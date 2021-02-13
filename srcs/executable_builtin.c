@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 23:45:39 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/13 04:12:21 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ int		executable_builtin(t_list **head, t_command *cmd)
 	path_to_cmd = path_to_executable(head ,cmd);
 	if ((fork_pid = fork()) == -1)
 		exit(errno);// or -1???
-	else if (fork_pid == 0)
+	else if (fork_pid == 0)//child
 	{
 		if (execve(path_to_cmd, cmd->command, env) == -1)
 		{
@@ -141,10 +141,10 @@ int		executable_builtin(t_list **head, t_command *cmd)
 			}
 			if (ft_strcmp(path_to_cmd, "exit") == 0)
 				error_msg(cmd, 127, "command not found\n");//<cmd>: command not found (there's no errno number for this message)
-			return (127);
+			exit(127);
 		}
 	}
 	else
-		executable_parent(cmd, fork_pid);
+		executable_parent(cmd, fork_pid);//child pid returned to the parent
 	return (0);
 }

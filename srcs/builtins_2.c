@@ -116,7 +116,9 @@ int		exit_builtin(t_list **head, t_command *cmd)
 	errnb = 0;
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
-	if (cmd->command[1])
+	if (cmd->command[1] == NULL)
+		exit(0);
+	else if (cmd->command[1])
 	{
 		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
 			i++;
@@ -127,11 +129,9 @@ int		exit_builtin(t_list **head, t_command *cmd)
 			errnb = 2;
 			error_msg_bash(cmd, errnb, cmd->command[1]);//numeric argument required
 			ft_putstr_fd(": numeric argument required\n", cmd->fd[2]);
-			exit (errnb);
+			exit(errnb);
 		}
 		exit_arg(cmd, i);
 	}
-	else if (!cmd->command[1])
-		exit (0);
 	return (0);
 }
