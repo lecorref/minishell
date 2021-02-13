@@ -3,7 +3,7 @@ NAME = testit
 
 ##### COLORS #####
 BLUE = \033[3;37m
-GREY = \033[8;90m
+GREY = \033[3;31m
 GREEN = \033[1;32m
 RED = \033[3;35m
 END = \033[0m
@@ -30,6 +30,16 @@ LIBFT = $(LIBFTPATH)/libft.a
 CC = clang
 FLAGS = -Wall -Wextra -Werror -g
 
+##### OSTYPE #####
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
+	# mac
+	FLAGS += -D DARWIN
+else
+	#Linus and others...
+	FLAGS += -D LINUX
+endif
+
 
 
 ##### SRCS FOR TESTING PURPOSE #####
@@ -42,7 +52,6 @@ SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, cd_test.c)
 SRCS_PGM = $(addprefix $(SRC_PATH)/,builtins_1.c builtins_2.c environment.c \
 		   environment_2.c executable_builtin.c signal_handler.c \
 		   exit_error_manager.c)
-
 
 
 
