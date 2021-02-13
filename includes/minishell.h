@@ -117,8 +117,8 @@ int		get_line(char **buff);
 /*
  * This function will create a list of t_command from the input line.
  */
-t_list	tokenize_line(char *buff);
-
+void	tokenize_line(char *buff, t_list **head);
+int		check_redirect(char *line, t_list **head, int *fd);
 /*
  * This function will find if the command is a builtin and execute it, or
  * execute said command in execve
@@ -147,6 +147,7 @@ int		executable_builtin(t_list **head, t_command *cmd);
 /*
  * Lexer/parser function that will buid t_command structure
  */
+void add_cmd_to_list(char *cmd, t_list **head, int *fd);
 
 /* ------------------------------------------------------------------------- */
 

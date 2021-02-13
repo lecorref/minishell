@@ -22,15 +22,15 @@ static void	check_pipe(char *line, t_list **head)
 	int		save;
 
 	save = 0;
-	commands = ft_strsplit(buff, '|');
+	commands = ft_strsplit(line, '|');
 	ptr = commands;
-	while (*command != NULL)
+	while (*commands != NULL)
 	{
 		fd = init_fd();
 		pipe(pip);
 		fd[0] = save;
 		save = pip[0];
-		if (*(COMMAND + 1) != NULL)
+		if (*(commands + 1) != NULL)
 			fd[1] = pip[1];
 		else
 			close(pip[1]);
@@ -41,7 +41,7 @@ static void	check_pipe(char *line, t_list **head)
 	free(ptr);
 }
 
-t_list		tokenize_line(char *buff)
+void		tokenize_line(char *buff, t_list **head)
 {
 	char	**commands;
 	char	**ptr;
@@ -52,10 +52,9 @@ t_list		tokenize_line(char *buff)
 	ptr = commands;
 	while (*commands != NULL)
 	{
-		check_pipe(*commands, &list);
+		check_pipe(*commands, head);
 		free(*commands);
 		commands++;
 	}
 	free(ptr);
-	return (list);
 }

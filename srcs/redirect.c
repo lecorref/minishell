@@ -1,13 +1,21 @@
 #include "minishell.h"
 
-static char	*strnew_cat(char *str1, int len1, char *str2, int len2)
+static char	*strnew_cat(char *str1, char *str2, int len2)
 {
 	char	*ret;
+	int		len1;
 
-	ret = ft_strnew(len1 + len2 + 1);
-	ret = ft_strncat(ret, str1, len1);
-	if (str1)
+	if (str1 == NULL)
+	{
+		ret = ft_strnew(len2);
+	}
+	else
+	{
+		len1 = ft_strlen(str1);
+		ret = ft_strnew(len1 + len2);
+		ret = ft_strncat(ret, str1, len1);
 		free(str1);
+	}
 	return (ft_strncat(ret, str2, len2));
 }
 
@@ -19,7 +27,11 @@ static char	*fill_cmd_fd(char *line, int *fd, int detect)
 
 	append = O_TRUNC;
 	if ( detect > 1 && *(line + 1) == '>')
+	{
 		append = O_APPEND;
+		line++;
+	}
+	line++;
 	while (*line == ' ')
 		line++;
 	ptr = line;
@@ -27,9 +39,10 @@ static char	*fill_cmd_fd(char *line, int *fd, int detect)
 		line++;
 	if (fd[detect - 1] != (detect - 1))
 		close(fd[detect - 1]);
-	filename = ft_strnew(line - ptr + 1;
-	filename = ft_strlncpy(filename, ptr, line - ptr);
-	fd[detect - 1] = open(filename, O_CREAT | O_RDWR | append)
+	filename = ft_strnew(line - ptr + 1);
+	ft_strncpy(filename, ptr, line - ptr);
+	fd[detect - 1] = open(filename, O_CREAT | O_RDWR | append, 0666);
+	printf("%s\n", strerror(errno));
 	free(filename);
 	return (line);
 }
@@ -45,18 +58,12 @@ static int	detect_sign(char *ptr, char *line)
 		ret = 1;
 	if (ret != 0 && line == ptr)
 		return (-1);
-	else if (ret == 1 && *(line - 1) == '2')
+	else if (ret == 2 && *(line - 1) == '2')
 		return (3);
 	return (ret);
 
 }
 
-void add_cmd_to_list(char *cmd, t_list **head, int *fd)
-{
-	void(head);
-	printf("command: %s with fd0: %d, fd2:%d and fd3: %d",
-		   	cmd, fd[0], fd[1], fd[2]);
-}
 
 int			check_redirect(char *line, t_list **head, int *fd)
 {
@@ -72,16 +79,16 @@ int			check_redirect(char *line, t_list **head, int *fd)
 		detect = detect_sign(ptr, line);
 		if (detect > 0)
 		{
-			cmd = strnew_cat(cmd, ft_strlen(cmd), ptr, (line - 1 - ptr));
+			cmd = strnew_cat(cmd, ptr, (line - 1 - ptr));
 			line = fill_cmd_fd(line, fd, detect);
 			ptr = line;
 			detect = 0;
 		}
-		else if (detect < 0);
+		else if (detect < 0)
 			return (-1);
 		line++;
 	}
-	cmd = strnew_cat(cmd, ft_strlen(cmd), ptr, (line - ptr));
-	add_cmd_to_list(cmd, **head, fd);
+	cmd = strnew_cat(cmd, ptr, (line - ptr));
+	add_cmd_to_list(cmd, head, fd);
 	return (0);
 }

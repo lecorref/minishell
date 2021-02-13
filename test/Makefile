@@ -3,7 +3,7 @@ NAME = testit
 
 ##### COLORS #####
 BLUE = \033[3;37m
-GREY = \033[8;90m
+GREY = \033[8;00m
 GREEN = \033[1;32m
 RED = \033[3;35m
 END = \033[0m
@@ -35,11 +35,11 @@ FLAGS = -Wall -Wextra -Werror -g
 ##### SRCS FOR TESTING PURPOSE #####
 ################################################################################
 # add your own main_test & test files if needed, from ./test folder, in this one
-SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, maintest.c)
+SRCS_TEST = $(addprefix $(SRC_TEST_PATH)/, tokenizer_test.c)
 
 # below, add program files from ./srcs folder, that u wanna test with your main
 # test added above, in this one. It can be empty
-SRCS_PGM = $(addprefix $(SRC_PATH)/,builtins_1.c builtins_2.c environment.c environment_2.c)
+SRCS_PGM = $(addprefix $(SRC_PATH)/, environment.c environment_2.c redirect.c tokenizer.c create_cmd.c)
 
 
 
