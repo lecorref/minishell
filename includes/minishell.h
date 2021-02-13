@@ -13,8 +13,9 @@
 # include <fcntl.h>
 # include <sys/errno.h>
 # include <errno.h>
-# include <linux/errno.h>
-
+# ifdef LINUX
+#  include <linux/errno.h>
+# endif
 /* ------------------------------------------------------------------------- */
 
 /*
