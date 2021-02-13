@@ -12,9 +12,13 @@ int		pwd_builtin(t_list **head, t_command *cmd)
 	return (0);
 }
 
-//cd : if cd has no arguments, it must be replaced by the '~'. instead of what
-//there would be a segfault (if command[1] == NULL) or
-//an error (if *command[1] == '\0')
+/*
+ * if expand_tilde detects the ~ sign, it search the HOME env variable
+ * and join to it the path which can be typed behind, then return a malloc()
+ * pointer to this string. The string given as paramater is free.
+ * Otherwise, no tilde had been detected as first character, & it returns
+ * the string given as parameter, untouched.
+*/
 
 char	*expand_tilde(t_list **head, char *arg)
 {
@@ -23,20 +27,20 @@ char	*expand_tilde(t_list **head, char *arg)
 	int		i;
 
 	i = 0;
-	if (arg[i] == '~')
-	{
-		while (arg[++i])
-			if (arg[i] != '/')
-				return (arg);
-		env_home = find_env_value(head, "HOME");
-		if (!(expanded = (char*)malloc(sizeof(char) * (ft_strlen(env_home) + 1))))
-			return (NULL);
-		ft_strlcpy(expanded, env_home, ft_strlen(env_home) + 1);
-		free(arg);
-		return (expanded);
-	}
-	return (arg);
+	if (arg[i++] != '~')
+		return (arg);
+	env_home = find_env_value(head, "HOME");
+	if (!(expanded = ft_strjoin(env_home, &arg[i])))
+		return (NULL);
+	free(arg);
+	return (expanded);
 }
+
+/*
+ * cd uses the chdir func to sail into the filesystem & set errors.
+ * This builtin must specifically change the OLDPWD & the PWD variables; and
+ * handle the tilde char as well as the 'no' char, which means HOME directory.
+*/
 
 int		cd_builtin(t_list **head, t_command *cmd)
 {
@@ -44,6 +48,8 @@ int		cd_builtin(t_list **head, t_command *cmd)
 	char    *pwd;
 	char    *old_pwd;
 
+	if (!(cmd->command[1]))
+		cmd->command[1] = ft_strjoin("~", "");
 	cmd->command[1] = expand_tilde(head, cmd->command[1]);
 	if ((chdir(cmd->command[1])) == -1)
 	{
@@ -106,7 +112,7 @@ int		exit_arg(t_command *cmd, size_t i)
  * echo $? = 1
  *
  * If <argv> is omitted, the exit status is that of the last command executed.
-*/
+ */
 int		exit_builtin(t_list **head, t_command *cmd)
 {
 	size_t	i;
