@@ -121,6 +121,7 @@ int		get_line(char **buff);
  * This function will create a list of t_command from the input line.
  */
 t_list	tokenize_line(char *buff);
+t_list	*tokenize_line_jb(char *line);
 
 /*
  * This function will find if the command is a builtin and execute it, or
