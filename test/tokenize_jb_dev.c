@@ -218,66 +218,6 @@ int			*init_fd()
 }
 
 /*
- * Find redirections in a string & set a symbol code.
- * redirection code:
- * 0 - fail
- * 1 - >
- * 2 - >>
- * 3 - <
- *
- * if a symbol is found, returns adress after the symbol & set the code properly
- * else, returns the adress of null character & code is set to 0;
-*/
-
-char		*find_which_redirection(char *str, int *code)
-{
-	*code = 0;
-	while (*str)
-	{
-		if (*str == '>' && (*code = 1))
-		{
-			if (*(str + 1) == '>' && (*code = 2))
-				return (str + 2);
-			return (str + 1);
-		}
-		if (*str == '<' && (*code = 3))
-			return (str + 1);
-		str++;
-	}
-	return (str);
-}
-
-/*
- * echo BLA>FILE1 POP>FILE2 FUF -n
- * cat FILE2
- * --->BLA POP FUF -n
- *
- * cat    -b  < FILE   -n  == cat -b -n < FILE
- *
- * find_redirections is the last fonction which is called to finish the tokenize
- * process. In fact, this is where the content of links from linked list ends up
- * being created.
- * This function handle file descriptors from redirections, then shaping of
- * the array of command + arguments.
-*/
-
-void		find_redirections(t_list *head, char *command_line, int *fd_command)
-{
-	char	*symbol_adr;
-	int		file_fd;
-	int		code;
-
-	head = NULL;
-	symbol_adr = command_line;
-	while (*symbol_adr)
-	{
-		symbol_adr = find_which_redirection(symbol_adr, &code);
-		file_fd = fd_command[0];//just to silent warning
-		printf("symbol_adr char : |%c|\n", *symbol_adr);
-	}
-}
-
-/*
  * Process the given line to split it, if a '|' is found.
  * Behavior : if it receives this >ls | rev | wc -c
  * Make this :	->ls |'\0'
@@ -298,7 +238,8 @@ void		find_redirections(t_list *head, char *command_line, int *fd_command)
  * file descriptor and $ expand.
 */
 
-void		find_pipe_n_redirections(t_list *head, char *execution_line)
+void		find_pipe_n_redirections(t_listjb **cmd, t_list **env,
+		char *execution_line)
 {
 	char	**piped_exec_line;
 	int		piped_fd[2];
@@ -306,7 +247,6 @@ void		find_pipe_n_redirections(t_list *head, char *execution_line)
 	int		fd_tmp;
 	int		i;
 
-	head = NULL;
 	if (!(piped_exec_line = split_with_exception(execution_line, '|', "\'\"")))
 		return ;
 	i = 0;
@@ -327,20 +267,20 @@ void		find_pipe_n_redirections(t_list *head, char *execution_line)
 			fd_command[0] = fd_tmp;//read from the pipe opened by previous command
 		printf("command of string %d\tfd READ= %d\n", i, fd_command[0]);
 		printf("command of string %d\tfd WRITE= %d\n\n", i, fd_command[1]);
-		find_redirections(head, piped_exec_line[i], fd_command);
+		find_redirections(cmd, env, piped_exec_line[i], fd_command);
 		fd_tmp = piped_fd[0];//save the read end pipe of current command
 		i++;
 	}
 }
 
-t_list		*tokenize_line_jb(char *line)
+t_listjb		*tokenize_line_jb(char *line, t_list **env)
 {
 	int		i;
-	t_list	*head;
+	t_listjb	*cmd;
 	char	**execution_lines;
 	char	*skiped;
 
-	head = NULL;
+	cmd = NULL;
 	if (!(execution_lines = split_with_exception(line, ';', "\'\"")))
 		return (NULL);
 	i = -1;
@@ -352,10 +292,7 @@ t_list		*tokenize_line_jb(char *line)
 		skiped = skip_char(execution_lines[i], ' ');
 		if (*skiped == ';')
 			printf("unexpected token ';'\n");
-		find_pipe_n_redirections(head, execution_lines[i]);
+		find_pipe_n_redirections(&cmd, env, execution_lines[i]);
 	}
-
-
-	head = NULL;
-	return (head);
+	return (cmd);
 }

@@ -6,7 +6,7 @@
 #    By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/24 10:43:20 by jfreitas          #+#    #+#              #
-#    Updated: 2021/02/12 23:13:55 by jle-corr         ###   ########.fr        #
+#    Updated: 2021/02/18 00:49:25 by jle-corr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,6 +90,11 @@ SRCS = srcs/ft_atoi.c \
 	   srcs/get_next_line_jb.c \
 	   srcs/join_newstr.c \
 	   srcs/ft_strlcpy.c \
+
+
+SRCS += $(addprefix srcs/, ft_lstadd_back_jb.c ft_lstdelone_jb.c \
+		ft_lstmap_jb.c ft_lstadd_front_jb.c ft_lstiter_jb.c ft_lstnew_jb.c \
+		ft_lstclear_jb.c ft_lstlast_jb.c ft_lstsize_jb.c)
 
 OBJ = $(SRCS:srcs/%.c=$(OBJDIR)/%.o)
 

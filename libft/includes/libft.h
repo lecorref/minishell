@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 23:14:58 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/18 00:51:53 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 # define MAX_FD 25
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 100
+#  define BUFFER_SIZE 1
 # endif
 
 
@@ -44,6 +44,12 @@ typedef struct		s_list
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
+
+typedef struct		s_listjb
+{
+	void			*content;
+	struct s_listjb	*next;
+}					t_listjb;
 
 
 int					ft_atoi(char const *str);
@@ -120,5 +126,17 @@ void				ft_lstdel(t_list **alst, void (*del)(void *, size_t));
 void				ft_lstadd(t_list **alst, t_list *new);
 void				ft_lstiter(t_list *lst,	void (*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
+
+//lists jb
+void				ft_lstadd_back_jb(t_listjb **alst, t_listjb *new);
+void				ft_lstadd_front_jb(t_listjb **alst, t_listjb *new);
+t_listjb			*ft_lstlast_jb(t_listjb *lst);
+t_listjb			*ft_lstnew_jb(void *content);
+int					ft_lstsize_jb(t_listjb *lst);
+void				ft_lstiter_jb(t_listjb *lst, void (*f)(void *));
+void				ft_lstclear_jb(t_listjb **lst, void (*del)(void *));
+void				ft_lstdelone_jb(t_listjb *lst, void (*del)(void *));
+t_listjb			*ft_lstmap_jb(t_listjb *lst, void *(*f)(void *),
+		void (*del)(void *));
 
 #endif
