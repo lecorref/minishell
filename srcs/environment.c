@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 static int	create_env_struct(char *keyvalue, t_env *env)
 {
