@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_list.c                                   :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/27 11:05:51 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/01/27 00:03:33 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/11/14 10:30:54 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/15 15:39:43 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-void	ft_putstr_list(t_list *str)
+void	*ft_calloc(size_t count, size_t size)
 {
-	while (((char*)str->content))
-	{
-		write(1, &str->content, 1);
-		str->content++;
-	}
-	str = str->next;
+	return (ft_memalloc(count * size));
 }

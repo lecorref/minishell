@@ -1,40 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_lstmap_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/16 11:31:08 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/27 11:31:18 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/08/27 15:28:16 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/21 14:22:26 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-t_list	*ft_lstnew(void const *content, size_t content_size)
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	t_list	*tmp;
+	t_list *newlst;
 
-	tmp = (t_list*)malloc(sizeof(t_list));
-	if (tmp == NULL)
-		return (NULL);
-	if (content == NULL)
+	if (lst)
 	{
-		tmp->content = NULL;
-		tmp->content_size = 0;
-	}
-	else
-	{
-		tmp->content = (void*)malloc(sizeof(content) * content_size);
-		if (tmp->content == NULL)
-		{
-			free(tmp);
+		newlst = (t_list*)malloc(sizeof(lst));
+		if (newlst == NULL)
 			return (NULL);
-		}
-		ft_memcpy((tmp->content), content, content_size);
-		tmp->content_size = content_size;
+		newlst = (*f)(lst->content);
+		newlst->next = ft_lstmap(lst->next, (*f), (*del));
+		return (newlst);
 	}
-	tmp->next = NULL;
-	return (tmp);
+	return (NULL);
 }

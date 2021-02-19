@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 static int	create_env_struct(char *keyvalue, t_env *env)
 {
@@ -11,26 +11,25 @@ static int	create_env_struct(char *keyvalue, t_env *env)
 	return (1);
 }
 
-t_list  *create_env_list(char **envp)
+t_list	*create_env_list(char **envp)
 {
 	t_env	*new;
-	t_list	*list;
-	t_list	*tmp;
+	t_list	*env;
+	t_list	*tmp_env;
 
-	new = (t_env*)malloc(sizeof(t_env));
-	list = NULL;
+	env = NULL;
 	while (*envp != NULL)
 	{
+		new = (t_env*)malloc(sizeof(t_env));
 		create_env_struct(*envp, new);
-		tmp = ft_lstnew(new, sizeof(t_env));
-		ft_lstadd(&list, tmp);
+		tmp_env = ft_lstnew(new);
+		ft_lstadd_front(&env, tmp_env);
 		envp++;
 	}
-	free(new);
-	return (list);
+	return (env);
 }
 
-char    **env_list_to_tab(t_list *env)
+char	**env_list_to_tab(t_list *env)
 {
 	int		count;
 	t_list	*tmp_env;
@@ -50,47 +49,48 @@ char    **env_list_to_tab(t_list *env)
 		free(tmp_str);
 		env = env->next;
 	}
-	return new_env;
+	return (new_env);
 }
 
-void    add_env_variable(t_list **list, char *var)
+void	add_env_variable(t_list **env, char *var)
 {
 	t_env	*new;
-	t_list	*env;
+	t_list	*tmp_env;
 
 	new = (t_env*)malloc(sizeof(t_env));
 	if (!create_env_struct(var, new))
 			return ;
-	env = *list;
-	while (env)
+	tmp_env = *env;
+	while (tmp_env)
 	{
-		if (!ft_strcmp(new->key, ENV_KEY(env)))
+		if (!ft_strcmp(new->key, ENV_KEY(tmp_env)))
 		{
 			free(new->key);
-			free(ENV_VALUE(env));
-			ENV_VALUE(env) = new->value;
+			free(ENV_VALUE(tmp_env));
+			ENV_VALUE(tmp_env) = new->value;
 			break;
 		}
-		env = env->next;
+		tmp_env = tmp_env->next;
 	}
-	if (env == NULL)
+	if (tmp_env == NULL)
 	{
-		env = ft_lstnew(new, sizeof(t_env));
-		ft_lstadd(list, env);
+//		new = (t_env*)malloc(sizeof(t_env));
+		tmp_env = ft_lstnew(new);
+		ft_lstadd_front(env, tmp_env);
 	}
 	free(new);
 }
 
-char	*find_env_value(t_list **list, char *key)
+char	*find_env_value(t_list **env, char *key)
 {
-	t_list	*env;
+	t_list	*tmp_env;
 
-	env = *list;
-	while (env)
+	tmp_env = *env;
+	while (tmp_env)
 	{
-		if (!ft_strcmp(key, ENV_KEY(env)))
-			return (ENV_VALUE(env));
-		env = env->next;
+		if (!ft_strcmp(key, ENV_KEY(tmp_env)))
+			return (ENV_VALUE(tmp_env));
+		tmp_env = tmp_env->next;
 	}
 	return (NULL);
 }

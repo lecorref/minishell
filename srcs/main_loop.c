@@ -6,35 +6,35 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 22:08:50 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/19 21:09:04 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
-//void	ope(t_list **head, t_command *cmd, void (func)(t_list *, t_command *))
+//void	ope(t_list **env, t_command *cmd, void (func)(t_list *, t_command *))
 //{
-//	(func)(head, cmd);
+//	(func)(env, cmd);
 //} ???? I DON'T KNOW HOW TO DO IT WITH POINTER TO FUNCITONS :/ HELLLLP
-void	execute_command(t_list **head, t_command *cmd)
+void	execute_command(t_list **env, t_command *cmd)
 {
 	if (ft_strcmp(cmd->command[0], "echo") == 0)
-		echo_builtin(head, cmd);
+		echo_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "cd") == 0)
-		cd_builtin(head, cmd);
+		cd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "pwd") == 0)
-		pwd_builtin(head, cmd);
+		pwd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "export") == 0)
-		export_builtin(head, cmd);
+		export_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "unset") == 0)
-		unset_builtin(head, cmd);
+		unset_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "env") == 0)
-		env_builtin(head, cmd);
+		env_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
-		exit_builtin(head, cmd);
+		exit_builtin(env, cmd);
 	//else if cmd == $ ??
 	else
-		executable_builtin(head, cmd);
+		executable_builtin(env, cmd);
 }
 
 /*
@@ -43,22 +43,22 @@ void	execute_command(t_list **head, t_command *cmd)
  ** Then spliting the line by / and : just to get the exact name to then print
  ** it on the stdout (fd1).
  */
-int		prompt(t_list *head, t_command *cmd)
+int		prompt(t_list *env, t_command *cmd)
 {
 	char	*find_env;
 	char	**line;
 	char	**session_manager;
 
-	if ((find_env = find_env_value(&head, "SESSION_MANAGER")) == NULL)
+	if ((find_env = find_env_value(&env, "SESSION_MANAGER")) == NULL)
 	{
-		ft_putstr_fd("minishell-1.0$ ", cmd->fd[1]);
+		ft_putstr_fd("minishell$ ", cmd->fd[1]);
 		return (0);
 	}
 	else
 	{
 		find_env = ft_strchr(find_env, '/');
-		line = ft_strsplit(find_env, '/');
-		session_manager = ft_strsplit(line[0], ':');
+		line = ft_split(find_env, '/');
+		session_manager = ft_split(line[0], ':');
 		ft_putstr_fd("\033[1;32m", cmd->fd[1]);
 		ft_putstr_fd(session_manager[0], cmd->fd[1]);
 		ft_putstr_fd("% ", cmd->fd[1]);
@@ -67,6 +67,48 @@ int		prompt(t_list *head, t_command *cmd)
 		free(session_manager);
 		return (0);
 	}
+}
+
+int		gnl_ctrld(int fd, char **line)
+{
+	static char		buf[MAX_FD][BUFFER_SIZE + 1];
+	char			*adr;
+
+	if (BUFFER_SIZE < 1 || fd < 0 || !line ||
+			fd > MAX_FD || read(fd, buf[fd], 0) == -1)
+		return (-1);
+	if (!(*line = ft_strnew(0)))
+		return (0);
+	while (!(adr = ft_strchr(buf[fd], '\n')))
+	{
+		if (!(join_newstr(line, buf[fd])))
+			return (-1);
+		ft_memset(buf[fd], 0, BUFFER_SIZE);
+		if (!(read(fd, buf[fd], BUFFER_SIZE)))
+		{
+			if (**line)
+				buf[fd][0] = 0;
+			else
+				return (0);
+		}
+	}
+	*adr = 0;
+	if (!(join_newstr(line, buf[fd])))
+		return (-1);
+	ft_strncpy(buf[fd], adr + 1, sizeof(buf[fd]));
+	return (1);
+}
+
+static int	*init_fd(void)
+{
+	int		*fd;
+
+	fd = malloc(sizeof(int) * 4);
+	bzero(fd, sizeof(int) * 4);
+	fd[0] = 0;
+	fd[1] = 1;
+	fd[2] = 2;
+	return (fd);
 }
 
 /*
@@ -79,21 +121,33 @@ int		prompt(t_list *head, t_command *cmd)
  * 0 = EOF
  * -1= error
  */
-int		main_loop(t_list *list)
+int		main_loop(t_list *env)
 {
 	char	*line;
 	int		ret_gnl;
 	////////////////////////joy's tests - initialization of t_command
 	t_command	*cmd;
 
-	cmd = (t_command*)malloc(sizeof(t_command));
-	cmd->fd[0] = 0;
-	cmd->fd[1] = 1;
-	cmd->fd[2] = 2;
+	cmd = (t_command*)malloc(sizeof(t_command) + 1);
+	cmd->fd = init_fd();
+//	cmd->fd = (int*)malloc(sizeof(int) * 4);
+//	cmd->fd[0] = 0;
+//	cmd->fd[1] = 1;
+//	cmd->fd[2] = 2;
 	///////////////////////////
 
 	ret_gnl = 1;
-	prompt(list, cmd);
+	prompt(env, cmd);
+
+	// As ctrlC will just pr:int ^C and go to the new line AT ANYTIME, we
+	// can handle
+	// it inside the loop for when:
+	// 1. a blocking command is typed, for example: grep h
+	// 2. if something is typed and ctrlD is typed before the return button,
+	// it writes ^C and goes to new line/promt
+	// 3. for when command line is empty and no return button pressed
+	// (crtlC is pressed instead)
+	signal(SIGINT, ctrl_c_handler);
 	//If the disposition is set to SIG_DFL, then the default action 
 	//associated with the signal (see signal(7)) occurs.
 	signal(SIGQUIT, ctrl_back_slash_handler);
@@ -104,56 +158,16 @@ int		main_loop(t_list *list)
 	// 2. if something is typed and ctrl\ is typer before the return button, it
 	// does nothing
 
-	while (ret_gnl == 1)
+	while ((ret_gnl = gnl_ctrld(0, &line)) == 1)
 	{
-		ret_gnl = get_next_line_jb(0, &line);
-		if (!line[0] && ret_gnl == 1)// ret_gnl = 1 when \n
+		if (!line[0])// ret_gnl = 1 when \n
 		{
 			free(line);
-			prompt(list, cmd);
+			prompt(env, cmd);
 			continue ;
 		}
 
-		// ctrlD on a line that exists is NOT WORKING HERE
-		// ctrlD handler if no line and gnl does not return 1
-		if (ret_gnl == 0 && !line[0])
-			ctrl_d_handler(line);// Before the user input something, if ctrlD
-		//is typed, the string "exit" is written after the prompt, then the
-		//shell closes, and $SHLVL environment variable is decreased
-		if (ret_gnl == 0 && line)
-		{
-			//	here it should do nothing.. wait for return () to be pressed,
-			//	so gnl would return 1 and the line could
-			//	be then parsed and executed
-			printf("\n->%d\n", ret_gnl);
-			//	prompt(list, cmd);
-		}
-
-		//////////////////////////// ctrlD on a line that exists is NOT WORKING HERE
-
-		// after any input, if ctrlD is typed, it has a different comportament:
-		// 1. if a blocking command is typed, ctrlD stops the command
-		// and goes to a new line - i.e.: shows the prompt)
-		// 2. if something is typed and ctrlD is typed before the return button,
-		// it does nothing
-		//	continue ;
-
-		// As ctrlC will just pr:int ^C and go to the new line AT ANYTIME, we
-		// can handle
-		// it inside the loop for when:
-		// 1. a blocking command is typed, for example: grep h
-		// 2. if something is typed and ctrlD is typed before the return button,
-		// it
-		// writes ^C and goes to new line/promt
-		// 3. for when command line is empty and no return button pressed
-		// (crtlC is pressed instead)
-
-		// The exit builtin can be inside the get_next_line function since it
-		// will be called only after the user writes the word "exit". Then
-		// it'll do a new line, write the string "exit", then exit the shell and
-		// decrease the $SHLVL environment variable
-
-		printf("------------------call tokenize_line funciton and so on------------------\n\n");
+		//printf("------------------call tokenize_line funciton and so on------------------\n\n");
 		//	tokenize_line(line);//
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the
@@ -169,26 +183,39 @@ int		main_loop(t_list *list)
 
 		////////////////////////joy's tests - initialization of t_command
 
-		cmd->command = ft_strsplit(&line[0], ' ');
+		cmd->command = ft_split(&line[0], ' ');
 
 		///////////////////////
-		if (ret_gnl == 1 && line)
-			execute_command(&list, cmd); // has to be called to find if the
+		execute_command(&env, cmd); // has to be called to find if the
 		//command is a builtin and execute it, otherwise, execute command in
 		//execve (using absolute path ->ex: /bin/ls or without path ->ex: ls or
 		//relative path)
 		//    ->  Also deal with the errors for those functions
 
-		prompt(list, cmd);
+		prompt(env, cmd);
 
 		// void free_command_list(t_list **command) and
-		// ft_lstdel(&list, free_env); -> at the very end of everything???
+		// ft_lstdel(&env, free_env); -> at the very end of everything???
 		// inside the loop????
 		free(line);//free t_cmd function here??
 		//	free(cmd);
 		line = NULL;
 	}
 	free(line);
+	line = NULL;
+
+	// Before the user input something, if ctrlD
+	//is typed, the string "exit" is written after the prompt, then the
+	//shell closes, and $SHLVL environment variable is decreased
+
+	// after any input, if ctrlD is typed, it has a different comportament:
+	// 1. if a blocking command is typed, ctrlD stops the command
+	// and goes to a new line - i.e.: shows the prompt)
+	// 2. if something is typed and ctrlD is typed before the return button,
+	// it does nothing
+	if (ret_gnl == 0)
+		ctrl_d_handler(line);
+
 	return (0);
 }
 

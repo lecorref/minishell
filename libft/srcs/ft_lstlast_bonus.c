@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_prime_sum.c                                    :+:      :+:    :+:   */
+/*   ft_lstlast_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 11:06:17 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/14 16:52:09 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/11/18 12:21:46 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/21 09:54:00 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-int		add_prime_sum(unsigned int n)
+t_list	*ft_lstlast(t_list *lst)
 {
-	unsigned int	i;
-	unsigned int	res;
-
-	res = 0;
-	i = 2;
-	if (n <= 1)
-		return (0);
-	while (i <= n)
+	while (lst->next)
 	{
-		if (is_prime(i) == 1)
-			res = res + i;
-		i++;
+		lst = lst->next;
 	}
-	return (res);
+	return (lst);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsplit.c                                      :+:      :+:    :+:   */
+/*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/21 16:35:51 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/07/25 13:59:04 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/19 19:42:53 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ static int		ft_countwords(char const *s, char c)
 	return (count);
 }
 
-char			**ft_strsplit(char const *s, char c)
+char			**ft_split(char const *s, char c)
 {
 	int		i;
 	int		j;
@@ -73,4 +73,3 @@ char			**ft_strsplit(char const *s, char c)
 	}
 	return (str);
 }
-

@@ -1,7 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 # include "struct.h"
-# include "libft.h"
+//# include "libft.h"
+# include "../libft/includes/libft.h"
 
 # include <stdio.h>
 # include <unistd.h>
@@ -19,6 +20,15 @@
 /* ------------------------------------------------------------------------- */
 
 /*
+** Macros
+*/
+# define MAX_FD 25
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+# endif
+
+/*
  * Environment control
  */
 
@@ -28,6 +38,9 @@
  */
 # define ENV_KEY(NAME) ((t_env *)((NAME)->content))->key
 # define ENV_VALUE(NAME) ((t_env *)((NAME)->content))->value
+
+# define CMD(NAME) ((t_command *)((NAME)->content))->command
+# define CMD_FD(NAME) ((t_command *)((NAME)->content))->fd
 
 /*
  * Create and store environment in a linked list of t_env from envp variable.
@@ -39,7 +52,7 @@
  * @return:
  *	t_list *: a pointer to the head of a list.
  */
-t_list	*create_env_list(char **envp);
+t_list		*create_env_list(char **envp);
 
 
 /*
@@ -52,7 +65,7 @@ t_list	*create_env_list(char **envp);
  * @return:
  *	char **: a string table containing entries with the format KEY=VALUE
  */
-char	**env_list_to_tab(t_list *head);
+char		**env_list_to_tab(t_list *head);
 
 
 /*
@@ -65,7 +78,7 @@ char	**env_list_to_tab(t_list *head);
  *	- t_list **head: a pointer to the first link of the list
  *	- char *var: a string with the format KEY=VALUE
  */
-void	add_env_variable(t_list **head, char *var);
+void		add_env_variable(t_list **head, char *var);
 
 
 /*
@@ -78,7 +91,7 @@ void	add_env_variable(t_list **head, char *var);
  * @return:
  *	char *: a string that correspond to the key that was sent
  */
-char	*find_env_value(t_list **head, char *key);
+char		*find_env_value(t_list **head, char *key);
 
 
 /*
@@ -89,7 +102,7 @@ char	*find_env_value(t_list **head, char *key);
  *	- t_list **head: a pointer to the first link of the list
  *	- char *key: a string that will be compared against t_env->key
  */
-void	delete_env_variable(t_list **head, char *key);
+void		delete_env_variable(t_list **head, char *key);
 
 /*
  * Free each string from the t_env structure then free the structure. The
@@ -99,7 +112,7 @@ void	delete_env_variable(t_list **head, char *key);
  *	- void *env: a pointer to the t_env struct to delete
  *	- size_t size: necessary for pointer to function.
  */
-void	free_env(void *env, size_t size);
+void		free_env(void *env, size_t size);
 
 /* ------------------------------------------------------------------------- */
 
@@ -110,29 +123,29 @@ void	free_env(void *env, size_t size);
 /*
  * This loop should only exit on ctrlD, sigkill and "exit"
  */
-int		main_loop(t_list *env);
+int			main_loop(t_list *env);
 
 /*
  * This can be replaced by GNL
  */
-int		get_line(char **buff);
+int			get_line(char **buff);
 
 /*
  * This function will create a list of t_command from the input line.
  */
-t_list	tokenize_line(char *buff);
-t_listjb	*tokenize_line_jb(char *line, t_list **env);
-void	find_redirections(t_listjb **cmd, t_list **env,
-		char *command_line, int *fd_command);
-char	*skip_char(char *str, char c);
+t_list		tokenize_line(char *buff);
+t_list		*tokenize_line_jb(char *line, t_list **env);
+void		find_redirections(t_list **cmdlist, t_list **env,
+				char *command_line, int *fd_command);
+char		*skip_char(char *str, char c);
 
 /*
  * This function will find if the command is a builtin and execute it, or
  * execute said command in execve
  */
-void	execute_command(t_list **head ,t_command *command);
+void		execute_command(t_list **head ,t_command *command);
 
-void	free_command_list(t_list **command);
+void		free_command_list(t_list **cmdlist);
 
 /* ------------------------------------------------------------------------- */
 
@@ -140,14 +153,14 @@ void	free_command_list(t_list **command);
  * Builtins
  */
 
-int		pwd_builtin(t_list **head, t_command *cmd);
-int		cd_builtin(t_list **head, t_command *cmd);
-int		exit_builtin(t_list **head, t_command *cmd);
-int		echo_builtin(t_list **head, t_command *cmd);
-int		export_builtin(t_list **head, t_command *cmd);
-int		unset_builtin(t_list **head, t_command *cmd);
-int		env_builtin(t_list **head, t_command *cmd);
-int		executable_builtin(t_list **head, t_command *cmd);
+int			pwd_builtin(t_list **head, t_command *cmd);
+int			cd_builtin(t_list **head, t_command *cmd);
+int			exit_builtin(t_list **head, t_command *cmd);
+int			echo_builtin(t_list **head, t_command *cmd);
+int			export_builtin(t_list **head, t_command *cmd);
+int			unset_builtin(t_list **head, t_command *cmd);
+int			env_builtin(t_list **head, t_command *cmd);
+int			executable_builtin(t_list **head, t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
 
@@ -161,12 +174,12 @@ int		executable_builtin(t_list **head, t_command *cmd);
  * errors/signal handlins/exits functions
  */
 
-void	error_msg_bash(t_command *cmd, int errnb, char *err_msg);
-void	error_msg(t_command *cmd, int errnb, char *err_msg);
-void	ctrl_back_slash_handler(int signal);
-void	ctrl_back_slash_handler_quit(int signal);
-void	ctrl_c_handler(int signal);
-void	ctrl_d_handler(char *line);
+void		error_msg_bash(t_command *cmd, int errnb, char *err_msg);
+void		error_msg(t_command *cmd, int errnb, char *err_msg);
+void		ctrl_back_slash_handler(int signal);
+void		ctrl_back_slash_handler_quit(int signal);
+void		ctrl_c_handler(int signal);
+void		ctrl_d_handler(char *line);
 
 /* ------------------------------------------------------------------------- */
 

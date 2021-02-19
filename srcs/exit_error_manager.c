@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 void	error_msg_bash(t_command *cmd, int errnb, char *err_msg)
 {
