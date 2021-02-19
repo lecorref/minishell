@@ -6,20 +6,20 @@
 #    By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/24 10:43:20 by jfreitas          #+#    #+#              #
-#    Updated: 2021/02/19 00:00:35 by jfreitas         ###   ########.fr        #
+#    Updated: 2021/02/19 14:43:34 by jfreitas         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libft.a
 
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 INCPATH = includes/
 DEPS = $(INCPATH)/libft.h
 
 OBJDIR = srcs/libftobj
 
-SRC =	srcs/ft_atoi.c \
+SRCS =	srcs/ft_atoi.c \
 		srcs/ft_bzero.c \
 		srcs/ft_calloc.c \
 		srcs/ft_intlen_base.c \

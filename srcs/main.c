@@ -6,11 +6,11 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/12 21:38:27 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/19 02:04:12 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 int		main(int ac, char **av, char **ep)
 {

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 void	free_env(void *env, size_t size)
 {

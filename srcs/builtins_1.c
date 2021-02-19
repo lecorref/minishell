@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../includes/minishell.h"
 
 static int	echo_n_parser(char *str)
 {
