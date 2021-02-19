@@ -8,29 +8,29 @@ void	free_env(void *env, size_t size)
 	free(env);
 }
 
-void    delete_env_variable(t_list **list, char *key)
+void    delete_env_variable(t_list **env, char *key)
 {
-	t_list	*env;
+	t_list	*tmp_env;
 	t_list	*tmp;
 
-	env = *list;
-	while (env->next)
+	tmp_env = *env;
+	while (tmp_env->next)
 	{
-		if (!ft_strcmp(key, ENV_KEY(env->next)))
+		if (!ft_strcmp(key, ENV_KEY(tmp_env->next)))
 		{
-			tmp = env->next->next;
-			free_env(env->next->content, sizeof(env));
-			free(env->next);
-			env->next = tmp;
+			tmp = tmp_env->next->next;
+			free_env(tmp_env->next->content, sizeof(env));
+			free(tmp_env->next);
+			tmp_env->next = tmp;
 			break;
 		}
-		env = env->next;
+		tmp_env = tmp_env->next;
 	}
-	if (!ft_strcmp(key, ENV_KEY(*list)))
+	if (!ft_strcmp(key, ENV_KEY(*env)))
 	{
-		tmp = (*list)->next;
-		free_env((*list)->content, sizeof(env));
-		free(*list);
-		*list = tmp;
+		tmp = (*env)->next;
+		free_env((*env)->content, sizeof(env));
+		free(*env);
+		*env = tmp;
 	}
 }

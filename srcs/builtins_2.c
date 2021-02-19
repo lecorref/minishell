@@ -1,10 +1,10 @@
 #include "../includes/minishell.h"
 
-int		pwd_builtin(t_list **head, t_command *cmd)
+int		pwd_builtin(t_list **env, t_command *cmd)
 {
 	char	*stored;
 
-	(void)head;
+	(void)env;
 	stored = getcwd(NULL, 0);
 	ft_putstr_fd(stored, cmd->fd[1]);
 	ft_putchar_fd('\n', cmd->fd[1]);
@@ -20,7 +20,7 @@ int		pwd_builtin(t_list **head, t_command *cmd)
  * the string given as parameter, untouched.
 */
 
-char	*expand_tilde(t_list **head, char *arg)
+char	*expand_tilde(t_list **env, char *arg)
 {
 	char	*expanded;
 	char	*env_home;
@@ -29,7 +29,7 @@ char	*expand_tilde(t_list **head, char *arg)
 	i = 0;
 	if (arg[i++] != '~')
 		return (arg);
-	env_home = find_env_value(head, "HOME");
+	env_home = find_env_value(env, "HOME");
 	if (!(expanded = ft_strjoin(env_home, &arg[i])))
 		return (NULL);
 	free(arg);
@@ -42,7 +42,7 @@ char	*expand_tilde(t_list **head, char *arg)
  * handle the tilde char as well as the 'no' char, which means HOME directory.
 */
 
-int		cd_builtin(t_list **head, t_command *cmd)
+int		cd_builtin(t_list **env, t_command *cmd)
 {
 	char    *tmp;
 	char    *pwd;
@@ -50,7 +50,7 @@ int		cd_builtin(t_list **head, t_command *cmd)
 
 	if (!(cmd->command[1]))
 		cmd->command[1] = ft_strjoin("~", "");
-	cmd->command[1] = expand_tilde(head, cmd->command[1]);
+	cmd->command[1] = expand_tilde(env, cmd->command[1]);
 	if ((chdir(cmd->command[1])) == -1)
 	{
 		tmp = strerror(errno);
@@ -61,13 +61,13 @@ int		cd_builtin(t_list **head, t_command *cmd)
 		write(2, "\n", 2);
 		return (-1);
 	}
-	old_pwd = find_env_value(head, "PWD");
+	old_pwd = find_env_value(env, "PWD");
 	tmp = ft_strjoin("OLDPWD=", old_pwd);
-	add_env_variable(head, tmp);
+	add_env_variable(env, tmp);
 	free(tmp);
 	pwd = getcwd(NULL, 0);
 	tmp = ft_strjoin("PWD=", pwd);
-	add_env_variable(head, tmp);
+	add_env_variable(env, tmp);
 	free(tmp);
 	free(pwd);
 	return (0);
@@ -113,12 +113,12 @@ int		exit_arg(t_command *cmd, size_t i)
  *
  * If <argv> is omitted, the exit status is that of the last command executed.
  */
-int		exit_builtin(t_list **head, t_command *cmd)
+int		exit_builtin(t_list **env, t_command *cmd)
 {
 	size_t	i;
 	int	errnb;
 
-	(void)head;
+	(void)env;
 	errnb = 0;
 	i = 0;
 	ft_putstr_fd("exit\n", 2);

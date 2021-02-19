@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/19 15:13:33 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/19 16:58:37 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,12 @@ typedef struct		s_list
 	void			*content;
 	struct s_list	*next;
 }					t_list;
+
+typedef struct		s_listjb
+{
+	void			*content;
+	struct s_listjb	*next;
+}					t_listjb;
 
 int					ft_atoi(char const *str);
 void				ft_bzero(void *s, size_t n);
