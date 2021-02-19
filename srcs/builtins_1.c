@@ -49,14 +49,20 @@ int			env_builtin(t_list **head, t_command *cmd)
 
 int			export_builtin(t_list **head, t_command *cmd)
 {
-	if (cmd->command[0])
+	if (cmd->command[0] && cmd->command[1])
 		add_env_variable(head, cmd->command[1]);
+	if (cmd->command[0] && !(cmd->command[1]))
+	{
+		//print an environment different from **envp,
+		//with "declare -x " before each lines
+		return (0);
+	}
 	return (0);
 }
 
 int			unset_builtin(t_list **head, t_command *cmd)
 {
-	if (cmd->command[0])
+	if (cmd->command[0] && cmd->command[1])
 		delete_env_variable(head, cmd->command[1]);
 	return (0);
 }

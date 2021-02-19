@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/19 15:04:45 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/19 15:13:33 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,19 @@
 # include <sys/types.h>
 # include <sys/uio.h>
 
+/*
+** Macros
+*/
+# define FD_MAX 256
+# define MAX_FD 25
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+# endif
+
+/*
+** structure bonus libft
+*/
 typedef struct		s_list
 {
 	void			*content;
@@ -100,5 +113,17 @@ t_list				*ft_lstmap(t_list *lst,
 void				ft_lstadd_back(t_list **alst, t_list *new);
 int					ft_lstsize(t_list *lst);
 t_list				*ft_lstlast(t_list *lst);
+
+//lists jb
+void				ft_lstadd_back_jb(t_listjb **alst, t_listjb *new);
+void				ft_lstadd_front_jb(t_listjb **alst, t_listjb *new);
+t_listjb			*ft_lstlast_jb(t_listjb *lst);
+t_listjb			*ft_lstnew_jb(void *content);
+int					ft_lstsize_jb(t_listjb *lst);
+void				ft_lstiter_jb(t_listjb *lst, void (*f)(void *));
+void				ft_lstclear_jb(t_listjb **lst, void (*del)(void *));
+void				ft_lstdelone_jb(t_listjb *lst, void (*del)(void *));
+t_listjb			*ft_lstmap_jb(t_listjb *lst, void *(*f)(void *),
+		void (*del)(void *));
 
 #endif
