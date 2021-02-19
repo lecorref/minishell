@@ -1,4 +1,4 @@
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 void	ctrl_back_slash_handler(int signal)
 {
