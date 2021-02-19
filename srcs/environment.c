@@ -22,8 +22,8 @@ t_list  *create_env_list(char **envp)
 	while (*envp != NULL)
 	{
 		create_env_struct(*envp, new);
-		tmp = ft_lstnew(new, sizeof(t_env));
-		ft_lstadd(&list, tmp);
+		tmp = ft_lstnew(new);
+		ft_lstadd_front(&list, tmp);
 		envp++;
 	}
 	free(new);
@@ -75,8 +75,8 @@ void    add_env_variable(t_list **list, char *var)
 	}
 	if (env == NULL)
 	{
-		env = ft_lstnew(new, sizeof(t_env));
-		ft_lstadd(list, env);
+		env = ft_lstnew(new);
+		ft_lstadd_front(list, env);
 	}
 	free(new);
 }

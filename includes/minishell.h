@@ -19,6 +19,15 @@
 /* ------------------------------------------------------------------------- */
 
 /*
+** Macros
+*/
+# define MAX_FD 25
+
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1
+# endif
+
+/*
  * Environment control
  */
 

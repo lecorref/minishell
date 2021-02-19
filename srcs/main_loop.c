@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/13 04:14:19 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/19 00:07:08 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ int		prompt(t_list *head, t_command *cmd)
 	else
 	{
 		find_env = ft_strchr(find_env, '/');
-		line = ft_strsplit(find_env, '/');
-		session_manager = ft_strsplit(line[0], ':');
+		line = ft_split(find_env, '/');
+		session_manager = ft_split(line[0], ':');
 		ft_putstr_fd("\033[1;32m", cmd->fd[1]);
 		ft_putstr_fd(session_manager[0], cmd->fd[1]);
 		ft_putstr_fd("% ", cmd->fd[1]);
@@ -67,6 +67,36 @@ int		prompt(t_list *head, t_command *cmd)
 		free(session_manager);
 		return (0);
 	}
+}
+
+int		gnl_ctrld(int fd, char **line)
+{
+	static char		buf[MAX_FD][BUFFER_SIZE + 1];
+	char			*adr;
+
+	if (BUFFER_SIZE < 1 || fd < 0 || !line ||
+			fd > MAX_FD || read(fd, buf[fd], 0) == -1)
+		return (-1);
+	if (!(*line = ft_strnew(0)))
+		return (0);
+	while (!(adr = ft_strchr(buf[fd], '\n')))
+	{
+		if (!(join_newstr(line, buf[fd])))
+			return (-1);
+		ft_memset(buf[fd], 0, BUFFER_SIZE);
+		if (!(read(fd, buf[fd], BUFFER_SIZE)))
+		{
+			if (**line)
+				buf[fd][0] = 0;
+			else
+				return (0);
+		}
+	}
+	*adr = 0;
+	if (!(join_newstr(line, buf[fd])))
+		return (-1);
+	ft_strncpy(buf[fd], adr + 1, sizeof(buf[fd]));
+	return (1);
 }
 
 /*
@@ -106,7 +136,7 @@ int		main_loop(t_list *list)
 
 	while (ret_gnl == 1)
 	{
-		ret_gnl = get_next_line_jb(0, &line);
+		ret_gnl = gnl_ctrld(0, &line);
 		if (!line[0] && ret_gnl == 1)// ret_gnl = 1 when \n
 		{
 			free(line);
@@ -169,7 +199,7 @@ int		main_loop(t_list *list)
 
 		////////////////////////joy's tests - initialization of t_command
 
-		cmd->command = ft_strsplit(&line[0], ' ');
+		cmd->command = ft_split(&line[0], ' ');
 
 		///////////////////////
 		if (ret_gnl == 1 && line)

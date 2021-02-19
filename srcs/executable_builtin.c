@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/13 04:12:21 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/19 01:07:50 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ char	*find_absolute_path(char *cmd, char *env_path)
 
 	i = -1;
 	fd = 0;
-	each_path_dir = ft_strsplit(env_path, ':');
+	each_path_dir = ft_split(env_path, ':');
 	while (each_path_dir[++i])
 	{
 		add_slash_to_path = ft_strjoin(each_path_dir[i], "/");
@@ -68,7 +68,7 @@ char	*relative_path(char *cmd, char *env_path)
 
 	i = -1;
 	fd = 0;
-	each_path_dir = ft_strsplit(env_path, ':');
+	each_path_dir = ft_split(env_path, ':');
 	while (each_path_dir[++i])
 	{
 		cmd_without_tilde = ft_strdup(&cmd[1]);
