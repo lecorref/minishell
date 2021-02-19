@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 //void	ope(t_list **env, t_command *cmd, void (func)(t_list *, t_command *))
 //{
