@@ -1,5 +1,8 @@
 #include "minishell.h"
 
+#define LINE(NAME) "\n======================-"#NAME"-========================\n"
+#define LINE2 "-----------------\n"
+
 /*
  * tokenize_line (func at the bottom) starts the tokenize process.
  * Priority spliter order : 1 - ;
@@ -65,105 +68,6 @@
  * 3 - Fork a child which will execute the exec with execve();
  */
 
-char		*ghosting(char *str, char c, char *exception_set, int *error)
-{
-	char	*ghoster;
-	char	ghost;
-	int		i;
-
-	i = -1;
-	ghost = 0;
-	while (str && str[++i])
-	{
-		if ((ghoster = ft_strchr(exception_set, str[i])))
-		{
-			if (ghost == 0)
-				ghost = *ghoster;
-			else if (*ghoster == ghost)
-				ghost = 0;
-		}
-		if (str[i] == c && !ghost)
-			return (&(str[i]));
-	}
-	if (ghost)
-		if (error)
-			*error = -1;
-	return (NULL);
-}
-
-/*
- * Current behavior of split_with_exception: if this line is received >;;
- * split_with_exception will see >; >; >'\0' >null
- * So the two first strings created  will contain ';' & the third '\0' & the
- * last will be null.
- *
- * Behavior with no semi-colon :	>hello
- * 									-splited =>hello'\0' >null
- * 
- * Behavior with one semi-colon :	>hello;
- * 									splited =>hello;'\0' >'\0' >null
- * 
- * If it receives nothing (type 'enter' means a "\0" string from gnl) >
- * It will create 1 string fullfiled with a '\0'
- * In minishell behavior, the less we can receive is a "\0" string.
- *
- *
- * A string like >"hello 'you'; :) how are you" bla ; 'my' name "is;" toto
- * will give this : 1 - >|"hello 'you'; :) how are you" bla ;|<
- * 					2 - >| 'my' name "is;" toto|<
- * 					3 - >|null
- * The array is always null-terminated.
- *
- * This function takes a set of characters which will indicates to spliter
- * to ghost the spliting character.
- * The behavior is the following :
- *
- * 	-	We split the line with the spliter character 'c', but this character is
- * 		kept at the end of the line.
- * 	-	If a character from the exception_set is met, we won't split the line
- * 		at the next meeting of spliter character 'c' until we meet a second time
- * 		the character from exception_set that we already met a first time.
- * 	-	If the corresponding exception_set character is never met, it returns
- * 		an error. (actually, NULL)
-*/
-
-char		**split_with_exception(char *str, char c, char *exception_set)
-{
-	char	**split_array;
-	char	*c_position;
-	int		count;
-	int		i;
-
-	count = 1;
-	i = 1;
-	c_position = str;
-	while ((c_position = ghosting(c_position, c, exception_set, &i)) && count++)
-		c_position++;
-	if (i == -1)
-		return (NULL);
-	if (!(split_array = (char**)malloc(sizeof(char*) * (count + 1))))
-		return (NULL);
-	c_position = str;
-	i = -1;
-	while ((c_position = ghosting(c_position, c, exception_set, NULL)))
-	{
-		split_array[++i] = ft_substr(str, 0, (c_position - str + 1));
-		str = ++c_position;
-	}
-	if (!c_position && str)
-		split_array[++i] = ft_substr(str, 0, ft_strlen(str));
-	split_array[++i] = NULL;
-	return (split_array);
-}
-
-char		*skip_char(char *str, char c)
-{
-	while (*str)
-		if (*str++ != c)
-			return (str - 1);
-	return (str);
-}
-
 /*
  * parse_token_error handle some error cases for pipe like thoses lines :
  * 	1-	|ls|rev			>| >ls| >rev
@@ -205,18 +109,6 @@ int			parse_token_error(char **str, int i)
 	return (1);
 }
 
-int			*init_fd()
-{
-	int		*fd;
-
-	if (!(fd = (int*)malloc(sizeof(int) * 3)))
-		return (NULL);
-	fd[0] = 0;
-	fd[1] = 1;
-	fd[2] = 2;
-	return (fd);
-}
-
 /*
  * Process the given line to split it, if a '|' is found.
  * Behavior : if it receives this >ls | rev | wc -c
@@ -247,12 +139,14 @@ void		find_pipe_n_redirections(t_listjb **cmd, t_list **env,
 	int		fd_tmp;
 	int		i;
 
+	delete_remaining_char(execution_line, ';');
 	if (!(piped_exec_line = split_with_exception(execution_line, '|', "\'\"")))
 		return ;
 	i = 0;
+	printf(LINE(FIND_PIPE_N_REDIRECTIONS));
+	printf("execution_line RX: |%s|\n", execution_line);
 	while (piped_exec_line[i])
 	{
-		printf("piped line[%d]: >%s<\n", i, piped_exec_line[i]);
 		if (!parse_token_error(piped_exec_line, i))
 			return ;//token error
 		if (!(fd_command = init_fd()))
@@ -260,11 +154,13 @@ void		find_pipe_n_redirections(t_listjb **cmd, t_list **env,
 		if (piped_exec_line[i + 1])//if there is a cmd which follows, open a pipe
 		{// & write into
 			pipe(piped_fd);//create pipe between current cmd and next cmd
-			printf("At %d time, thoses fd had been opened by pipe ->READ=%d\tWRITE=%d\n", i, piped_fd[0],piped_fd[1]);
+			//printf("At %d time, thoses fd had been opened by pipe ->READ=%d\tWRITE=%d\n", i, piped_fd[0],piped_fd[1]);
 			fd_command[1] = piped_fd[1];//current command write into pipe
 		}
 		if (i > 0)//if a string exists before, read from previous saved pipe
 			fd_command[0] = fd_tmp;//read from the pipe opened by previous command
+		printf(LINE2);
+		printf("piped_exec_line[%d]: >%s<\n", i, piped_exec_line[i]);
 		printf("command of string %d\tfd READ= %d\n", i, fd_command[0]);
 		printf("command of string %d\tfd WRITE= %d\n\n", i, fd_command[1]);
 		find_redirections(cmd, env, piped_exec_line[i], fd_command);
@@ -281,6 +177,8 @@ t_listjb		*tokenize_line_jb(char *line, t_list **env)
 	char	*skiped;
 
 	cmd = NULL;
+	printf(LINE(TOKENIZE_LINE_JB));
+	printf("line RX: |%s|\n", line);
 	if (!(execution_lines = split_with_exception(line, ';', "\'\"")))
 		return (NULL);
 	i = -1;
@@ -292,6 +190,8 @@ t_listjb		*tokenize_line_jb(char *line, t_list **env)
 		skiped = skip_char(execution_lines[i], ' ');
 		if (*skiped == ';')
 			printf("unexpected token ';'\n");
+		printf(LINE2);
+		printf("execution_line TX: |%s|\n", execution_lines[i]);
 		find_pipe_n_redirections(&cmd, env, execution_lines[i]);
 	}
 	return (cmd);

@@ -57,6 +57,7 @@ dkms.conf
 # temporary files
 *~
 *.swp
+*.DS_Store
 
 # personal local folders
 personal_test
