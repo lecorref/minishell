@@ -1,30 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_prime.c                                         :+:      :+:    :+:   */
+/*   ft_lstnew_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/14 12:44:52 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/14 13:42:55 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/08/16 11:31:08 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/21 15:09:18 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-int		is_prime(unsigned int n)
+t_list	*ft_lstnew(void *content)
 {
-	unsigned int	i;
+	t_list	*tmp;
 
-	i = 2;
-	if (n <= 1)
-		return (0);
-	while (i <= n / 2)
-	{
-		if (n % i == 0)
-			return (0);
-		else
-			i++;
-	}
-	return (1);
+	tmp = (t_list*)malloc(sizeof(t_list));
+	if (tmp == NULL)
+		return (NULL);
+	tmp->content = content;
+	tmp->next = NULL;
+	return (tmp);
 }

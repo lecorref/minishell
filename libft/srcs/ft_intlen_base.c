@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lcm.c                                              :+:      :+:    :+:   */
+/*   ft_intlen_base.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: exam <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/26 16:57:33 by exam              #+#    #+#             */
-/*   Updated: 2019/08/14 16:56:53 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/08/14 17:03:05 by jfreitas          #+#    #+#             */
+/*   Updated: 2021/02/18 23:55:06 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-unsigned int	lcm(unsigned int a, unsigned int b)
+int				ft_intlen_base(unsigned long n, int base)
 {
-	int	i;
+	int	len;
 
-	if (a > b)
-		i = a;
-	if (a < b)
-		i = b;
-	if (a == 0 || b == 0)
-		return (0);
-	while (i)
+	len = 0;
+	if (n < 0)
+		n *= -1;
+	if (n == 0)
+		len = 1;
+	while (n)
 	{
-		if (i % a == 0 && i % b == 0)
-			return (i);
-		i++;
+		n = n / base;
+		len++;
 	}
-	return (0);
+	return (len);
 }

@@ -13,12 +13,12 @@ static int	echo_n_parser(char *str)
 	return (0);
 }
 
-int			echo_builtin(t_list **head, t_command *cmd)
+int			echo_builtin(t_list **env, t_command *cmd)
 {
 	int		flag;
 
 	flag = 0;
-	(void)head;
+	(void)env;
 	cmd->command++;
 	while (!echo_n_parser(*(cmd->command)))
 	{
@@ -36,21 +36,24 @@ int			echo_builtin(t_list **head, t_command *cmd)
 	return (0);
 }
 
-int			env_builtin(t_list **head, t_command *cmd)
+int			env_builtin(t_list **env, t_command *cmd)
 {
-	if ((*head)->next != NULL)
-		env_builtin(&((*head)->next), cmd);
-	ft_putstr_fd(ENV_KEY(*head), cmd->fd[1]);
+	if ((*env)->next != NULL)
+		env_builtin(&((*env)->next), cmd);
+	ft_putstr_fd(ENV_KEY(*env), cmd->fd[1]);
 	ft_putchar_fd('=', cmd->fd[1]);
-	ft_putstr_fd(ENV_VALUE(*head), cmd->fd[1]);
+	ft_putstr_fd(ENV_VALUE(*env), cmd->fd[1]);
 	ft_putchar_fd('\n', cmd->fd[1]);
 	return (0);
 }
 
-int			export_builtin(t_list **head, t_command *cmd)
+int			export_builtin(t_list **env, t_command *cmd)
 {
 	if (cmd->command[0] && cmd->command[1])
-		add_env_variable(head, cmd->command[1]);
+	{
+		printf("\n%s\n", ENV_VALUE(*env));
+		add_env_variable(env, cmd->command[1]);
+	}
 	if (cmd->command[0] && !(cmd->command[1]))
 	{
 		//print an environment different from **envp,
@@ -60,9 +63,9 @@ int			export_builtin(t_list **head, t_command *cmd)
 	return (0);
 }
 
-int			unset_builtin(t_list **head, t_command *cmd)
+int			unset_builtin(t_list **env, t_command *cmd)
 {
 	if (cmd->command[0] && cmd->command[1])
-		delete_env_variable(head, cmd->command[1]);
+		delete_env_variable(env, cmd->command[1]);
 	return (0);
 }

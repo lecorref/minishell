@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 13:28:13 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/07/09 13:14:37 by jfreitas         ###   ########.fr       */
+/*   Updated: 2019/11/21 15:21:36 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	*ft_memalloc(size_t size)
 {
 	void	*fresh_mem;
 
-	fresh_mem = malloc(sizeof(size_t) * size);
+	fresh_mem = malloc(sizeof(void) * size);
 	if (fresh_mem == NULL)
 		return (NULL);
 	else

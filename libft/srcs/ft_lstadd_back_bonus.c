@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstmap.c                                        :+:      :+:    :+:   */
+/*   ft_lstadd_back_bonus.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/27 15:28:16 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/29 12:14:05 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/11/15 17:33:27 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/21 09:52:28 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-t_list	*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
+void	ft_lstadd_back(t_list **alst, t_list *new)
 {
-	t_list *newlst;
+	t_list	*lst;
 
-	if (lst)
+	lst = *alst;
+	if (lst == NULL)
+		*alst = new;
+	else
 	{
-		newlst = (t_list*)malloc(sizeof(lst));
-		if (newlst == NULL)
-			return (NULL);
-		newlst = (*f)(lst);
-		newlst->next = ft_lstmap(lst->next, (*f));
-		return (newlst);
+		while (lst->next)
+			lst = lst->next;
+		lst->next = new;
 	}
-	return (NULL);
 }
