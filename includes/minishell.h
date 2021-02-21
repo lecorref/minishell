@@ -106,7 +106,6 @@ void	delete_env_variable(t_list **head, char *key);
  */
 void	free_env(void *env, size_t size);
 
-/* ------------------------------------------------------------------------- */
 
 /*
  * Loop functions
@@ -123,18 +122,23 @@ int		main_loop(t_list *env);
 int		get_line(char **buff);
 
 /*
- * This function will create a list of t_command from the input line.
- */
+** -----------------------------------------------------------------------------
+** This function will create a list of t_command from the input line.
+*/
 t_list	tokenize_line(char *buff);
 t_listjb	*tokenize_line_jb(char *line, t_list **env);
 int		find_redirections(t_listjb **cmd, t_list **env,
 char	*command_line, int *fd_command);
 char	*skip_char(char *str, char c);
-//tokenize split
+/*
+** tokenize split
+*/
 char	**split_with_exception(char *str, char c, char *exception_set);
 char	**split_with_exception_v2(char *str, char c, char *exception_set);
 char	*ghosting(char *str, char c, char *exception_set, int *error);
-//tokenize quotes
+/*
+** tokenize quotes
+*/
 char	*double_quotes(t_list **env, char **line_ptr);
 char	*simple_quotes(char **line_ptr);
 char	*no_quotes(t_list **env, char **line_ptr);
@@ -142,7 +146,9 @@ char	*quotes(t_list **env, char **line_ptr);
 
 int		redirections(t_list **env, char **line_ptr, int *fd_command);
 char	*doll_expand(t_list **env, char **line_ptr);
-//tokenize utils
+/*
+** tokenize utils
+*/
 void	delete_remaining_char(char *str, char c);
 char	*end_of_object(char *str);
 int		is_symbol(int c);
