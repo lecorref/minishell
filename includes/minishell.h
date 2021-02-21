@@ -127,7 +127,7 @@ int		get_line(char **buff);
  */
 t_list	tokenize_line(char *buff);
 t_listjb	*tokenize_line_jb(char *line, t_list **env);
-void	find_redirections(t_listjb **cmd, t_list **env,
+int		find_redirections(t_listjb **cmd, t_list **env,
 char	*command_line, int *fd_command);
 char	*skip_char(char *str, char c);
 //tokenize split
@@ -140,7 +140,7 @@ char	*simple_quotes(char **line_ptr);
 char	*no_quotes(t_list **env, char **line_ptr);
 char	*quotes(t_list **env, char **line_ptr);
 
-void	redirections(t_list **env, char **line_ptr, int *fd_command);
+int		redirections(t_list **env, char **line_ptr, int *fd_command);
 char	*doll_expand(t_list **env, char **line_ptr);
 //tokenize utils
 void	delete_remaining_char(char *str, char c);

@@ -56,13 +56,29 @@ char			*expand_filename(t_list **env, char **line_ptr)
 	return (filename);
 }
 
-void			redirections(t_list **env, char **line_ptr, int *fd_command)
+int				open_file(int open_code, int *fd_command, char *file)
+{
+	if (open_code == 3)
+	{
+		if (fd_command[0] != 0)
+			close(fd_command[0]);
+		fd_command[0] = open(file, O_RDONLY);
+		return (1);
+	}
+	if (fd_command[1] != 1)
+		close(fd_command[1]);
+	if (open_code == 1)
+		fd_command[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	else
+		fd_command[1] = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	return (1);
+}
+
+int				redirections(t_list **env, char **line_ptr, int *fd_command)
 {
 	int			open_code;
 	char		*file;
 
-	printf(LINE(SYMBOLIC));
-	printf("line RX : |%s|\n", *line_ptr);
 	if (**line_ptr == '>')
 		open_code = 1;
 	else
@@ -70,18 +86,18 @@ void			redirections(t_list **env, char **line_ptr, int *fd_command)
 	if (*(*line_ptr + 1) == '>' && ++open_code)
 		*line_ptr += 1;
 	*line_ptr = skip_char((*line_ptr + 1), ' ');
-	file = expand_filename(env, line_ptr);
-	printf(LINE2);
-	printf("filename : |%s|\n", file);
-	if (open_code == 3)
-		fd_command[0] = open(file, O_RDONLY);
-	else if (open_code == 1)
-		fd_command[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
-	else
-		fd_command[1] = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	printf("fd[0] :%d\tfd[1] :%d\n",fd_command[0], fd_command[1]);
+	if (!(file = expand_filename(env, line_ptr)))
+		return (0);
+	if (!open_file(open_code, fd_command, file))
+		return (0);
 	free(file);
+	return (1);
 }
 
 /*
+	printf(LINE(SYMBOLIC));
+	printf("line RX : |%s|\n", *line_ptr);
+	printf(LINE2);
+	printf("filename : |%s|\n", file);
+	printf("fd[0] :%d\tfd[1] :%d\n",fd_command[0], fd_command[1]);
 */
