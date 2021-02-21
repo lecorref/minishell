@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-#define LINE(NAME) "\n======================-"#NAME"-========================\n"
-#define LINE2 "-----------------\n"
-
 /*
  * tokenize_line (func at the bottom) starts the tokenize process.
  * Priority spliter order : 1 - ;

@@ -18,7 +18,9 @@ char			*doll_expand(t_list **env, char **line_ptr)
 	}
 	if (!(doll = ft_substr(doll, 0, (*line_ptr - doll))))
 		return (NULL);
-	value = find_env_value(env, doll);
+	if (!(value = find_env_value(env, doll)))
+		if (!(value = ft_strnew(0)))
+			return (NULL);
 	free(doll);
 	return (value);
 }

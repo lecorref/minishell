@@ -1,6 +1,4 @@
 #include "minishell.h"
-#define LINE(NAME) "\n======================-"#NAME"-========================\n"
-#define LINE2 "-----------------\n"
 
 /*
 ** ghosting make the characters into exception_set string be the 'ghoster'
@@ -38,6 +36,26 @@ char		*ghosting(char *str, char c, char *exception_set, int *error)
 		if (error)
 			*error = -1;
 	return (NULL);
+}
+
+char		**split_count_n_array_make(char *str, char c, char *exception_set)
+{
+	char	**split_array;
+	int		count;
+	int		i;
+
+	count = 1;
+	i = 1;
+	while ((str = ghosting(str, c, exception_set, &i)))
+	{
+		count++;
+		str++;
+	}
+	if (i == -1)
+		return (NULL);
+	if (!(split_array = (char**)malloc(sizeof(char*) * (count + 1))))
+		return (NULL);
+	return (split_array);
 }
 
 /*
@@ -82,29 +100,38 @@ char		**split_with_exception(char *str, char c, char *exception_set)
 {
 	char	**split_array;
 	char	*c_position;
-	int		count;
 	int		i;
 
-	count = 1;
-	i = 1;
-	c_position = str;
-	while ((c_position = ghosting(c_position, c, exception_set, &i)) && count++)
-		c_position++;
-	if (i == -1)
-		return (NULL);
-	if (!(split_array = (char**)malloc(sizeof(char*) * (count + 1))))
+	if (!(split_array = split_count_n_array_make(str, c, exception_set)))
 		return (NULL);
 	c_position = str;
 	i = -1;
 	while ((c_position = ghosting(c_position, c, exception_set, NULL)))
 	{
-		split_array[++i] = ft_substr(str, 0, (c_position - str + 1));
+		if (!(split_array[++i] = ft_substr(str, 0, (c_position - str + 1))))
+			return (NULL);
 		str = ++c_position;
 	}
 	if (!c_position && str)
-		split_array[++i] = ft_substr(str, 0, ft_strlen(str));
+		if (!(split_array[++i] = ft_substr(str, 0, ft_strlen(str))))
+			return (NULL);
 	split_array[++i] = NULL;
 	return (split_array);
+}
+
+int			create_string_arr(int i, char *str, char *c_pos, char **split_arr)
+{
+	if (*str == '\'' || *str == '\"')
+	{
+		if (!(split_arr[i] = ft_substr(str, 1, (c_pos - str - 2))))
+			return (0);
+	}
+	else
+	{
+		if (!(split_arr[i] = ft_substr(str, 0, (c_pos - str))))
+			return (0);
+	}
+	return (1);
 }
 
 /*
@@ -114,36 +141,30 @@ char		**split_with_exception(char *str, char c, char *exception_set)
 ** in this pgm, that it ends with the corresponding quote plus a space.
 ** - which has been added for the only purpose of spliting next -
 ** Once it is detected, this spliter creates the string without those quotes.
+**
+** It is made to split the command_string, so remove flags characters (quotes)
+** & split characters (spaces which are been added to split the string).
 */
 
 char		**split_with_exception_v2(char *str, char c, char *exception_set)
 {
 	char	**split_array;
 	char	*c_position;
-	int		count;
 	int		i;
 
-	count = 1;
-	i = 1;
-	c_position = str;
-	while ((c_position = ghosting(c_position, c, exception_set, &i)) && count++)
-		c_position++;
-	if (i == -1)
-		return (NULL);
-	if (!(split_array = (char**)malloc(sizeof(char*) * (count + 1))))
+	if (!(split_array = split_count_n_array_make(str, c, exception_set)))
 		return (NULL);
 	c_position = str;
 	i = -1;
 	while ((c_position = ghosting(c_position, c, exception_set, NULL)))
 	{
-		if (*str == '\'' || *str == '\"')
-			split_array[++i] = ft_substr(str, 1, (c_position - str - 2));
-		else
-			split_array[++i] = ft_substr(str, 0, (c_position - str));
+		if (!(create_string_arr(++i, str, c_position, split_array)))
+			return (NULL);
 		str = ++c_position;
 	}
 	if (!c_position && str)
-		split_array[++i] = ft_substr(str, 0, ft_strlen(str));
+		if (!(split_array[++i] = ft_substr(str, 0, ft_strlen(str))))
+			return (NULL);
 	split_array[++i] = NULL;
 	return (split_array);
 }

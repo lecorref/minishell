@@ -1,8 +1,5 @@
 #include "minishell.h"
 
-#define LINE(NAME) "\n======================-"#NAME"-========================\n"
-#define LINE2 "-----------------\n"
-
 void		handle_sigint(int sign)
 {
 	if (sign == SIGINT)

@@ -19,6 +19,11 @@
 /* ------------------------------------------------------------------------- */
 
 /*
+ * Just for printf debug
+*/
+#define LINE(NAME) "\n======================-"#NAME"-========================\n"
+#define LINE2 "-----------------\n"
+/*
  * Environment control
  */
 
@@ -135,11 +140,13 @@ char	*simple_quotes(char **line_ptr);
 char	*no_quotes(t_list **env, char **line_ptr);
 char	*quotes(t_list **env, char **line_ptr);
 
+void	redirections(t_list **env, char **line_ptr, int *fd_command);
 char	*doll_expand(t_list **env, char **line_ptr);
 //tokenize utils
 void	delete_remaining_char(char *str, char c);
 char	*end_of_object(char *str);
 int		is_symbol(int c);
+int		is_symbol_v2(int c);
 char	*skip_char(char *str, char c);
 int		*init_fd();
 
