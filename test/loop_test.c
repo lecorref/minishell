@@ -34,6 +34,23 @@ void		print_list(t_list *cmd)
 	}
 }
 
+
+void		clear_commandlist(void *content)
+{
+	int		i;
+	int		*fdcp;
+	char	**args;
+
+	fdcp = ((t_command*)content)->fd;
+	args = ((t_command*)content)->command;
+	free(fdcp);
+	i = -1;
+	while (args[++i])
+		free(args[i]);
+	free(args);
+}
+
+
 int			main(int ac, char *av[], char *ep[])
 {
 	char	*line;
@@ -52,7 +69,7 @@ int			main(int ac, char *av[], char *ep[])
 		printf("\nAFTER TOK\n");
 		print_list(cmd);
 		//execute_commands(head, ep);
-		//ft_lstclear(&head, &clear);
+		ft_lstclear(&cmd, &clear_commandlist);
 		free(line);
 		ft_putstr("minishell-1.0$ ");
 	}
