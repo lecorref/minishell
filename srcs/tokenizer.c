@@ -15,7 +15,6 @@
 ** 	replaces the first character of all following splited lines by '\0' to make
 ** 	them invisible & by this way not usable.
 */
-
 int			parse_token_error(char **str, int i)
 {
 	char	*skiped;
@@ -56,7 +55,6 @@ int			parse_token_error(char **str, int i)
 ** means a pipe had been opened before to write into, so the current one must
 ** read into the read end pipe created before, which had been saved in fd_tmp.
 */
-
 int				pipe_it(char **piped_exec_line, int i,
 		int *fd_command, int *fd_tmp)
 {
@@ -95,7 +93,6 @@ int				pipe_it(char **piped_exec_line, int i,
 ** the find_redirections function which handles distribution of opened-file
 ** file descriptor and $ expand.
 */
-
 int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 		char *execution_line)
 {
@@ -195,7 +192,6 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 **     standard fd must be redirected with the technique described above
 ** 3 - Fork a child which will execute the exec with execve();
 */
-
 t_list			*tokenize_line_jb(char *line, t_list **env)
 {
 	int			i;

@@ -25,10 +25,8 @@ void	ctrl_c_handler(int signal)
 	}
 }
 
-void	ctrl_d_handler(char *line)//char *line)
+void	ctrl_d_handler(void)
 {
-	(void)line;
-//	free(line);// need to free even though there is no line??
 	ft_putstr_fd("exit\n", 2);
 	exit(0);//after a ctrlD on an empry prompt, the $? == 0
 }

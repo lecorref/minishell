@@ -1,13 +1,13 @@
 #include "minishell.h"
 
-int		pwd_builtin(t_list **env, t_command *cmd)
+int		pwd_builtin(t_list **env, t_list **cmd)
 {
 	char	*stored;
 
 	(void)env;
 	stored = getcwd(NULL, 0);
-	ft_putstr_fd(stored, cmd->fd[1]);
-	ft_putchar_fd('\n', cmd->fd[1]);
+	ft_putstr_fd(stored, CMD_FD(*cmd)[1]);
+	ft_putchar_fd('\n', CMD_FD(*cmd)[1]);
 	free(stored);
 	return (0);
 }
@@ -42,20 +42,20 @@ char	*expand_tilde(t_list **env, char *arg)
  * handle the tilde char as well as the 'no' char, which means HOME directory.
 */
 
-int		cd_builtin(t_list **env, t_command *cmd)
+int		cd_builtin(t_list **env, t_list **cmd)
 {
 	char    *tmp;
 	char    *pwd;
 	char    *old_pwd;
 
-	if (!(cmd->command[1]))
-		cmd->command[1] = ft_strjoin("~", "");
-	cmd->command[1] = expand_tilde(env, cmd->command[1]);
-	if ((chdir(cmd->command[1])) == -1)
+	if (!(CMD(*cmd)[1]))
+		CMD(*cmd)[1] = ft_strjoin("~", "");
+	CMD(*cmd)[1] = expand_tilde(env, CMD(*cmd)[1]);
+	if ((chdir(CMD(*cmd)[1])) == -1)
 	{
 		tmp = strerror(errno);
 		write(2, "bash: cd: ", 11);
-		write(2, cmd->command[1], ft_strlen(cmd->command[1]));
+		write(2, CMD(*cmd)[1], ft_strlen(CMD(*cmd)[1]));
 		write(2, ": ", 3);
 		write(2, tmp, ft_strlen(tmp));
 		write(2, "\n", 2);
@@ -73,21 +73,21 @@ int		cd_builtin(t_list **env, t_command *cmd)
 	return (0);
 }
 
-int		exit_arg(t_command *cmd, size_t i)
+int		exit_arg(t_list **cmd, size_t i)
 {
 	int	errnb;
 
 	errnb = 0;
-	if (i == ft_strlen(cmd->command[1]))
+	if (i == ft_strlen(CMD(*cmd)[1]))
 	{
-		if (!cmd->command[2])
+		if (!CMD(*cmd)[2])
 		{
-			errno = ft_atoi(cmd->command[1]);
+			errno = ft_atoi(CMD(*cmd)[1]);
 			errno += 256;
 			errno %= 256;
 			exit(errno);
 		}
-		else if (cmd->command[2])
+		else if (CMD(*cmd)[2])
 		{
 			errnb = 1;
 			error_msg_bash(cmd, errnb, "too many arguments\n");//too many arguments
@@ -113,7 +113,7 @@ int		exit_arg(t_command *cmd, size_t i)
  *
  * If <argv> is omitted, the exit status is that of the last command executed.
  */
-int		exit_builtin(t_list **env, t_command *cmd)
+int		exit_builtin(t_list **env, t_list **cmd)
 {
 	size_t	i;
 	int	errnb;
@@ -122,19 +122,19 @@ int		exit_builtin(t_list **env, t_command *cmd)
 	errnb = 0;
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
-	if (cmd->command[1] == NULL)
+	if (CMD(*cmd)[1] == NULL)
 		exit(0);
-	else if (cmd->command[1])
+	else if (CMD(*cmd)[1])
 	{
-		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
+		if (CMD(*cmd)[1][0] == '+' || CMD(*cmd)[1][0] == '-')
 			i++;
-		while (ft_isdigit((char)cmd->command[1][i]) == 1)
+		while (ft_isdigit((char)CMD(*cmd)[1][i]) == 1)
 			i++;
-		if (i != ft_strlen(cmd->command[1]))
+		if (i != ft_strlen(CMD(*cmd)[1]))
 		{
 			errnb = 2;
-			error_msg_bash(cmd, errnb, cmd->command[1]);//numeric argument required
-			ft_putstr_fd(": numeric argument required\n", cmd->fd[2]);
+			error_msg_bash(cmd, errnb, CMD(*cmd)[1]);//numeric argument required
+			ft_putstr_fd(": numeric argument required\n", CMD_FD(*cmd)[2]);
 			exit(errnb);
 		}
 		exit_arg(cmd, i);
