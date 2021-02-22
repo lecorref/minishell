@@ -137,7 +137,6 @@ int			get_line(char **buff);
 ** -----------------------------------------------------------------------------
 ** This function will create a list of t_command from the input line.
 */
-t_list	tokenize_line(char *buff);
 t_list	*tokenize_line_jb(char *line, t_list **env);
 int		find_redirections(t_list **cmd, t_list **env,
 char	*command_line, int *fd_command);
@@ -167,6 +166,11 @@ int		is_symbol(int c);
 int		is_symbol_v2(int c);
 char	*skip_char(char *str, char c);
 int		*init_fd();
+/*
+** clear lists
+*/
+void	clear_commandlist(void *content);
+void	clear_envlist(void *content);
 
 /*
  * This function will find if the command is a builtin and execute it, or
