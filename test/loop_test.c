@@ -34,23 +34,6 @@ void		print_list(t_list *cmd)
 	}
 }
 
-
-void		clear_commandlist(void *content)
-{
-	int		i;
-	int		*fdcp;
-	char	**args;
-
-	fdcp = ((t_command*)content)->fd;
-	args = ((t_command*)content)->command;
-	free(fdcp);
-	i = -1;
-	while (args[++i])
-		free(args[i]);
-	free(args);
-}
-
-
 int			main(int ac, char *av[], char *ep[])
 {
 	char	*line;
@@ -74,6 +57,7 @@ int			main(int ac, char *av[], char *ep[])
 		ft_putstr("minishell-1.0$ ");
 	}
 	free(line);
+	ft_lstclear(&env, &clear_envlist);
 	if (ret == -1)
 		return (-1);
 	if (ret == 0)
