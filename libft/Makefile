@@ -6,7 +6,7 @@
 #    By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/24 10:43:20 by jfreitas          #+#    #+#              #
-#    Updated: 2021/02/22 01:03:42 by jle-corr         ###   ########.fr        #
+#    Updated: 2021/02/22 19:25:59 by jle-corr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,10 +95,6 @@ SRCS += $(addprefix srcs/, ft_lstadd_back_jb.c ft_lstdelone_jb.c \
 		ft_lstmap_jb.c ft_lstadd_front_jb.c ft_lstiter_jb.c ft_lstnew_jb.c \
 		ft_lstclear_jb.c ft_lstlast_jb.c ft_lstsize_jb.c get_next_line.c)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3e9d2fc (merge of recent libft resolved & working now with tokenizer functions. Have to connect then)
 OBJ = $(SRCS:srcs/%.c=$(OBJDIR)/%.o)
 
 
