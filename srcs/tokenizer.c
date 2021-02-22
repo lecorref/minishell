@@ -1,19 +1,19 @@
 #include "minishell.h"
 
 /*
- * parse_token_error() handle some error cases for pipe like thoses lines :
- * 	1-	|ls|rev			>| >ls| >rev
- * 	2-	ls|rev| |wc		>ls| >rev| > | >wc
- * 	3-	ls|||rev		>ls| >| >| >rev
- * 	4-	ls||			>ls| >|					-> multiline not handled.
- * 	5-	ls|rev| 		>ls| >rev|				-> multiline not handled.
- * 	These error cases give "bash: syntax error near unexpected token `|'" 
- *
- * 	6-	ls|rev||wc		>ls| >rev| >| >wc		-> 'or' not handled.
- * 	In the case above, we have a logical 'or' which we don't handle, but we
- * 	still must make the commands before 'or' works. In this case the function
- * 	replaces the first character of all following splited lines by '\0' to make
- * 	them invisible & by this way not usable.
+** parse_token_error() handle some error cases for pipe like thoses lines :
+** 	1-	|ls|rev			>| >ls| >rev
+** 	2-	ls|rev| |wc		>ls| >rev| > | >wc
+** 	3-	ls|||rev		>ls| >| >| >rev
+** 	4-	ls||			>ls| >|					-> multiline not handled.
+** 	5-	ls|rev| 		>ls| >rev|				-> multiline not handled.
+** 	These error cases give "bash: syntax error near unexpected token `|'" 
+**
+** 	6-	ls|rev||wc		>ls| >rev| >| >wc		-> 'or' not handled.
+** 	In the case above, we have a logical 'or' which we don't handle, but we
+** 	still must make the commands before 'or' works. In this case the function
+** 	replaces the first character of all following splited lines by '\0' to make
+** 	them invisible & by this way not usable.
 */
 
 int			parse_token_error(char **str, int i)
@@ -75,28 +75,28 @@ int				pipe_it(char **piped_exec_line, int i,
 }
 
 /*
- * find_pipe_n_redirections()
- * Process the given line to split it, if a '|' is found.
- * Behavior : if it receives this >ls | rev | wc -c
- * Make this :	->ls |'\0'
- * 				-> rev |'\0'
- * 				-> wc -c'\0'
- * 				->NULL
- *
- * If it receives this >ls | rev | wc -c|
- * Make this :	->ls |'\0'
- * 				-> rev |'\0'
- * 				-> wc -c|'\0'
- * 				->'\0'
- * 				->NULL
- *
- * It ignores '|' which are between two same quotes.
- * It handle distribution of piped file descriptors to commands & call
- * the find_redirections function which handles distribution of opened-file
- * file descriptor and $ expand.
+** find_pipe_n_redirections()
+** Process the given line to split it, if a '|' is found.
+** Behavior : if it receives this >ls | rev | wc -c
+** Make this :	->ls |'\0'
+** 				-> rev |'\0'
+** 				-> wc -c'\0'
+** 				->NULL
+**
+** If it receives this >ls | rev | wc -c|
+** Make this :	->ls |'\0'
+** 				-> rev |'\0'
+** 				-> wc -c|'\0'
+** 				->'\0'
+** 				->NULL
+**
+** It ignores '|' which are between two same quotes.
+** It handle distribution of piped file descriptors to commands & call
+** the find_redirections function which handles distribution of opened-file
+** file descriptor and $ expand.
 */
 
-int				find_pipe_n_redirections(t_listjb **cmd, t_list **env,
+int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 		char *execution_line)
 {
 	char		**piped_exec_line;
@@ -136,70 +136,70 @@ int				find_pipe_n_redirections(t_listjb **cmd, t_list **env,
 ** Priority spliter order : 1 - ;
 ** 							2 - |
 ** 							3 - >, >>, <
- * Then $ expansion comes (if it's not inside simple quotes '')
- *
- * A -	Split the command line depending on ; char, if it's not inside quotes.
- * B -	Process each lines to find pipes, then redirection, which will result to
- * 		give them pipe() created fd, or open() created fd.
- * C -	Called by B(), expand $
- *
- *
- * -----------------------------------------------------------------------------
- *
- *
- * Returns an adress to the head of a t_list{} linked list, with following
- * content inside:
- *
- *
- * 		- t_command structure which contains itself 1-> an array of strings
- * 													2-> an array of int
- *
- *
- * 1- char	**command	-	command[0] must contains the name of executable.
- * 							This name could include the path, which should
- * 							be parsed by the executor function.
- * 						-	command[n] must contains args passed to the exe.
- * 					 	-	command[last] = NULL;
- * 2- int	*fd			-	will be malloc() as an array of 3 int.
- * 						-	fd[0] - fd from which exe reads.
- * 						-	fd[1] - fd to which exe write.
- * 						-	fd[2] - fd to which exe write errors.
- *
- *
- * -----------------------------------------------------------------------------
- *
- *
- * To redirect fd to which called exe will read or write (to/from a file fd or
- * to/from a pipe fd (=stream)) we will use the following way :
- * - dup2(open_fd, standard_fd)
- * It permits to make the system fd reference to our non-standard fd, which
- * had been opened to reference a file, or a pipe(),  instead of screen or
- * keyboard.
- *
- * An other way to see this :
- * an executable is coded to write to an object (screen) which is always pointed
- * by fd=1. We can't change the number of the fd which is used by the
- * executable, but we can change the object the fd=1 points to.
- * 
- * So instead of pointing to screen object, we can make fd=1 points to a file
- * object, or a pipe object.
- *
- * -----------------------------------------------------------------------------
- *
- * int	execve(char *path/to/exe, char **args, char **ev);
- *
- * Then, execution process will use the content of each link as this :
- * 
- * 1 - Parse head->content->command[0] to extract the path & name of the exe
- * 2 - If head->content->fd[0], [1], [2]  != 0, 1, 2 -> corresponding
- *     standard fd must be redirected with the technique described above
- * 3 - Fork a child which will execute the exec with execve();
- */
+** Then $ expansion comes (if it's not inside simple quotes '')
+**
+** A -	Split the command line depending on ; char, if it's not inside quotes.
+** B -	Process each lines to find pipes, then redirection, which will result to
+** 		give them pipe() created fd, or open() created fd.
+** C -	Called by B(), expand $
+**
+**
+** -----------------------------------------------------------------------------
+**
+**
+** Returns an adress to the head of a t_list{} linked list, with following
+** content inside:
+**
+**
+** 		- t_command structure which contains itself 1-> an array of strings
+** 													2-> an array of int
+**
+**
+** 1- char	**command	-	command[0] must contains the name of executable.
+** 							This name could include the path, which should
+** 							be parsed by the executor function.
+** 						-	command[n] must contains args passed to the exe.
+** 					 	-	command[last] = NULL;
+** 2- int	*fd			-	will be malloc() as an array of 3 int.
+** 						-	fd[0] - fd from which exe reads.
+** 						-	fd[1] - fd to which exe write.
+** 						-	fd[2] - fd to which exe write errors.
+**
+**
+** -----------------------------------------------------------------------------
+**
+**
+** To redirect fd to which called exe will read or write (to/from a file fd or
+** to/from a pipe fd (=stream)) we will use the following way :
+** - dup2(open_fd, standard_fd)
+** It permits to make the system fd reference to our non-standard fd, which
+** had been opened to reference a file, or a pipe(),  instead of screen or
+** keyboard.
+**
+** An other way to see this :
+** an executable is coded to write to an object (screen) which is always pointed
+** by fd=1. We can't change the number of the fd which is used by the
+** executable, but we can change the object the fd=1 points to.
+** 
+** So instead of pointing to screen object, we can make fd=1 points to a file
+** object, or a pipe object.
+**
+** -----------------------------------------------------------------------------
+**
+** int	execve(char *path/to/exe, char **args, char **ev);
+**
+** Then, execution process will use the content of each link as this :
+** 
+** 1 - Parse head->content->command[0] to extract the path & name of the exe
+** 2 - If head->content->fd[0], [1], [2]  != 0, 1, 2 -> corresponding
+**     standard fd must be redirected with the technique described above
+** 3 - Fork a child which will execute the exec with execve();
+*/
 
-t_listjb		*tokenize_line_jb(char *line, t_list **env)
+t_list			*tokenize_line_jb(char *line, t_list **env)
 {
 	int			i;
-	t_listjb	*cmd;
+	t_list		*cmd;
 	char		**execution_lines;
 	char		*skiped;
 

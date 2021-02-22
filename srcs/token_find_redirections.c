@@ -47,12 +47,12 @@ int				join_word_object(char **command_string, char **word_object)
 	return (1);
 }
 
-int				create_array_n_link(t_listjb **cmd, int	*fd_command,
+int				create_array_n_link(t_list **cmd, int	*fd_command,
 		char **command_string)
 {
 	char		**command_array;
 	t_command	*command;	
-	t_listjb	*new;	
+	t_list		*new;	
 
 	if (!(command_array = split_with_exception_v2(*command_string, ' ', "\'\"")))
 		return (0);
@@ -61,9 +61,9 @@ int				create_array_n_link(t_listjb **cmd, int	*fd_command,
 		return (0);
 	command->command = command_array;
 	command->fd = fd_command;
-	if (!(new = ft_lstnew_jb(command)))
+	if (!(new = ft_lstnew(command)))
 		return (0);
-	ft_lstadd_back_jb(cmd, new);
+	ft_lstadd_back(cmd, new);
 	return (1);
 }
 
@@ -127,7 +127,7 @@ int				create_array_n_link(t_listjb **cmd, int	*fd_command,
  * create an array which will be pointed by a new link of our linked list.
  *
  *
- * t_listjb **cmd :		Pointer to t_list from the tokenize_line func which is
+ * t_list **cmd :		Pointer to t_list from the tokenize_line func which is
  * 						initially NULL and which is here to point to new links.
  * 						As we have the address of this pointer, we can
  * 						make it point to a newly created link.
@@ -149,7 +149,7 @@ int				create_array_n_link(t_listjb **cmd, int	*fd_command,
 **						which will be malloc in the function which creates links
 */
 
-int				find_redirections(t_listjb **cmd, t_list **env,
+int				find_redirections(t_list **cmd, t_list **env,
 		char *command_line, int *fd_command)
 {
 	char		*line_ptr;

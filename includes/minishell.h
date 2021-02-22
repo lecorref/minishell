@@ -138,8 +138,8 @@ int			get_line(char **buff);
 ** This function will create a list of t_command from the input line.
 */
 t_list	tokenize_line(char *buff);
-t_listjb	*tokenize_line_jb(char *line, t_list **env);
-int		find_redirections(t_listjb **cmd, t_list **env,
+t_list	*tokenize_line_jb(char *line, t_list **env);
+int		find_redirections(t_list **cmd, t_list **env,
 char	*command_line, int *fd_command);
 char	*skip_char(char *str, char c);
 /*
