@@ -48,6 +48,7 @@ void		clear_commandlist(void *content)
 	while (args[++i])
 		free(args[i]);
 	free(args);
+	free((t_command*)content);
 }
 
 
