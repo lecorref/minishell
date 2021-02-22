@@ -34,6 +34,18 @@ void		print_list(t_list *cmd)
 	}
 }
 
+void		clear_envlist(void *content)
+{
+	char		*keycp;
+	char		*valuecp;
+
+	keycp = ((t_env*)content)->key;
+	valuecp = ((t_env*)content)->value;
+	free(keycp);
+	free(valuecp);
+	free((t_env*)content);
+}
+
 
 void		clear_commandlist(void *content)
 {
@@ -48,6 +60,7 @@ void		clear_commandlist(void *content)
 	while (args[++i])
 		free(args[i]);
 	free(args);
+	free((t_command*)content);
 }
 
 
@@ -74,6 +87,7 @@ int			main(int ac, char *av[], char *ep[])
 		ft_putstr("minishell-1.0$ ");
 	}
 	free(line);
+	ft_lstclear(&env, &clear_envlist);
 	if (ret == -1)
 		return (-1);
 	if (ret == 0)
