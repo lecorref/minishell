@@ -118,8 +118,9 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 			return (0);
 		if (!(find_redirections(cmd, env, piped_exec_line[i], fd_command)))
 			return (0);
+		free(piped_exec_line[i]);
 	}
-	//free_array(piped_exec_line);
+	free(piped_exec_line);
 	return (1);
 }
 
@@ -214,7 +215,9 @@ t_list			*tokenize_line_jb(char *line, t_list **env)
 			printf("unexpected token ';'\n");
 		if (!(find_pipe_n_redirections(&cmd, env, execution_lines[i])))
 			return (NULL);
+		free(execution_lines[i]);
 	}
+	free(execution_lines);
 	return (cmd);
 }
 
