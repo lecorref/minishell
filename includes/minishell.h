@@ -100,6 +100,12 @@ int			is_symbol(int c);
 int			is_symbol_v2(int c);
 char		*skip_char(char *str, char c);
 int			*init_fd();
+/*
+** clear lists
+*/
+void		clear_commandlist(void *content);
+void		clear_envlist(void *content);
+//void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
 /*
  * This function will find if the command is a builtin and execute it, or
@@ -107,7 +113,6 @@ int			*init_fd();
  */
 void		execute_command(t_list **env, t_list **cmd);
 
-void		free_command_list(t_list **cmd);
 
 /* ------------------------------------------------------------------------- */
 
