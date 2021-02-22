@@ -89,7 +89,7 @@ int				create_array_n_link(t_list **cmd, int	*fd_command,
  * find_redirections is the last fonction which is called to finish the tokenize
  * process. In fact, this is where the content of links from linked list ends up
  * being created.
- * This function handle file descriptors from redirections, then shaping of
+ * This function handles file descriptors from redirections, then shaping of
  * the array of command + arguments.
  *
  * Behavior :
@@ -109,13 +109,13 @@ int				create_array_n_link(t_list **cmd, int	*fd_command,
  * & returns a malloc() string.
  *
  * - Go into redirections() if it's a redirection symbol.
- * B - This function opens file descriptor consequently & adress it
+ * B - This function opens file descriptor consequently & address it
  * to fd_command
  *
- * A() & B() funcs receives the adress of pointer to string so that they can
+ * A() & B() funcs receives the address of pointer to string so that they can
  * make it points to the end of word-object from string after processing.
  *
- * By this way line_ptr keeps track of adress after the end of a word object.
+ * By this way line_ptr keeps track of address after the end of a word object.
  * It permits to continue the loop after a word object has been processed.
  *
  * After word_object-processing functions layer, we fetched in word_object a
@@ -135,20 +135,19 @@ int				create_array_n_link(t_list **cmd, int	*fd_command,
  * t_list **env :		pointer to t_list, which contains environment. Used to
  * 						expand environment variables symbolized with '$'
  *
-** char *command_line :	String already processed twice to creates semi-colon ';'
-**						& pipes '|' object. At this stage, this string can
-**						contains redirections, otherwise it's clean and only
-**						contains commands (which can still have to be expanded).
-**
-** int *fd_command :	Array of int which has been malloc() & initialized just
-**						before.
-**						Either they have already been changed to piped fd,
-**						either not, & they could be changed here by redirection.
-**						The address pointed by this variable will be fetched
-**						by the pointer to int created in the t_command struture
-**						which will be malloc in the function which creates links
+ * char *command_line :	String already processed twice to creates semi-colon ';'
+ *						& pipes '|' object. At this stage, this string can
+ *						contains redirections, otherwise it's clean and only
+ *						contains commands (which can still have to be expanded).
+ *
+ * int *fd_command :	Array of int which has been malloc() & initialized just
+ *						before.
+ *						Either they have already been changed to piped fd,
+ *						either not, & they could be changed here by redirection.
+ *						The address pointed by this variable will be fetched
+ *						by the pointer to int created in the t_command struture
+ *						which will be malloc in the function which creates links
 */
-
 int				find_redirections(t_list **cmd, t_list **env,
 		char *command_line, int *fd_command)
 {

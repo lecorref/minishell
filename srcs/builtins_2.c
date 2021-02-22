@@ -12,14 +12,12 @@ int		pwd_builtin(t_list **env, t_list **cmd)
 	return (0);
 }
 
-/*
- * if expand_tilde detects the ~ sign, it search the HOME env variable
+/* if expand_tilde detects the ~ sign, it search the HOME env variable
  * and join to it the path which can be typed behind, then return a malloc()
  * pointer to this string. The string given as paramater is free.
  * Otherwise, no tilde had been detected as first character, & it returns
  * the string given as parameter, untouched.
 */
-
 char	*expand_tilde(t_list **env, char *arg)
 {
 	char	*expanded;
@@ -36,8 +34,7 @@ char	*expand_tilde(t_list **env, char *arg)
 	return (expanded);
 }
 
-/*
- * cd uses the chdir func to sail into the filesystem & set errors.
+/* cd uses the chdir func to sail into the filesystem & set errors.
  * This builtin must specifically change the OLDPWD & the PWD variables; and
  * handle the tilde char as well as the 'no' char, which means HOME directory.
 */
@@ -97,8 +94,7 @@ int		exit_arg(t_list **cmd, size_t i)
 	return (0);
 }
 
-/*
- * exit <nb less than long long>
+/* exit <nb less than long long>
  * output: exit\n
  * echo $? = if nb > 255 < long long, it starts over again to count from 0 to 255
  *

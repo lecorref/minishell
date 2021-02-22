@@ -6,11 +6,26 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/22 18:50:30 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/22 20:37:48 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void		clear_commandlist(void *content)
+{
+	int		i;
+	int		*fdcp;
+	char	**args;
+
+	fdcp = ((t_command*)content)->fd;
+	args = ((t_command*)content)->command;
+	free(fdcp);
+	i = -1;
+	while (args[++i])
+		free(args[i]);
+	free(args);
+}
 
 //void	ope(t_list **env, t_command *cmd, void (func)(t_list *, t_command *))
 //{
@@ -149,9 +164,9 @@ int		main_loop(t_list *env)
 	char	*line;
 	int		ret_gnl;
 
-	prompt(env);
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, ctrl_back_slash_handler);
+	prompt(env);
 	while ((ret_gnl = gnl_ctrld(0, &line)) == 1)
 	{
 		if (!line[0])
@@ -174,19 +189,24 @@ int		main_loop(t_list *env)
 		// 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
 		// 4. handle $? and send it to a function
 
+	//	printf("\nfd0 = %d\n", CMD_FD(cmd)[0]);
+	//	printf("\nfd1 = %d\n", CMD_FD(cmd)[1]);
+	//	printf("\nfd2 = %d\n", CMD_FD(cmd)[2]);
+
 		execute_command(&env, &cmd);
 		prompt(env);
+		ft_lstclear(&cmd, &clear_commandlist);
 		free(line);
 		line = NULL;
 		// void free_command_list(t_list **command) and/or
 		// ft_lstdel(&env, free_env); -> at the very end of everything???
-		// or inside the loop???????????
-		//	free(cmd); or free env function???
 	}
 	free(line);
 	line = NULL;
 	if (ret_gnl == 0)
 		ctrl_d_handler();
+	if (ret_gnl == -1)
+		return (-1);
 	return (0);
 }
 

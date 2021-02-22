@@ -33,16 +33,15 @@ int				create_final_str(char **str, char **line_ptr, char **final_str)
 }
 
 /*
-** double_quotes() process the given line to make it compatible with args of
-** execve()
-** The termination character for this formated word-object is the end of string
-** or the double-quote.
-** It has to expand the dollar symbol if it is met.
-** It modifies the address where the given pointer line_ptr points to the end of
-** the processed string, after the quote.
-** It returns a malloc() address to a null-terminated string.
+ * double_quotes() process the given line to make it compatible with args of
+ * execve()
+ * The termination character for this formated word-object is the end of string
+ * or the double-quote.
+ * It has to expand the dollar symbol if it is met.
+ * It modifies the address where the given pointer line_ptr points to the end of
+ * the processed string, after the quote.
+ * It returns a malloc() address to a null-terminated string.
 */
-
 char			*double_quotes(t_list **env, char **line_ptr)
 {
 	char		*str;
@@ -79,7 +78,6 @@ char			*double_quotes(t_list **env, char **line_ptr)
 ** end of the processed string (eol or is_symbol() char).
 ** It returns a malloc() address to a null-terminated string.
 */
-
 char			*no_quotes(t_list **env, char **line_ptr)
 {
 	char		*str;
@@ -113,7 +111,6 @@ char			*no_quotes(t_list **env, char **line_ptr)
 ** the processed string, after the quote.
 ** It returns a malloc() address to a null-terminated string.
 */
-
 char			*simple_quotes(char **line_ptr)
 {
 	char		*word_object;

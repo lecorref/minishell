@@ -73,8 +73,8 @@ int			main_loop(t_list *env);
  * These functions will create a list of t_command from the input line.
 */
 t_list		*tokenize_line_jb(char *line, t_list **env);
-int			find_redirections(t_list ***cmd, t_list **env,
-char		*command_line, int *fd_command);
+int			find_redirections(t_list **cmd, t_list **env, char *command_line,
+				int *fd_command);
 char		*skip_char(char *str, char c);
 /*
  * tokenize split

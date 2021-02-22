@@ -47,7 +47,9 @@ OBJPATH = $(SRCPATH)/obj
 #SRCS
 SRCS = $(addprefix $(SRCPATH)/, builtins_1.c builtins_2.c environment.c \
 	   environment_2.c main.c main_loop.c signal_handler.c executable_builtin.c\
-	   exit_error_manager.c)
+	   exit_error_manager.c tokenizer.c token_spliters.c token_expand.c \
+	   token_quotes.c token_utils.c token_find_redirections.c \
+	   token_redirections.c)
 
 ##### OBJS #####
 OBJ = $(SRCS:$(SRCPATH)/%.c=$(OBJPATH)/%.o)

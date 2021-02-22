@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/22 18:30:27 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/22 21:35:34 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	executable_parent(t_list **cmd, pid_t fork_pid)
 {
 	int		wstatus;
 
+//	printf("ENTERED PARENT\n");
 	free(CMD(*cmd)[0]);//later to be replaced for a function that frees the t_cmd (or at least the **command?)
 	wstatus = 0;
 	waitpid(fork_pid, &wstatus, 0);
@@ -137,12 +138,37 @@ int		executable_builtin(t_list **env, t_list **cmd)
 
 	envir = env_list_to_tab(*env);
 	path_to_cmd = path_to_executable(env, cmd);
+
+
+	int i;
+
+	i = 0;
+	while (CMD(*cmd)[i])
+	{
+		printf("cmd[%d] = %s\n", i,  CMD(*cmd)[i]);
+		i++;
+	}
+//	i = 0;
+//	while (envir[i])
+//	{
+//		printf("env = %s\n", envir[i]);
+//		i++;
+//	}
+	printf("path to cmd = %s\n", path_to_cmd);
+
 	if ((fork_pid = fork()) == -1)
-		exit(errno);
+	{
+	//	printf("CHILD FORK = -1\n");
+		exit(errno);//or somethimng else?
+	}
 	else if (fork_pid == 0)//child
 	{
-		if (execve(path_to_cmd, CMD(*cmd), envir) == -1)
+		char *argv[] = {"ls", "-la", 0};// works with NULL OR 0, BUT NOT WITH ""  or ''
+
+	//	printf("CHILD FORK = 0\n");
+		if (execve(path_to_cmd, argv, envir) == -1)
 		{
+		//	printf("EXECVE = -1\n");
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
 			{
 				errno = 2;
