@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/19 21:09:04 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/22 00:21:14 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ int		gnl_ctrld(int fd, char **line)
 	return (1);
 }
 
-static int	*init_fd(void)
+static int	*init_fd_dev(void)
 {
 	int		*fd;
 
@@ -129,7 +129,7 @@ int		main_loop(t_list *env)
 	t_command	*cmd;
 
 	cmd = (t_command*)malloc(sizeof(t_command) + 1);
-	cmd->fd = init_fd();
+	cmd->fd = init_fd_dev();
 //	cmd->fd = (int*)malloc(sizeof(int) * 4);
 //	cmd->fd[0] = 0;
 //	cmd->fd[1] = 1;

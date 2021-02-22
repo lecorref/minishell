@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/19 16:58:37 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/22 01:03:16 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ int					ft_lstsize(t_list *lst);
 t_list				*ft_lstlast(t_list *lst);
 
 //lists jb
+int					get_next_line(int fd, char **line);
 void				ft_lstadd_back_jb(t_listjb **alst, t_listjb *new);
 void				ft_lstadd_front_jb(t_listjb **alst, t_listjb *new);
 t_listjb			*ft_lstlast_jb(t_listjb *lst);
