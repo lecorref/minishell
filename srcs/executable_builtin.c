@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/23 21:21:32 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/23 22:33:19 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	parent_process(t_list **cmd, pid_t fork_pid)
 {
 	int		wstatus;
 
-	wstatus = 0;
 	ft_array_string_del(CMD(*cmd));// or a function like free_env (inside environment_2 file)???
+	wstatus = 0;
 	waitpid(fork_pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
 		errno = WEXITSTATUS(wstatus);
@@ -192,11 +192,20 @@ int		executable_builtin(t_list **env, t_list **cmd)
 	envir = env_list_to_tab(*env);
 	path_to_cmd = path_to_executable(env, cmd);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
+
+	int	i;
+	i = 0;
+	while (CMD(*cmd)[i])
+	{
+		printf("CMD(*cmd)[%d] = %s\n", i, CMD(*cmd)[i]);
+		i++;
+	}
+
 	if ((fork_pid = fork()) == -1)
 		exit(errno);
 	else if (fork_pid == 0)//child will exec
 	{
-		if (execve(path_to_cmd, &CMD(*cmd)[0], envir) == -1)
+		if (execve(path_to_cmd, CMD(*cmd), envir) == -1)
 		{
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
 			{
