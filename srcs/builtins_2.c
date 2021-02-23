@@ -1,10 +1,9 @@
 #include "minishell.h"
 
-int		pwd_builtin(t_list **env, t_list **cmd)
+int		pwd_builtin(t_list **cmd)
 {
 	char	*stored;
 
-	(void)env;
 	stored = getcwd(NULL, 0);
 	ft_putstr_fd(stored, CMD_FD(*cmd)[1]);
 	ft_putchar_fd('\n', CMD_FD(*cmd)[1]);
@@ -12,11 +11,12 @@ int		pwd_builtin(t_list **env, t_list **cmd)
 	return (0);
 }
 
-/* if expand_tilde detects the ~ sign, it search the HOME env variable
- * and join to it the path which can be typed behind, then return a malloc()
- * pointer to this string. The string given as paramater is free.
- * Otherwise, no tilde had been detected as first character, & it returns
- * the string given as parameter, untouched.
+/*
+** if expand_tilde detects the ~ sign, it search the HOME env variable
+** and join to it the path which can be typed behind, then return a malloc()
+** pointer to this string. The string given as paramater is free.
+** Otherwise, no tilde had been detected as first character, & it returns
+** the string given as parameter, untouched.
 */
 char	*expand_tilde(t_list **env, char *arg)
 {
@@ -34,40 +34,58 @@ char	*expand_tilde(t_list **env, char *arg)
 	return (expanded);
 }
 
-/* cd uses the chdir func to sail into the filesystem & set errors.
- * This builtin must specifically change the OLDPWD & the PWD variables; and
- * handle the tilde char as well as the 'no' char, which means HOME directory.
+/*
+** cd uses the chdir func to sail into the filesystem & set errors.
+** This builtin must specifically change the OLDPWD & the PWD variables; and
+** handle the tilde char as well as the 'no' char, which means HOME directory.
 */
-int		cd_builtin(t_list **env, t_list **cmd)
+void	print_cd_error(char *cmd, char *arg, char *strerror, int fd)
+{
+	write(fd, "bash: ", 7);
+	write(fd, cmd, ft_strlen(cmd));
+	write(fd, ": ", 3);
+	write(fd, arg, ft_strlen(arg));
+	write(fd, ": ", 3);
+	write(fd, strerror, ft_strlen(strerror));
+	write(fd, "\n", 2);
+}
+
+int		update_pwd(t_list **env)
 {
 	char    *tmp;
 	char    *pwd;
 	char    *old_pwd;
 
+	old_pwd = find_env_value(env, "PWD");
+	if (!(tmp = ft_strjoin("OLDPWD=", old_pwd)))
+		return (-1);
+	add_env_variable(env, tmp);
+	free(tmp);
+	if (!(pwd = getcwd(NULL, 0)))
+		return (-1);
+	if (!(tmp = ft_strjoin("PWD=", pwd)))
+		return (-1);
+	add_env_variable(env, tmp);
+	free(tmp);
+	free(pwd);
+	return (0);
+}
+
+int		cd_builtin(t_list **env, t_list **cmd)
+{
 	if (!(CMD(*cmd)[1]))
-		CMD(*cmd)[1] = ft_strjoin("~", "");
-	else if (!(CMD(*cmd)[1][0]))
+		if (!(CMD(*cmd)[1] = ft_strjoin("~", "")))
+			return (-1);
+	if (!(CMD(*cmd)[1][0]))
 		return (0);
 	CMD(*cmd)[1] = expand_tilde(env, CMD(*cmd)[1]);
 	if ((chdir(CMD(*cmd)[1])) == -1)
 	{
-		tmp = strerror(errno);
-		write(2, "bash: cd: ", 11);
-		write(2, CMD(*cmd)[1], ft_strlen(CMD(*cmd)[1]));
-		write(2, ": ", 3);
-		write(2, tmp, ft_strlen(tmp));
-		write(2, "\n", 2);
+		print_cd_error(CMD(*cmd)[0], CMD(*cmd)[1], strerror(errno), 2);
 		return (-1);
 	}
-	old_pwd = find_env_value(env, "PWD");
-	tmp = ft_strjoin("OLDPWD=", old_pwd);
-	add_env_variable(env, tmp);
-	free(tmp);
-	pwd = getcwd(NULL, 0);
-	tmp = ft_strjoin("PWD=", pwd);
-	add_env_variable(env, tmp);
-	free(tmp);
-	free(pwd);
+	if (update_pwd(env) == -1)
+		return (-1);
 	return (0);
 }
 

@@ -6,7 +6,8 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/23 21:20:42 by jfreitas         ###   ########.fr       */
+
+/*   Updated: 2021/02/23 20:57:56 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +24,7 @@ void	execute_command(t_list **env, t_list **cmd)
 	else if (ft_strcmp(CMD(*cmd)[0], "cd") == 0)
 		cd_builtin(env, cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "pwd") == 0)
-		pwd_builtin(env, cmd);
+		pwd_builtin(cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "export") == 0)
 		export_builtin(env, cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "unset") == 0)

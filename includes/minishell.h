@@ -121,7 +121,7 @@ void		execute_command(t_list **env, t_list **cmd);
  * Builtins
  */
 
-int			pwd_builtin(t_list **head, t_list **cmd);
+int			pwd_builtin(t_list **cmd);
 int			cd_builtin(t_list **head, t_list **cmd);
 int			exit_builtin(t_list **head, t_list **cmd);
 int			echo_builtin(t_list **head, t_list **cmd);

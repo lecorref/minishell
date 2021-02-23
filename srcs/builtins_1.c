@@ -18,6 +18,7 @@ int			echo_builtin(t_list **env, t_list **cmd)
 	int		flag;
 	int		i;
 
+	(void)env;
 	i = 0;
 	if (!CMD(*cmd)[i + 1])
 	{
@@ -25,7 +26,6 @@ int			echo_builtin(t_list **env, t_list **cmd)
 		return (0);
 	}
 	flag = 0;
-	(void)env;
 	while (!echo_n_parser(CMD(*cmd)[++i]))
 		flag = 1;
 	while (CMD(*cmd)[i] != NULL)
