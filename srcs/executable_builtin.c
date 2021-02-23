@@ -6,23 +6,32 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/19 21:06:00 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/23 17:04:56 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*//macro that returns the exit status of the child
+ * //macro that returns true if the child terminated normally
+  macro that returns true if the child process was terminated by a signal
+ //macro that returns the number of the signal that caused the child process
+ //to terminate
+*/
+
 void	executable_parent(t_command *cmd, pid_t fork_pid)
 {
 	int		wstatus;
 
-	free(cmd->command[0]);//later to be replaced for a function that frees the t_cmd (or at least the **command?)
-	wstatus = 0;
+	if (cmd->command[0])
+		;
+	//free(cmd->command[0]);//later to be replaced for a function that frees 
+	wstatus = 0;//the t_cmd (or at least the **command?)
 	waitpid(fork_pid, &wstatus, 0);
-	if (WIFEXITED(wstatus))//macro that returns true if the child terminated normally
-		errno = WEXITSTATUS(wstatus);//macro that returns the exit status of the child
-	else if (WIFSIGNALED(wstatus))// macro that returns true if the child process was terminated by a signal
-		errno = WTERMSIG(wstatus);//macro that returns the number of the signal that caused the child process to terminate
+	if (WIFEXITED(wstatus))
+		errno = WEXITSTATUS(wstatus);
+	else if (WIFSIGNALED(wstatus))
+		errno = WTERMSIG(wstatus);
 	signal(SIGQUIT, ctrl_back_slash_handler);
 }
 
