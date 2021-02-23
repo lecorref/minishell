@@ -13,7 +13,7 @@ static int	echo_n_parser(char *str)
 	return (0);
 }
 
-int			echo_builtin(t_list **env, t_command *cmd)
+int			echo_builtin(t_command *cmd)
 {
 	int		flag;
 	int		i;
@@ -25,7 +25,6 @@ int			echo_builtin(t_list **env, t_command *cmd)
 		return (0);
 	}
 	flag = 0;
-	(void)env;
 	while (!echo_n_parser(cmd->command[++i]))
 		flag = 1;
 	while (cmd->command[i] != NULL)
