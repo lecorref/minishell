@@ -52,7 +52,7 @@ SRCS_PGM = $(addprefix $(SRC_PATH)/,builtins_1.c builtins_2.c environment.c \
 		   environment_2.c executable_builtin.c signal_handler.c \
 		   exit_error_manager.c tokenizer.c token_find_redirections.c \
 		   token_utils.c token_quotes.c token_expand.c token_spliters.c \
-		   token_redirections.c clear_lists.c)
+		   token_redirections.c clear_lists.c main_loop.c)
 
 
 

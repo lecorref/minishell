@@ -16,20 +16,23 @@ static int	echo_n_parser(char *str)
 int			echo_builtin(t_list **env, t_command *cmd)
 {
 	int		flag;
+	int		i;
 
+	i = 0;
+	if (!cmd->command[i + 1])
+	{
+		ft_putchar_fd('\n', cmd->fd[1]);
+		return (0);
+	}
 	flag = 0;
 	(void)env;
-	cmd->command++;
-	while (!echo_n_parser(*(cmd->command)))
-	{
+	while (!echo_n_parser(cmd->command[++i]))
 		flag = 1;
-		cmd->command++;
-	}
-	while (*(cmd->command) != NULL)
+	while (cmd->command[i] != NULL)
 	{
-		ft_putstr_fd(*(cmd->command), cmd->fd[1]);
+		ft_putstr_fd(cmd->command[i], cmd->fd[1]);
 		ft_putchar_fd(' ', cmd->fd[1]);
-		cmd->command++;
+		i++;
 	}
 	if (!flag)
 		ft_putchar_fd('\n', cmd->fd[1]);
