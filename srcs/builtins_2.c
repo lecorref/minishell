@@ -50,6 +50,8 @@ int		cd_builtin(t_list **env, t_command *cmd)
 
 	if (!(cmd->command[1]))
 		cmd->command[1] = ft_strjoin("~", "");
+	else if (!(cmd->command[1][0]))
+		return (0);
 	cmd->command[1] = expand_tilde(env, cmd->command[1]);
 	if ((chdir(cmd->command[1])) == -1)
 	{
