@@ -50,10 +50,7 @@ int			env_builtin(t_list **env, t_command *cmd)
 int			export_builtin(t_list **env, t_command *cmd)
 {
 	if (cmd->command[0] && cmd->command[1])
-	{
-		printf("\n%s\n", ENV_VALUE(*env));
 		add_env_variable(env, cmd->command[1]);
-	}
 	if (cmd->command[0] && !(cmd->command[1]))
 	{
 		//print an environment different from **envp,

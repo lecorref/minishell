@@ -74,11 +74,9 @@ void	add_env_variable(t_list **env, char *var)
 	}
 	if (tmp_env == NULL)
 	{
-//		new = (t_env*)malloc(sizeof(t_env));
 		tmp_env = ft_lstnew(new);
 		ft_lstadd_front(env, tmp_env);
 	}
-	free(new);
 }
 
 char	*find_env_value(t_list **env, char *key)
