@@ -38,7 +38,7 @@
 
 /*
  * These defines shorten literals to make the code more understandable.
- * NAME is of type t_list
+ * NAME is of type t_list.
  */
 # define ENV_KEY(NAME) ((t_env *)((NAME)->content))->key
 # define ENV_VALUE(NAME) ((t_env *)((NAME)->content))->value
@@ -46,139 +46,74 @@
 # define CMD(NAME) ((t_command *)((NAME)->content))->command
 # define CMD_FD(NAME) ((t_command *)((NAME)->content))->fd
 
+/* ------------------------------------------------------------------------- */
+
 /*
- * Create and store environment in a linked list of t_env from envp variable.
- * All the links of the list are malloc() and should be free() once the program
- * exit. If the first arg was malloc(), it can be free() after.
- *
- * @args:
- *	char **envp a string table containing entries with the format KEY=VALUE
- * @return:
- *	t_list *: a pointer to the head of a list.
- */
+ * These functions will create/add/find/delete/free a list of the t_env struct,
+ * from the envp (char **ep) argument of the main.
+*/
+
 t_list		*create_env_list(char **envp);
-
-
-/*
- * Return a table similar to envp from a linked list of t_env.
- * The table is malloc() and should be free() after use.
- * The result should correspond to the return of the `env` builtin.
- *
- * @args:
- *	t_list *head: a pointer to the head of a linked list.
- * @return:
- *	char **: a string table containing entries with the format KEY=VALUE
- */
 char		**env_list_to_tab(t_list *head);
-
-
-/*
- * Create a new t_env from a string (format: KEY=VALUE)and push it on top of
- * the linked list.
- * The string is duplicated and can be free() after use. If the key already
- * exist its old value is replaced by the new one.
- *
- * @args:
- *	- t_list **head: a pointer to the first link of the list
- *	- char *var: a string with the format KEY=VALUE
- */
 void		add_env_variable(t_list **head, char *var);
-
-
-/*
- * Will find a value if the key is stored inside a linked_list of t_env.
- * The string is NOT duplicated and shouldn't be free() after use.
- *
- * @args:
- *	- t_list **head: a pointer to the first link of the list
- *	- char *key: a string that will be compared against t_env->key
- * @return:
- *	char *: a string that correspond to the key that was sent
- */
 char		*find_env_value(t_list **head, char *key);
-
-
-/*
- * Will find if a link from the env linked list contain a specific key,
- * delete this link and rebuild the list.
- *
- * @args:
- *	- t_list **head: a pointer to the first link of the list
- *	- char *key: a string that will be compared against t_env->key
- */
 void		delete_env_variable(t_list **head, char *key);
-
-/*
- * Free each string from the t_env structure then free the structure. The
- * parameters are made so that the function is usable with ft_lstdel.
- *
- * @args:
- *	- void *env: a pointer to the t_env struct to delete
- *	- size_t size: necessary for pointer to function.
- */
 void		free_env(void *env, size_t size);
 
+/* ------------------------------------------------------------------------- */
 
 /*
  * Loop functions
  */
 
-/*
- * This loop should only exit on ctrlD, sigkill and "exit"
- */
 int			main_loop(t_list *env);
 
 /*
- * This can be replaced by GNL
- */
-int			get_line(char **buff);
-
-/*
-** -----------------------------------------------------------------------------
-** This function will create a list of t_command from the input line.
+ * Lexer/parser function that will buid t_command structure
+ * These functions will create a list of t_command from the input line.
 */
-t_list	*tokenize_line_jb(char *line, t_list **env);
-int		find_redirections(t_list **cmd, t_list **env,
-char	*command_line, int *fd_command);
-char	*skip_char(char *str, char c);
+t_list		*tokenize_line_jb(char *line, t_list **env);
+int			find_redirections(t_list **cmd, t_list **env, char *command_line,
+				int *fd_command);
+char		*skip_char(char *str, char c);
 /*
-** tokenize split
+ * tokenize split
 */
-char	**split_with_exception(char *str, char c, char *exception_set);
-char	**split_with_exception_v2(char *str, char c, char *exception_set);
-char	*ghosting(char *str, char c, char *exception_set, int *error);
+char		**split_with_exception(char *str, char c, char *exception_set);
+char		**split_with_exception_v2(char *str, char c, char *exception_set);
+char		*ghosting(char *str, char c, char *exception_set, int *error);
 /*
-** tokenize quotes
+ * tokenize quotes
 */
-char	*double_quotes(t_list **env, char **line_ptr);
-char	*simple_quotes(char **line_ptr);
-char	*no_quotes(t_list **env, char **line_ptr);
-char	*quotes(t_list **env, char **line_ptr);
-
-int		redirections(t_list **env, char **line_ptr, int *fd_command);
-char	*doll_expand(t_list **env, char **line_ptr);
+char		*double_quotes(t_list **env, char **line_ptr);
+char		*simple_quotes(char **line_ptr);
+char		*no_quotes(t_list **env, char **line_ptr);
+char		*quotes(t_list **env, char **line_ptr);
+int			redirections(t_list **env, char **line_ptr, int *fd_command);
+char		*doll_expand(t_list **env, char **line_ptr);
 /*
-** tokenize utils
+ * tokenize utils
 */
-void	delete_remaining_char(char *str, char c);
-char	*end_of_object(char *str);
-int		is_symbol(int c);
-int		is_symbol_v2(int c);
-char	*skip_char(char *str, char c);
-int		*init_fd();
+void		delete_remaining_char(char *str, char c);
+char		*end_of_object(char *str);
+int			is_symbol(int c);
+int			is_symbol_v2(int c);
+char		*skip_char(char *str, char c);
+int			*init_fd();
 /*
 ** clear lists
 */
-void	clear_commandlist(void *content);
-void	clear_envlist(void *content);
+void		clear_commandlist(void *content);
+void		clear_envlist(void *content);
+void		ft_array_string_del(char **array);
+//void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
 /*
  * This function will find if the command is a builtin and execute it, or
- * execute said command in execve
+ * execute said command with execve.
  */
-void		execute_command(t_list **head ,t_command *command);
+void		execute_command(t_list **env, t_list **cmd);
 
-void		free_command_list(t_list **cmdlist);
 
 /* ------------------------------------------------------------------------- */
 
@@ -186,20 +121,15 @@ void		free_command_list(t_list **cmdlist);
  * Builtins
  */
 
-int			pwd_builtin(t_command *cmd);
-int			cd_builtin(t_list **head, t_command *cmd);
-int			exit_builtin(t_list **head, t_command *cmd);
-int			echo_builtin(t_command *cmd);
-int			export_builtin(t_list **head, t_command *cmd);
-int			unset_builtin(t_list **head, t_command *cmd);
-int			env_builtin(t_list **head, t_command *cmd);
-int			executable_builtin(t_list **head, t_command *cmd);
+int			pwd_builtin(t_list **cmd);
+int			cd_builtin(t_list **head, t_list **cmd);
+int			exit_builtin(t_list **head, t_list **cmd);
+int			echo_builtin(t_list **head, t_list **cmd);
+int			export_builtin(t_list **head, t_list **cmd);
+int			unset_builtin(t_list **head, t_list **cmd);
+int			env_builtin(t_list **head, t_list **cmd);
+int			executable_builtin(t_list **head, t_list **cmd);
 
-/* ------------------------------------------------------------------------- */
-
-/*
- * Lexer/parser function that will buid t_command structure
- */
 
 /* ------------------------------------------------------------------------- */
 
@@ -207,8 +137,8 @@ int			executable_builtin(t_list **head, t_command *cmd);
  * errors/signal handlins/exits functions
  */
 
-void		error_msg_bash(t_command *cmd, int errnb, char *err_msg);
-void		error_msg(t_command *cmd, int errnb, char *err_msg);
+void		error_msg_bash(t_list **cmd, int errnb, char *err_msg);
+void		error_msg(t_list **cmd, int errnb, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
 void		ctrl_c_handler(int signal);

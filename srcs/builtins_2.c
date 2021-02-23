@@ -1,12 +1,12 @@
 #include "minishell.h"
 
-int		pwd_builtin(t_command *cmd)
+int		pwd_builtin(t_list **cmd)
 {
 	char	*stored;
 
 	stored = getcwd(NULL, 0);
-	ft_putstr_fd(stored, cmd->fd[1]);
-	ft_putchar_fd('\n', cmd->fd[1]);
+	ft_putstr_fd(stored, CMD_FD(*cmd)[1]);
+	ft_putchar_fd('\n', CMD_FD(*cmd)[1]);
 	free(stored);
 	return (0);
 }
@@ -18,7 +18,6 @@ int		pwd_builtin(t_command *cmd)
 ** Otherwise, no tilde had been detected as first character, & it returns
 ** the string given as parameter, untouched.
 */
-
 char	*expand_tilde(t_list **env, char *arg)
 {
 	char	*expanded;
@@ -40,7 +39,6 @@ char	*expand_tilde(t_list **env, char *arg)
 ** This builtin must specifically change the OLDPWD & the PWD variables; and
 ** handle the tilde char as well as the 'no' char, which means HOME directory.
 */
-
 void	print_cd_error(char *cmd, char *arg, char *strerror, int fd)
 {
 	write(fd, "bash: ", 7);
@@ -73,17 +71,17 @@ int		update_pwd(t_list **env)
 	return (0);
 }
 
-int		cd_builtin(t_list **env, t_command *cmd)
+int		cd_builtin(t_list **env, t_list **cmd)
 {
-	if (!(cmd->command[1]))
-		if (!(cmd->command[1] = ft_strjoin("~", "")))
+	if (!(CMD(*cmd)[1]))
+		if (!(CMD(*cmd)[1] = ft_strjoin("~", "")))
 			return (-1);
-	if (!(cmd->command[1][0]))
+	if (!(CMD(*cmd)[1][0]))
 		return (0);
-	cmd->command[1] = expand_tilde(env, cmd->command[1]);
-	if ((chdir(cmd->command[1])) == -1)
+	CMD(*cmd)[1] = expand_tilde(env, CMD(*cmd)[1]);
+	if ((chdir(CMD(*cmd)[1])) == -1)
 	{
-		print_cd_error(cmd->command[0], cmd->command[1], strerror(errno), 2);
+		print_cd_error(CMD(*cmd)[0], CMD(*cmd)[1], strerror(errno), 2);
 		return (-1);
 	}
 	if (update_pwd(env) == -1)
@@ -91,34 +89,33 @@ int		cd_builtin(t_list **env, t_command *cmd)
 	return (0);
 }
 
-int		exit_arg(t_command *cmd, size_t i)
+int		exit_arg(t_list **cmd, size_t i)
 {
 	int	errnb;
 
 	errnb = 0;
-	if (i == ft_strlen(cmd->command[1]))
+	if (i == ft_strlen(CMD(*cmd)[1]))
 	{
-		if (!cmd->command[2])
+		if (!CMD(*cmd)[2])
 		{
-			errno = ft_atoi(cmd->command[1]);
+			errno = ft_atoi(CMD(*cmd)[1]);
 			errno += 256;
 			errno %= 256;
 			exit(errno);
 		}
-		else if (cmd->command[2])
+		else if (CMD(*cmd)[2])
 		{
 			errnb = 1;
-			error_msg_bash(cmd, errnb, "too many arguments\n");//too many arguments
+			error_msg_bash(cmd, errnb, "too many arguments\n");
 			return (errnb);// or 131?
 		}
 	}
 	return (0);
 }
 
-/*
- * exit <nb less than long long>
+/* exit <nb less than long long>
  * output: exit\n
- * echo $? = if nb > 255 < long long, it starts over again to count from 0 to 255
+ * echo $? = if nb > 255 < longlong, it starts over again to count from 0 to 255
  *
  * exit <any string or number bigger than a long long>
  * output: exit\nbash: exit: <argv>: numeric argument required\n
@@ -131,7 +128,7 @@ int		exit_arg(t_command *cmd, size_t i)
  *
  * If <argv> is omitted, the exit status is that of the last command executed.
  */
-int		exit_builtin(t_list **env, t_command *cmd)
+int		exit_builtin(t_list **env, t_list **cmd)
 {
 	size_t	i;
 	int	errnb;
@@ -140,19 +137,19 @@ int		exit_builtin(t_list **env, t_command *cmd)
 	errnb = 0;
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
-	if (cmd->command[1] == NULL)
+	if (CMD(*cmd)[1] == NULL)
 		exit(0);
-	else if (cmd->command[1])
+	else if (CMD(*cmd)[1])
 	{
-		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
+		if (CMD(*cmd)[1][0] == '+' || CMD(*cmd)[1][0] == '-')
 			i++;
-		while (ft_isdigit((char)cmd->command[1][i]) == 1)
+		while (ft_isdigit((char)CMD(*cmd)[1][i]) == 1)
 			i++;
-		if (i != ft_strlen(cmd->command[1]))
+		if (i != ft_strlen(CMD(*cmd)[1]))
 		{
 			errnb = 2;
-			error_msg_bash(cmd, errnb, cmd->command[1]);//numeric argument required
-			ft_putstr_fd(": numeric argument required\n", cmd->fd[2]);
+			error_msg_bash(cmd, errnb, CMD(*cmd)[1]);
+			ft_putstr_fd(": numeric argument required\n", CMD_FD(*cmd)[2]);
 			exit(errnb);
 		}
 		exit_arg(cmd, i);

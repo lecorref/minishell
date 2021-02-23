@@ -1,5 +1,12 @@
 #include "minishell.h"
 
+/* Free each string from the t_env structure then free the structure.
+ * The parameters are made so that the function is usable with ft_lstdel.
+ *
+ * @args:
+ *		void *env: a pointer to the t_env struct to delete
+ *		size_t size: necessary for pointer to function.
+ */
 void	free_env(void *env, size_t size)
 {
 	(void)size;
@@ -8,6 +15,13 @@ void	free_env(void *env, size_t size)
 	free(env);
 }
 
+/* Will find if a link from the env linked list contain a specific key,
+ * delete this link and rebuild the list.
+ *
+ * @args:
+ *		t_list **env: a pointer to the first link of the list
+ *		char *key: a string that will be compared against t_env->key
+ */
 void    delete_env_variable(t_list **env, char *key)
 {
 	t_list	*tmp_env;

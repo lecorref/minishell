@@ -1,17 +1,16 @@
 #include "minishell.h"
 
 /*
-** ghosting make the characters into exception_set string be the 'ghoster'
-** (or invisibiliser) of the next split character(s).
-** Once a character from the set is met, all the c spliters won't be counted
-** until this particular character will be met a second time.
-**
-** If a spliter is met, function stops & returns the adress in the string.
-** Else if no splitter is met, it returns NULL.
-** It returns an error if a character from the set is met only 1 time before
-** the end of the string.
+ * ghosting make the characters into exception_set string be the 'ghoster'
+ * (or invisibiliser) of the next split character(s).
+ * Once a character from the set is met, all the c spliters won't be counted
+ * until this particular character will be met a second time.
+ *
+ * If a spliter is met, function stops & returns the adress in the string.
+ * Else if no splitter is met, it returns NULL.
+ * It returns an error if a character from the set is met only 1 time before
+ * the end of the string.
 */
-
 char		*ghosting(char *str, char c, char *exception_set, int *error)
 {
 	char	*ghoster;
@@ -58,8 +57,7 @@ char		**split_count_n_array_make(char *str, char c, char *exception_set)
 	return (split_array);
 }
 
-/*
- * Current behavior of split_with_exception: if this line is received >;;
+/* Current behavior of split_with_exception: if this line is received >;;
  * split_with_exception will see >; >; >'\0' >null
  * So the two first strings created  will contain ';' & the third '\0' & the
  * last will be null.
@@ -69,7 +67,7 @@ char		**split_count_n_array_make(char *str, char c, char *exception_set)
  * 
  * Behavior with one semi-colon :	>hello;
  * 									splited =>hello;'\0' >'\0' >null
- * 
+ *
  * If it receives nothing (type 'enter' means a "\0" string from gnl) >
  * It will create 1 string fullfiled with a '\0'
  * In minishell behavior, the less we can receive is a "\0" string.
@@ -95,7 +93,6 @@ char		**split_count_n_array_make(char *str, char c, char *exception_set)
  *
  * Returns a null terminated array of null terminated strings.
 */
-
 char		**split_with_exception(char *str, char c, char *exception_set)
 {
 	char	**split_array;
@@ -139,17 +136,16 @@ int			create_string_arr(int i, char *str, char *c_pos, char **split_arr)
 }
 
 /*
-** This func is like the v1 except it doesn't keep the spliter character at
-** the end of the line.
-** Instead of that, it detect if the string begins with a quote. This means,
-** in this pgm, that it ends with the corresponding quote plus a space.
-** - which has been added for the only purpose of spliting next -
-** Once it is detected, this spliter creates the string without those quotes.
-**
-** It is made to split the command_string, so remove flags characters (quotes)
-** & split characters (spaces which are been added to split the string).
+ * This func is like the v1 except it doesn't keep the spliter character at
+ * the end of the line.
+ * Instead of that, it detect if the string begins with a quote. This means,
+ * in this pgm, that it ends with the corresponding quote plus a space.
+ * - which has been added for the only purpose of spliting next -
+ * Once it is detected, this spliter creates the string without those quotes.
+ *
+ * It is made to split the command_string, so remove flags characters (quotes)
+ * & split characters (spaces which are been added to split the string).
 */
-
 char		**split_with_exception_v2(char *str, char c, char *exception_set)
 {
 	char	**split_array;
