@@ -105,7 +105,7 @@ void	add_env_variable(t_list **env, char *var)
 		tmp_env = ft_lstnew(new);
 		ft_lstadd_front(env, tmp_env);
 	}
-	free(new);
+//	free(new);
 }
 
 /* Will find a value if the key is stored inside a linked_list of t_env.

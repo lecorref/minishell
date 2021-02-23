@@ -6,26 +6,11 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/22 20:37:48 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/23 00:49:53 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void		clear_commandlist(void *content)
-{
-	int		i;
-	int		*fdcp;
-	char	**args;
-
-	fdcp = ((t_command*)content)->fd;
-	args = ((t_command*)content)->command;
-	free(fdcp);
-	i = -1;
-	while (args[++i])
-		free(args[i]);
-	free(args);
-}
 
 //void	ope(t_list **env, t_command *cmd, void (func)(t_list *, t_command *))
 //{
@@ -156,14 +141,16 @@ int		gnl_ctrld(int fd, char **line)
  * gnl return:
  * 1 = line read,
  * 0 = EOF
- * -1= error
+ * -1 = error
  */
 int		main_loop(t_list *env)
 {
 	t_list	*cmd;
 	char	*line;
+	char	*save_line;
 	int		ret_gnl;
 
+	save_line = ft_strdup("");
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, ctrl_back_slash_handler);
 	prompt(env);
@@ -175,7 +162,11 @@ int		main_loop(t_list *env)
 			prompt(env);
 			continue ;
 		}
+		printf("GNL RET = 1\n");
+		save_line = ft_strdup(line);
+		free(line);
 
+		line = ft_strjoin(line, save_line);
 		cmd = tokenize_line_jb(line, &env);
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the
@@ -195,17 +186,22 @@ int		main_loop(t_list *env)
 
 		execute_command(&env, &cmd);
 		prompt(env);
-		ft_lstclear(&cmd, &clear_commandlist);
+		ft_lstclear(&cmd, &clear_commandlist);// same as  void free_command_list(t_list **command)???
+		// ft_lstdel(&env, free_env); -> at the very end of everything??? or here insede this loop????
 		free(line);
 		line = NULL;
-		// void free_command_list(t_list **command) and/or
-		// ft_lstdel(&env, free_env); -> at the very end of everything???
+	}
+	if (ret_gnl == 0)
+	{
+	//	save_line = ctrl_d_handler(line);
+		line = ft_strjoin(save_line, line);
+		free(save_line);
+		main_loop(env);
 	}
 	free(line);
 	line = NULL;
-	if (ret_gnl == 0)
-		ctrl_d_handler();
-	if (ret_gnl == -1)
+	ft_lstclear(&env, &clear_envlist);
+	if (ret_gnl == -1)//??do that all errors should have been already handled before it gets to this part
 		return (-1);
 	return (0);
 }

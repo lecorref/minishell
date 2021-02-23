@@ -105,6 +105,7 @@ int			*init_fd();
 */
 void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
+void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
 /*
@@ -141,7 +142,7 @@ void		error_msg(t_list **cmd, int errnb, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
 void		ctrl_c_handler(int signal);
-void		ctrl_d_handler(void);
+void		ctrl_d_handler(char *line);
 
 /* ------------------------------------------------------------------------- */
 
