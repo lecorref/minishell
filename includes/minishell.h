@@ -186,10 +186,10 @@ void		free_command_list(t_list **cmdlist);
  * Builtins
  */
 
-int			pwd_builtin(t_list **head, t_command *cmd);
+int			pwd_builtin(t_command *cmd);
 int			cd_builtin(t_list **head, t_command *cmd);
 int			exit_builtin(t_list **head, t_command *cmd);
-int			echo_builtin(t_list **head, t_command *cmd);
+int			echo_builtin(t_command *cmd);
 int			export_builtin(t_list **head, t_command *cmd);
 int			unset_builtin(t_list **head, t_command *cmd);
 int			env_builtin(t_list **head, t_command *cmd);
