@@ -38,21 +38,22 @@ char	*expand_tilde(t_list **env, char *arg)
  * This builtin must specifically change the OLDPWD & the PWD variables; and
  * handle the tilde char as well as the 'no' char, which means HOME directory.
 */
-
-int		cd_builtin(t_list **env, t_list **cmd)
+int		cd_builtin(t_list **env, t_command *cmd)
 {
 	char    *tmp;
 	char    *pwd;
 	char    *old_pwd;
 
-	if (!(CMD(*cmd)[1]))
-		CMD(*cmd)[1] = ft_strjoin("~", "");
-	CMD(*cmd)[1] = expand_tilde(env, CMD(*cmd)[1]);
-	if ((chdir(CMD(*cmd)[1])) == -1)
+	if (!(cmd->command[1]))
+		cmd->command[1] = ft_strjoin("~", "");
+	else if (!(cmd->command[1][0]))
+		return (0);
+	cmd->command[1] = expand_tilde(env, cmd->command[1]);
+	if ((chdir(cmd->command[1])) == -1)
 	{
 		tmp = strerror(errno);
 		write(2, "bash: cd: ", 11);
-		write(2, CMD(*cmd)[1], ft_strlen(CMD(*cmd)[1]));
+		write(2, cmd->command[1], ft_strlen(cmd->command[1]));
 		write(2, ": ", 3);
 		write(2, tmp, ft_strlen(tmp));
 		write(2, "\n", 2);

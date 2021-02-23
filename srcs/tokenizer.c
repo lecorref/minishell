@@ -93,6 +93,16 @@ int				pipe_it(char **piped_exec_line, int i,
  * the find_redirections function which handles distribution of opened-file
  * file descriptor and $ expand.
 */
+void		print_array3(char **array)
+{
+        int                     i;
+
+        i = -1;
+        while (array[++i])
+                printf("array[%d] :|%s|\n", i, array[i]);
+        printf(LINE2);
+}
+
 int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 		char *execution_line)
 {
@@ -124,6 +134,8 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 /*
 	printf(LINE(FIND_PIPE_N_REDIRECTIONS));
 	printf("execution_line RX: |%s|\n", execution_line);
+	printf(LINE(ARRAY PIPE));
+	print_array3(piped_exec_line);
 		printf(LINE2);
 		printf("command of string %d\tfd READ= %d\n", i, fd_command[0]);
 		printf("command of string %d\tfd WRITE= %d\n\n", i, fd_command[1]);
@@ -217,7 +229,9 @@ t_list			*tokenize_line_jb(char *line, t_list **env)
 
 /*
 	printf(LINE(TOKENIZE_LINE_JB));
+    printf(LINE(ARRAY SEMICOLON));
+	print_array3(execution_lines);
+	printf("execution_line TX: |%s|\n", execution_lines[i]);
 	printf("line RX: |%s|\n", line);
 		printf(LINE2);
-		printf("execution_line TX: |%s|\n", execution_lines[i]);
 */

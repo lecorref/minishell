@@ -11,9 +11,10 @@ void		print_array2(char **array)
         int                     i;
 
         i = -1;
-        printf(LINE(PRINT_ARRAY2));
+		printf(LINE(PRINT_LIST));
         while (array[++i])
                 printf("array[%d] :|%s|\n", i, array[i]);
+		printf("array[%d] :|%s|\n", i, array[i]);
         printf(LINE2);
 }
 
@@ -24,7 +25,6 @@ void		print_fd(int *fd)
 
 void		print_list(t_list *cmd)
 {
-	printf(LINE(PRINT_LIST));
 	while (cmd)
 	{
 		print_array2(((t_command*)(cmd->content))->command);
@@ -38,6 +38,7 @@ int			main(int ac, char *av[], char *ep[])
 {
 	char	*line;
 	t_list	*cmd;
+	t_list	*cmd_cp;
 	t_list	*env;
 	int		ret;
 
@@ -47,13 +48,19 @@ int			main(int ac, char *av[], char *ep[])
 	while ((ret = get_next_line(0, &line)) > 0)
 	{
 		//printf("this shit has to be parsed: %s\n", line);
-		printf("BEFORE TOK\n");
+		//printf("BEFORE TOK\n");
 		cmd = tokenize_line_jb(line, &env);
-		printf("\nAFTER TOK\n");
-		print_list(cmd);
-		//execute_commands(head, ep);
-		ft_lstclear(&cmd, &clear_commandlist);
+		//printf("\nAFTER TOK\n");
 		free(line);
+		//print_list(cmd);
+		cmd_cp = cmd;
+		while (cmd_cp)
+		{
+			execute_command(&env, (t_command*)(cmd_cp->content));
+			cmd_cp = cmd_cp->next;
+		}
+		//print_list(cmd);
+		ft_lstclear(&cmd, &clear_commandlist);
 		ft_putstr("minishell-1.0$ ");
 	}
 	free(line);

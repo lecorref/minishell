@@ -5,7 +5,6 @@ void			print_array(char **array)
 	int			i;
 
 	i = -1;
-	printf(LINE(PRINT_ARRAY));
 	while (array[++i])
 		printf("array[%d] :|%s|\n", i, array[i]);
 	printf(LINE2);
@@ -67,6 +66,8 @@ int				create_array_n_link(t_list **cmd, int	*fd_command,
 	return (1);
 }
 
+//printf(LINE(ARRAY SPACES));
+//print_array(command_array);
 /*
  * -----------------------------------------------------------------------------
  *

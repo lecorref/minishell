@@ -110,8 +110,12 @@ char		**split_with_exception(char *str, char c, char *exception_set)
 		str = ++c_position;
 	}
 	if (!c_position && str)
+	{
 		if (!(split_array[++i] = ft_substr(str, 0, ft_strlen(str))))
 			return (NULL);
+		if (!*(skip_char(split_array[i], ' ')))
+			ft_strdel(&(split_array[i]));
+	}
 	split_array[++i] = NULL;
 	return (split_array);
 }
@@ -159,8 +163,12 @@ char		**split_with_exception_v2(char *str, char c, char *exception_set)
 		str = ++c_position;
 	}
 	if (!c_position && str)
+	{
 		if (!(split_array[++i] = ft_substr(str, 0, ft_strlen(str))))
 			return (NULL);
+		if (!*(skip_char(split_array[i], ' ')))
+			ft_strdel(&(split_array[i]));
+	}
 	split_array[++i] = NULL;
 	return (split_array);
 }

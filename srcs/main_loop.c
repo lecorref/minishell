@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/23 00:49:53 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/23 21:20:42 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,11 +162,6 @@ int		main_loop(t_list *env)
 			prompt(env);
 			continue ;
 		}
-		printf("GNL RET = 1\n");
-		save_line = ft_strdup(line);
-		free(line);
-
-		line = ft_strjoin(line, save_line);
 		cmd = tokenize_line_jb(line, &env);
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the
@@ -180,17 +175,14 @@ int		main_loop(t_list *env)
 		// 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
 		// 4. handle $? and send it to a function
 
-	//	printf("\nfd0 = %d\n", CMD_FD(cmd)[0]);
-	//	printf("\nfd1 = %d\n", CMD_FD(cmd)[1]);
-	//	printf("\nfd2 = %d\n", CMD_FD(cmd)[2]);
-
 		execute_command(&env, &cmd);
 		prompt(env);
-		ft_lstclear(&cmd, &clear_commandlist);// same as  void free_command_list(t_list **command)???
+		ft_lstclear(&cmd, &clear_commandlist);// same as void free_command_list(t_list **command)???
 		// ft_lstdel(&env, free_env); -> at the very end of everything??? or here insede this loop????
 		free(line);
 		line = NULL;
 	}
+	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
 	if (ret_gnl == 0)
 	{
 	//	save_line = ctrl_d_handler(line);
@@ -198,6 +190,8 @@ int		main_loop(t_list *env)
 		free(save_line);
 		main_loop(env);
 	}
+	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
+
 	free(line);
 	line = NULL;
 	ft_lstclear(&env, &clear_envlist);

@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/23 21:15:14 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/23 21:21:32 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	parent_process(t_list **cmd, pid_t fork_pid)
 {
 	int		wstatus;
 
-	ft_array_string_del(CMD(*cmd));// or a function like free_env (inside environment_2 file)???
 	wstatus = 0;
+	ft_array_string_del(CMD(*cmd));// or a function like free_env (inside environment_2 file)???
 	waitpid(fork_pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
 		errno = WEXITSTATUS(wstatus);
