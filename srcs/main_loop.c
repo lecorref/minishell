@@ -20,30 +20,31 @@
 void	execute_command(t_list **env, t_list **cmd)
 {
 	if (ft_strcmp(CMD(*cmd)[0], "echo") == 0)
-		echo_builtin(env, cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "cd") == 0)
-		cd_builtin(env, cmd);
+		echo_builtin(cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "pwd") == 0)
 		pwd_builtin(cmd);
+	else if (ft_strcmp(CMD(*cmd)[0], "exit") == 0)
+		exit_builtin(cmd);
+	else if (ft_strcmp(CMD(*cmd)[0], "cd") == 0)
+		cd_builtin(env, cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "export") == 0)
 		export_builtin(env, cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "unset") == 0)
 		unset_builtin(env, cmd);
 	else if (ft_strcmp(CMD(*cmd)[0], "env") == 0)
 		env_builtin(env, cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "exit") == 0)
-		exit_builtin(env, cmd);
+
 	//else if cmd == $ ??
 	else
 		executable_builtin(env, cmd);
 }
 
 /*
- ** Printing the propt by searching for the SESSION_MANAGER environmetal
- ** variable that is inside of the char **ep argument of the main.
- ** Then spliting the line by / and : just to get the exact name to then print
- ** it on the stdout (fd1).
- */
+** Printing the propt by searching for the SESSION_MANAGER environmetal
+** variable that is inside of the char **ep argument of the main.
+** Then spliting the line by / and : just to get the exact name to then print
+** it on the stdout (fd1).
+*/
 int		prompt(t_list *env)
 {
 	char	*find_env;
@@ -101,49 +102,49 @@ int		gnl_ctrld(int fd, char **line)
 }
 
 /* Signal
- *
- * If the disposition is set to SIG_DFL, then the default action associated
- * with the signal (see signal(7)) occurs.
- *
- *
- * ctrl-C
- * As ctrlC will just print ^C and go to the new line AT ANYTIME, we can handle
- * it inside the loop for when:
- * 1. a blocking command is typed, for example: grep h
- * 2. if something is typed and ctrlD is typed before the return button, it
- * writes ^C and goes to new line/promt.
- * 3. for when command line is empty and no return button pressed (crtlC is
- * pressed instead).
- *
- * ctrl-\
- * Before the user input something, if ctrl\ is typed, nothing happpens inside
- * the loop, if ctrl\ is typed, it has a different comportament).
- * 1. if a blocking command is typed, ctrl\ kils the comman with a (core dumped)
- * message and goes to a new line - i.e.: shows the prompt).
- * 2. if something is typed and ctrl\ is typer before the return button, it
- * does nothing.
- */
+**
+** If the disposition is set to SIG_DFL, then the default action associated
+** with the signal (see signal(7)) occurs.
+**
+**
+** ctrl-C
+** As ctrlC will just print ^C and go to the new line AT ANYTIME, we can handle
+** it inside the loop for when:
+** 1. a blocking command is typed, for example: grep h
+** 2. if something is typed and ctrlD is typed before the return button, it
+** writes ^C and goes to new line/promt.
+** 3. for when command line is empty and no return button pressed (crtlC is
+** pressed instead).
+**
+** ctrl-\
+** Before the user input something, if ctrl\ is typed, nothing happpens inside
+** the loop, if ctrl\ is typed, it has a different comportament).
+** 1. if a blocking command is typed, ctrl\ kils the comman with a (core dumped)
+** message and goes to a new line - i.e.: shows the prompt).
+** 2. if something is typed and ctrl\ is typer before the return button, it
+** does nothing.
+*/
 
 /* ctrl-D
- * Before the user input something, if ctrlD is typed, the string "exit" is
- * written after the prompt, then the shell closes, and $SHLVL environment
- * variable is decreased after any input, if ctrlD is typed, it has a different
- * comportament:
- * 1. if a blocking command is typed, ctrlD stops the command and goes to a
- * new line - i.e.: shows the prompt).
- * 2. if something is typed and ctrlD is typed before the return button, it
- * does nothing.
- */
+** Before the user input something, if ctrlD is typed, the string "exit" is
+** written after the prompt, then the shell closes, and $SHLVL environment
+** variable is decreased after any input, if ctrlD is typed, it has a different
+** comportament:
+** 1. if a blocking command is typed, ctrlD stops the command and goes to a
+** new line - i.e.: shows the prompt).
+** 2. if something is typed and ctrlD is typed before the return button, it
+** does nothing.
+*/
 
 /* This loop should only exit on ctrlD, sigquit and "exit" builtin.
- * It should be able to refuse to exit on Ctrl-d if needed (when something is
- * typed and then the ctrlD is typed before the return button, it doesn't exit;
- * otherwise it'll exit, either the command or the shell).
- * gnl return:
- * 1 = line read,
- * 0 = EOF
- * -1 = error
- */
+** It should be able to refuse to exit on Ctrl-d if needed (when something is
+** typed and then the ctrlD is typed before the return button, it doesn't exit;
+** otherwise it'll exit, either the command or the shell).
+** gnl return:
+** 1 = line read,
+** 0 = EOF
+** -1 = error
+*/
 int		main_loop(t_list *env)
 {
 	t_list	*cmd;

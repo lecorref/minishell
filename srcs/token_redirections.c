@@ -1,16 +1,16 @@
 #include "minishell.h"
 
 /*
- * redirections() translate the symbol of the first character from the given
- * line to a code to how to use open().
- * It then search for the first character of the string which must be the
- * filename, and will be give as parameter to open().
- * It must expand the dollar character '$' and also translate any relative path.
- * Once all data is fetched to use open accordingly, redirections() records the
- * given file descriptor in the the appropriate int array which had been given
- * from parameter.
- * It modifies the address where the given pointer line_ptr points to the end
- * of the processed string.
+** redirections() translate the symbol of the first character from the given
+** line to a code to how to use open().
+** It then search for the first character of the string which must be the
+** filename, and will be give as parameter to open().
+** It must expand the dollar character '$' and also translate any relative path.
+** Once all data is fetched to use open accordingly, redirections() records the
+** given file descriptor in the the appropriate int array which had been given
+** from parameter.
+** It modifies the address where the given pointer line_ptr points to the end
+** of the processed string.
 */
 int				remove_quotes(char **str)
 {

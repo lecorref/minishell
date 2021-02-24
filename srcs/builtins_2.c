@@ -113,27 +113,27 @@ int		exit_arg(t_list **cmd, size_t i)
 	return (0);
 }
 
-/* exit <nb less than long long>
- * output: exit\n
- * echo $? = if nb > 255 < longlong, it starts over again to count from 0 to 255
- *
- * exit <any string or number bigger than a long long>
- * output: exit\nbash: exit: <argv>: numeric argument required\n
- * echo $? = 2
- *
- * exit <str or nb less than long long> <str or nb less than long long>
- * output: exit\nbash: exit: too many arguments\n
- * IT DOES EXIT THE SHELL
- * echo $? = 1
- *
- * If <argv> is omitted, the exit status is that of the last command executed.
- */
-int		exit_builtin(t_list **env, t_list **cmd)
+/*
+** exit <nb less than long long>
+** output: exit\n
+** echo $? = if nb > 255 < longlong, it starts over again to count from 0 to 255
+**
+** exit <any string or number bigger than a long long>
+** output: exit\nbash: exit: <argv>: numeric argument required\n
+** echo $? = 2
+**
+** exit <str or nb less than long long> <str or nb less than long long>
+** output: exit\nbash: exit: too many arguments\n
+** IT DOES EXIT THE SHELL
+** echo $? = 1
+**
+** If <argv> is omitted, the exit status is that of the last command executed.
+*/
+int		exit_builtin(t_list **cmd)
 {
 	size_t	i;
 	int	errnb;
 
-	(void)env;
 	errnb = 0;
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
