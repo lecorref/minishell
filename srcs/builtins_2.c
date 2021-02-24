@@ -1,12 +1,12 @@
 #include "minishell.h"
 
-int		pwd_builtin(t_list **cmd)
+int		pwd_builtin(t_command *cmd)
 {
 	char	*stored;
 
 	stored = getcwd(NULL, 0);
-	ft_putstr_fd(stored, CMD_FD(*cmd)[1]);
-	ft_putchar_fd('\n', CMD_FD(*cmd)[1]);
+	ft_putstr_fd(stored, cmd->fd[1]);
+	ft_putchar_fd('\n', cmd->fd[1]);
 	free(stored);
 	return (0);
 }
@@ -71,17 +71,17 @@ int		update_pwd(t_list **env)
 	return (0);
 }
 
-int		cd_builtin(t_list **env, t_list **cmd)
+int		cd_builtin(t_list **env, t_command *cmd)
 {
-	if (!(CMD(*cmd)[1]))
-		if (!(CMD(*cmd)[1] = ft_strjoin("~", "")))
+	if (!(cmd->command[1]))
+		if (!(cmd->command[1] = ft_strjoin("~", "")))
 			return (-1);
-	if (!(CMD(*cmd)[1][0]))
+	if (!(cmd->command[1][0]))
 		return (0);
-	CMD(*cmd)[1] = expand_tilde(env, CMD(*cmd)[1]);
-	if ((chdir(CMD(*cmd)[1])) == -1)
+	cmd->command[1] = expand_tilde(env, cmd->command[1]);
+	if ((chdir(cmd->command[1])) == -1)
 	{
-		print_cd_error(CMD(*cmd)[0], CMD(*cmd)[1], strerror(errno), 2);
+		print_cd_error(cmd->command[0], cmd->command[1], strerror(errno), 2);
 		return (-1);
 	}
 	if (update_pwd(env) == -1)
@@ -89,21 +89,29 @@ int		cd_builtin(t_list **env, t_list **cmd)
 	return (0);
 }
 
-int		exit_arg(t_list **cmd, size_t i)
+/*
+** If the index equals the length of the first argument, it means it is and
+** intire numerical argument, so we can check the second argument, if any.
+**
+** 1. Checking if there is no second argument, if so, multiplies and module
+** divides the errno so we can have a correct exit status (and exit minishell).
+** 2. Otherwise, if there is a 2nd parameter, output the correct error message.
+*/
+int		exit_arg(t_command *cmd, size_t i)
 {
 	int	errnb;
 
 	errnb = 0;
-	if (i == ft_strlen(CMD(*cmd)[1]))
+	if (i == ft_strlen(cmd->command[1]))
 	{
-		if (!CMD(*cmd)[2])
+		if (!cmd->command[2])
 		{
-			errno = ft_atoi(CMD(*cmd)[1]);
+			errno = ft_atoi(cmd->command[1]);
 			errno += 256;
 			errno %= 256;
 			exit(errno);
 		}
-		else if (CMD(*cmd)[2])
+		else if (cmd->command[2])
 		{
 			errnb = 1;
 			error_msg_bash(cmd, errnb, "too many arguments\n");
@@ -128,8 +136,16 @@ int		exit_arg(t_list **cmd, size_t i)
 ** echo $? = 1
 **
 ** If <argv> is omitted, the exit status is that of the last command executed.
+**
+**
+** If there is one argument:
+**		1. if it's a + or -, increase the endex (ignore it).
+**		2. while the argument is a number, increase the index.
+**		3. if the index is different form the length of the first argument, then
+**		it means that this argument does not contains only numberm an so, it's
+**		not a intire numeric argument. Then, output the correct error messsage.
 */
-int		exit_builtin(t_list **cmd)
+int		exit_builtin(t_command *cmd)
 {
 	size_t	i;
 	int	errnb;
@@ -137,19 +153,19 @@ int		exit_builtin(t_list **cmd)
 	errnb = 0;
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
-	if (CMD(*cmd)[1] == NULL)
+	if (cmd->command[1] == NULL)
 		exit(0);
-	else if (CMD(*cmd)[1])
+	else if (cmd->command[1])
 	{
-		if (CMD(*cmd)[1][0] == '+' || CMD(*cmd)[1][0] == '-')
+		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
 			i++;
-		while (ft_isdigit((char)CMD(*cmd)[1][i]) == 1)
+		while (ft_isdigit((char)cmd->command[1][i]) == 1)
 			i++;
-		if (i != ft_strlen(CMD(*cmd)[1]))
+		if (i != ft_strlen(cmd->command[1]))
 		{
 			errnb = 2;
-			error_msg_bash(cmd, errnb, CMD(*cmd)[1]);
-			ft_putstr_fd(": numeric argument required\n", CMD_FD(*cmd)[2]);
+			error_msg_bash(cmd, errnb, cmd->command[1]);
+			ft_putstr_fd(": numeric argument required\n", cmd->fd[2]);
 			exit(errnb);
 		}
 		exit_arg(cmd, i);
