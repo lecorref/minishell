@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/24 14:42:20 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/24 19:19:02 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@
 ** waiting for a SIGQUIT (ctrl\) signal if any, while child does not quit (if
 ** it gets to quit).
 */
-void	parent_process(t_command *cmd, pid_t fork_pid)
+void	parent_process(pid_t fork_pid)
 {
 	int		wstatus;
 
-	ft_array_string_del(cmd->command);// or a function like free_env (inside environment_2 file)???
+//	ft_array_string_del(cmd->command);// or a function like free_env (inside environment_2 file)???
 	wstatus = 0;
 	waitpid(fork_pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
@@ -52,7 +52,10 @@ void	parent_process(t_command *cmd, pid_t fork_pid)
 ** 2. This absolute path will be tested by open(), if it does not open,
 ** variables will be freed. else, continue testing the other env_path lines
 ** untill one of them opens.
-** 3. Return the absolute path that was opened (close its fd before the return).
+** 3. Return the absolute path that was opened (close its fd before the return)
+** or NULL if cmd = NULL inside (then FT_strjoin returns NULL), or if the file
+** does not open with any of the paths from $PATH (because then add_path_to_cmd
+** will be freed and set to nULL by the ft_strdel function).
 */
 char	*find_absolute_path(char *cmd, char *env_path)
 {
@@ -211,23 +214,27 @@ int		executable_builtin(t_list **env, t_command *cmd)
 ////////////////////
 	if ((fork_pid = fork()) == -1)
 		exit(errno);
+
 	else if (fork_pid == 0)//child will exec
 	{
 		if (execve(path_to_cmd, cmd->command, envir) == -1)
 		{
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
-			{
-				errno = 2;
-				error_msg_bash(cmd, -1, "");
+			//{
+				//errno = 2;
+				error_msg("bash", cmd, NULL, strerror(2));
 				//bash: <cmd>: No such file or directory (errno 2 for this msg)
-			}
+			//}
 			if (ft_strcmp(path_to_cmd, "exit") == 0)
-				error_msg(cmd, 127, "command not found\n");
+			{
+				printf("\n%s\n", path_to_cmd);
+				error_msg(NULL, cmd, NULL, "command not found");
+			}
 				//<cmd>: command not found (no errno number for this message)
 			exit(127);
 		}
 	}
 	free(envir);
-	parent_process(cmd, fork_pid);//child fork pid returned to the parent
+	parent_process(fork_pid);//child fork pid returned to the parent
 	return (0);
 }
