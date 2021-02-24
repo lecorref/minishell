@@ -69,6 +69,7 @@ int		prompt(t_list *env)
 		free(session_manager);
 		return (0);
 	}
+	return (0);
 }
 
 int		gnl_ctrld(int fd, char **line)
@@ -150,10 +151,8 @@ int		main_loop(t_list *env)
 	t_list	*cmd;
 	t_list	*cmd_cp;
 	char	*line;
-	char	*save_line;
 	int		ret_gnl;
 
-	save_line = ft_strdup("");
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, ctrl_back_slash_handler);
 	prompt(env);

@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/24 19:19:02 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/25 00:32:10 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ char	*find_absolute_path(char *cmd, char *env_path)
 		else
 			break ;
 	}
+	ft_strdel(&add_slash_to_path);
 	ft_strdel(each_path_dir);
 	if (fd > 2)
 		close(fd);
@@ -119,6 +120,7 @@ char	*relative_path(char *cmd, char *env_path)
 		else
 			break ;
 	}
+	ft_strdel(&cmd_without_tilde);
 	ft_strdel(each_path_dir);
 	if (fd > 2)
 		close(fd);
@@ -231,6 +233,7 @@ int		executable_builtin(t_list **env, t_command *cmd)
 				error_msg(NULL, cmd, NULL, "command not found");
 			}
 				//<cmd>: command not found (no errno number for this message)
+			free(path_to_cmd);
 			exit(127);
 		}
 	}
