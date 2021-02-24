@@ -21,7 +21,7 @@ static char		**alpha_order_string(t_list *env)
 	envir = env_list_to_tab(env);
 	if (!envir || !envir[1])
 		return (NULL);
-	while (envir[i + 1] != NULL)
+	while (envir[i + 1])
 	{
 		if (ft_strcmp(envir[i], envir[i + 1]) > 0)// meaning envir[i] is a char bigger than envir[i + 1]. ex B, A .. then: swap
 		{
@@ -48,7 +48,7 @@ int			export_builtin(t_list **env, t_command *cmd)
 		add_env_variable(env, cmd->command[1]);
 	else if (cmd->command[0] && !cmd->command[1])
 	{
-		while (envir[i] && envir[i + 1] != NULL)
+		while (envir[i] && envir[i + 1])
 		{
 			ft_putstr_fd("declare -x ", cmd->fd[1]);
 			split_line = ft_substr(envir[i], 0, sizeof(char) *
@@ -60,8 +60,8 @@ int			export_builtin(t_list **env, t_command *cmd)
 			free(split_line);
 			i++;
 		}
-		free(envir);
 	}
+	free(envir);
 	return (0);
 }
 
