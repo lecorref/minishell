@@ -6,39 +6,39 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:34:20 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/22 21:35:43 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/24 14:37:48 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	error_msg_bash(t_list **cmd, int errnb, char *err_msg)
+void	error_msg_bash(t_command *cmd, int errnb, char *err_msg)
 {
 //	printf("ENTERED ERROR_MSG_BASH\n");
-	ft_putstr_fd("bash: ", CMD_FD(*cmd)[2]);
-	ft_putstr_fd(CMD(*cmd)[0], CMD_FD(*cmd)[2]);
-	ft_putstr_fd(": ", CMD_FD(*cmd)[2]);
+	ft_putstr_fd("bash: ", cmd->fd[2]);
+	ft_putstr_fd(cmd->command[0], cmd->fd[2]);
+	ft_putstr_fd(": ", cmd->fd[2]);
 	if (errnb >= 0)
-		ft_putstr_fd(err_msg, CMD_FD(*cmd)[2]);
+		ft_putstr_fd(err_msg, cmd->fd[2]);
 	else
 	{
-		ft_putstr_fd(strerror(errno), CMD_FD(*cmd)[2]);
-		ft_putchar_fd('\n', CMD_FD(*cmd)[2]);
+		ft_putstr_fd(strerror(errno), cmd->fd[2]);
+		ft_putchar_fd('\n', cmd->fd[2]);
 	}
 //	ft_free(cmd);  or free_command_list(t_list *cmd);
 }
 
-void	error_msg(t_list **cmd, int errnb, char *err_msg)
+void	error_msg(t_command *cmd, int errnb, char *err_msg)
 {
 //	printf("ENTERED ERROR_MSG\n");
-	ft_putstr_fd(CMD(*cmd)[0], CMD_FD(*cmd)[2]);
-	ft_putstr_fd(": ", CMD_FD(*cmd)[2]);
+	ft_putstr_fd(cmd->command[0], cmd->fd[2]);
+	ft_putstr_fd(": ", cmd->fd[2]);
 	if (errnb >= 0)
-		ft_putstr_fd(err_msg, CMD_FD(*cmd)[2]);
+		ft_putstr_fd(err_msg, cmd->fd[2]);
 	else
 	{
-		ft_putstr_fd(strerror(errno), CMD_FD(*cmd)[2]);
-		ft_putchar_fd('\n', CMD_FD(*cmd)[2]);
+		ft_putstr_fd(strerror(errno), cmd->fd[2]);
+		ft_putchar_fd('\n', cmd->fd[2]);
 	}
 //	ft_free(cmd);  or free_command_list(t_list *cmd);
 }

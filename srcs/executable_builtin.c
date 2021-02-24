@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/24 00:55:49 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/24 14:42:20 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@
 ** waiting for a SIGQUIT (ctrl\) signal if any, while child does not quit (if
 ** it gets to quit).
 */
-void	parent_process(t_list **cmd, pid_t fork_pid)
+void	parent_process(t_command *cmd, pid_t fork_pid)
 {
 	int		wstatus;
 
-	ft_array_string_del(CMD(*cmd));// or a function like free_env (inside environment_2 file)???
+	ft_array_string_del(cmd->command);// or a function like free_env (inside environment_2 file)???
 	wstatus = 0;
 	waitpid(fork_pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
@@ -140,28 +140,28 @@ char	*relative_path(char *cmd, char *env_path)
 ** it was already typed like that, or because it was turned into an absolute
 ** path.
 */
-char	*path_to_executable(t_list **env, t_list **cmd)
+char	*path_to_executable(t_list **env, t_command *cmd)
 {
 	char	*abs_path;
 	char	*env_path;
 	int		fd;
 
 	env_path = find_env_value(env, "PATH");
-	if (!CMD(*cmd))
+	if (!cmd->command)
 		return (NULL);
-	if (CMD(*cmd)[0][0] != '/' && ft_strncmp(CMD(*cmd)[0], "./", 2) != 0
-		&& ft_strncmp(CMD(*cmd)[0], "../", 3) != 0 && env_path != NULL &&
-		ft_strncmp(CMD(*cmd)[0], "~/", 2) != 0)
+	if (cmd->command[0][0] != '/' && ft_strncmp(cmd->command[0], "./", 2) != 0
+		&& ft_strncmp(cmd->command[0], "../", 3) != 0 && env_path != NULL &&
+		ft_strncmp(cmd->command[0], "~/", 2) != 0)
 	{
-		if ((abs_path = find_absolute_path(CMD(*cmd)[0], env_path)) == NULL)
+		if ((abs_path = find_absolute_path(cmd->command[0], env_path)) == NULL)
 			return ("exit");
 	}
 	else
 	{
-		if (ft_strncmp(CMD(*cmd)[0], "~/", 2) == 0)
-			abs_path = relative_path(CMD(*cmd)[0], env_path);
+		if (ft_strncmp(cmd->command[0], "~/", 2) == 0)
+			abs_path = relative_path(cmd->command[0], env_path);
 		else
-			abs_path = ft_strdup(CMD(*cmd)[0]);
+			abs_path = ft_strdup(cmd->command[0]);
 		if ((fd = open(abs_path, O_RDONLY)) == -1)
 			return ("exit_bash");
 		if (fd > 2)
@@ -187,29 +187,33 @@ char	*path_to_executable(t_list **env, t_list **cmd)
 **		-1 is returned in  the  parent, no child process is created, and
 ** errno is set appropriately.
 */
-int		executable_builtin(t_list **env, t_list **cmd)
+int		executable_builtin(t_list **env, t_command *cmd)
 {
 	char	**envir;
 	char	*path_to_cmd;
 	pid_t	fork_pid;
 
 	envir = env_list_to_tab(*env);
+//	envir = ft_split(find_env_value(env, "PATH"), ':');
 	path_to_cmd = path_to_executable(env, cmd);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-
+////////////////// tests
 	int	i;
 	i = 0;
-	while (CMD(*cmd)[i])
+	while (cmd->command[i])
 	{
-		printf("CMD(*cmd)[%d] = %s\n", i, CMD(*cmd)[i]);
+		printf("cmd->command[%d] = %s\n", i, cmd->command[i]);
 		i++;
 	}
-
+//	i = 0;
+//	while (envir[i])
+//		printf("env = %s\n", envir[i++]);
+////////////////////
 	if ((fork_pid = fork()) == -1)
 		exit(errno);
 	else if (fork_pid == 0)//child will exec
 	{
-		if (execve(path_to_cmd, CMD(*cmd), envir) == -1)
+		if (execve(path_to_cmd, cmd->command, envir) == -1)
 		{
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
 			{
@@ -223,6 +227,7 @@ int		executable_builtin(t_list **env, t_list **cmd)
 			exit(127);
 		}
 	}
+	free(envir);
 	parent_process(cmd, fork_pid);//child fork pid returned to the parent
 	return (0);
 }

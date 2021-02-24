@@ -112,7 +112,7 @@ void		ft_array_string_del(char **array);
  * This function will find if the command is a builtin and execute it, or
  * execute said command with execve.
  */
-void		execute_command(t_list **env, t_list **cmd);
+void		execute_command(t_list **env, t_command *cmd);
 
 
 /* ------------------------------------------------------------------------- */
@@ -121,14 +121,14 @@ void		execute_command(t_list **env, t_list **cmd);
  * Builtins
  */
 
-int			echo_builtin(t_list **cmd);
-int			pwd_builtin(t_list **cmd);
-int			exit_builtin(t_list **cmd);
-int			cd_builtin(t_list **head, t_list **cmd);
-int			export_builtin(t_list **head, t_list **cmd);
-int			unset_builtin(t_list **head, t_list **cmd);
-int			env_builtin(t_list **head, t_list **cmd);
-int			executable_builtin(t_list **head, t_list **cmd);
+int			echo_builtin(t_command *cmd);
+int			pwd_builtin(t_command *cmd);
+int			exit_builtin(t_command *cmd);
+int			cd_builtin(t_list **head, t_command *cmd);
+int			export_builtin(t_list **head, t_command *cmd);
+int			unset_builtin(t_list **head, t_command *cmd);
+int			env_builtin(t_list **head, t_command *cmd);
+int			executable_builtin(t_list **head, t_command *cmd);
 
 
 /* ------------------------------------------------------------------------- */
@@ -137,8 +137,8 @@ int			executable_builtin(t_list **head, t_list **cmd);
  * errors/signal handlins/exits functions
  */
 
-void		error_msg_bash(t_list **cmd, int errnb, char *err_msg);
-void		error_msg(t_list **cmd, int errnb, char *err_msg);
+void		error_msg_bash(t_command *cmd, int errnb, char *err_msg);
+void		error_msg(t_command *cmd, int errnb, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
 void		ctrl_c_handler(int signal);

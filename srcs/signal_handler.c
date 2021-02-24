@@ -27,7 +27,17 @@ void	ctrl_c_handler(int signal)
 
 void	ctrl_d_handler(char *line)
 {
-	line = NULL;
-	ft_putstr_fd("exit\n", 2);
-	exit(0);//after a ctrlD on an empry prompt, the $? == 0
+	char	*save_line;
+
+	save_line = ft_strdup("");
+	if (!line[0])
+	{
+		ft_putstr_fd("exit\n", 2);
+		exit(0);//after a ctrlD on an empry prompt, the $? == 0
+	}
+	if (line[0])
+	{
+		line = ft_strjoin(save_line, line);
+		free(save_line);
+	}
 }

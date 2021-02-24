@@ -17,21 +17,21 @@
 //{
 //	(func)(env, cmd);
 //} ???? I DON'T KNOW HOW TO DO IT WITH POINTER TO FUNCITONS :/ HELLLLP
-void	execute_command(t_list **env, t_list **cmd)
+void	execute_command(t_list **env, t_command *cmd)
 {
-	if (ft_strcmp(CMD(*cmd)[0], "echo") == 0)
+	if (ft_strcmp(cmd->command[0], "echo") == 0)
 		echo_builtin(cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "pwd") == 0)
+	else if (ft_strcmp(cmd->command[0], "pwd") == 0)
 		pwd_builtin(cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "exit") == 0)
+	else if (ft_strcmp(cmd->command[0], "exit") == 0)
 		exit_builtin(cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "cd") == 0)
+	else if (ft_strcmp(cmd->command[0], "cd") == 0)
 		cd_builtin(env, cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "export") == 0)
+	else if (ft_strcmp(cmd->command[0], "export") == 0)
 		export_builtin(env, cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "unset") == 0)
+	else if (ft_strcmp(cmd->command[0], "unset") == 0)
 		unset_builtin(env, cmd);
-	else if (ft_strcmp(CMD(*cmd)[0], "env") == 0)
+	else if (ft_strcmp(cmd->command[0], "env") == 0)
 		env_builtin(env, cmd);
 
 	//else if cmd == $ ??
@@ -148,6 +148,7 @@ int		gnl_ctrld(int fd, char **line)
 int		main_loop(t_list *env)
 {
 	t_list	*cmd;
+	t_list	*cmd_cp;
 	char	*line;
 	char	*save_line;
 	int		ret_gnl;
@@ -176,8 +177,12 @@ int		main_loop(t_list *env)
 		// enrironment variabes - NO need to try multilines)
 		// 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
 		// 4. handle $? and send it to a function
-
-		execute_command(&env, &cmd);
+		cmd_cp = cmd;
+		while (cmd_cp)
+		{
+			execute_command(&env, (t_command*)(cmd_cp->content));
+			cmd_cp = cmd_cp->next;
+		}
 		prompt(env);
 		ft_lstclear(&cmd, &clear_commandlist);// same as void free_command_list(t_list **command)???
 		// ft_lstdel(&env, free_env); -> at the very end of everything??? or here insede this loop????
@@ -187,9 +192,7 @@ int		main_loop(t_list *env)
 	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
 	if (ret_gnl == 0)
 	{
-	//	save_line = ctrl_d_handler(line);
-		line = ft_strjoin(save_line, line);
-		free(save_line);
+		ctrl_d_handler(line);
 		main_loop(env);
 	}
 	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
