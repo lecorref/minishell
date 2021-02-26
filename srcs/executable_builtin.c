@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/23 17:04:56 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/24 13:15:59 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,14 +146,17 @@ int		executable_builtin(t_list **env, t_command *cmd)
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
 			{
 				errno = 2;
-				error_msg_bash(cmd, -1, "");//bash: <cmd>: No such file or directory (errno 2 for this message)
+				error_msg_bash(cmd, -1, "");
 			}
 			if (ft_strcmp(path_to_cmd, "exit") == 0)
-				error_msg(cmd, 127, "command not found\n");//<cmd>: command not found (there's no errno number for this message)
+				error_msg(cmd, 127, "command not found\n");
 			exit(127);
 		}
 	}
 	else
-		executable_parent(cmd, fork_pid);//child pid returned to the parent
+		executable_parent(cmd, fork_pid);
 	return (0);
 }
+//bash: <cmd>: No such file or directory (errno 2 for this message)
+////<cmd>: command not found (there's no errno number for this message)
+////child pid returned to the parent
