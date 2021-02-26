@@ -11,7 +11,6 @@
 ** It returns an error if a character from the set is met only 1 time before
 ** the end of the string.
 */
-
 char		*ghosting(char *str, char c, char *exception_set, int *error)
 {
 	char	*ghoster;
@@ -58,44 +57,42 @@ char		**split_count_n_array_make(char *str, char c, char *exception_set)
 	return (split_array);
 }
 
-/*
- * Current behavior of split_with_exception: if this line is received >;;
- * split_with_exception will see >; >; >'\0' >null
- * So the two first strings created  will contain ';' & the third '\0' & the
- * last will be null.
+/* Current behavior of split_with_exception: if this line is received >;;
+** split_with_exception will see >; >; >'\0' >null
+** So the two first strings created  will contain ';' & the third '\0' & the
+** last will be null.
  *
- * Behavior with no semi-colon :	>hello
- * 									-splited =>hello'\0' >null
- * 
- * Behavior with one semi-colon :	>hello;
- * 									splited =>hello;'\0' >'\0' >null
- * 
- * If it receives nothing (type 'enter' means a "\0" string from gnl) >
- * It will create 1 string fullfiled with a '\0'
- * In minishell behavior, the less we can receive is a "\0" string.
- *
- *
- * A string like >"hello 'you'; :) how are you" bla ; 'my' name "is;" toto
- * will give this : 1 - >|"hello 'you'; :) how are you" bla ;|<
- * 					2 - >| 'my' name "is;" toto|<
- * 					3 - >|null
- * The array is always null-terminated.
- *
- * This function takes a set of characters which will indicates to spliter
- * to ghost the spliting character.
- * The behavior is the following :
- *
- * 	-	We split the line with the spliter character 'c', but this character is
- * 		kept at the end of the line.
- * 	-	If a character from the exception_set is met, we won't split the line
- * 		at the next meeting of spliter character 'c' until we meet a second time
- * 		the character from exception_set that we already met a first time.
- * 	-	If the corresponding exception_set character is never met, it returns
- * 		an error. (actually, NULL)
- *
- * Returns a null terminated array of null terminated strings.
+** Behavior with no semi-colon :	>hello
+** 									-splited =>hello'\0' >null
+**
+** Behavior with one semi-colon :	>hello;
+** 									splited =>hello;'\0' >'\0' >null
+**
+** If it receives nothing (type 'enter' means a "\0" string from gnl) >
+** It will create 1 string fullfiled with a '\0'
+** In minishell behavior, the less we can receive is a "\0" string.
+**
+**
+** A string like >"hello 'you'; :) how are you" bla ; 'my' name "is;" toto
+** will give this : 1 - >|"hello 'you'; :) how are you" bla ;|<
+** 					2 - >| 'my' name "is;" toto|<
+** 					3 - >|null
+** The array is always null-terminated.
+**
+** This function takes a set of characters which will indicates to spliter
+** to ghost the spliting character.
+** The behavior is the following :
+**
+** 	-	We split the line with the spliter character 'c', but this character is
+** 		kept at the end of the line.
+** 	-	If a character from the exception_set is met, we won't split the line
+** 		at the next meeting of spliter character 'c' until we meet a second time
+** 		the character from exception_set that we already met a first time.
+** 	-	If the corresponding exception_set character is never met, it returns
+** 		an error. (actually, NULL)
+**
+** Returns a null terminated array of null terminated strings.
 */
-
 char		**split_with_exception(char *str, char c, char *exception_set)
 {
 	char	**split_array;
@@ -149,7 +146,6 @@ int			create_string_arr(int i, char *str, char *c_pos, char **split_arr)
 ** It is made to split the command_string, so remove flags characters (quotes)
 ** & split characters (spaces which are been added to split the string).
 */
-
 char		**split_with_exception_v2(char *str, char c, char *exception_set)
 {
 	char	**split_array;

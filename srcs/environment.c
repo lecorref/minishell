@@ -11,6 +11,16 @@ static int	create_env_struct(char *keyvalue, t_env *env)
 	return (1);
 }
 
+/*
+** Create and store environment in a linked list of t_env from envp variable.
+** All the links of the list are malloc() and should be free() once the program
+** exit. If the first arg was malloc(), it can be free() after.
+**
+** @args:
+**		char **envp a string table containing entries with the format KEY=VALUE
+** @return:
+**		t_list *: a pointer to the head of a list.
+*/
 t_list	*create_env_list(char **envp)
 {
 	t_env	*new;
@@ -29,6 +39,16 @@ t_list	*create_env_list(char **envp)
 	return (env);
 }
 
+/*
+** Return a table similar to envp from a linked list of t_env.
+** The table is malloc() and should be free() after use.
+** The result should correspond to the return of the `env` builtin.
+**
+** @args:
+**		t_list *env: a pointer to the head of a linked list.
+** @return:
+**		char **: a string table containing entries with the format KEY=VALUE
+*/
 char	**env_list_to_tab(t_list *env)
 {
 	int		count;
@@ -52,6 +72,16 @@ char	**env_list_to_tab(t_list *env)
 	return (new_env);
 }
 
+/*
+** Create a new t_env from a string (format: KEY=VALUE) and push it on top of
+** the linked list.
+** The string is duplicated and can be free() after use. If the key already
+** exist its old value is replaced by the new one.
+**
+** @args:
+**		t_list **env: a pointer to the first link of the list.
+**		char *var: a string with the format KEY=VALUE
+*/
 void	add_env_variable(t_list **env, char *var)
 {
 	t_env	*new;
@@ -79,6 +109,16 @@ void	add_env_variable(t_list **env, char *var)
 	}
 }
 
+/*
+** Will find a value if the key is stored inside a linked_list of t_env.
+** The string is NOT duplicated and shouldn't be free() after use.
+**
+** @args:
+**		t_list **head: a pointer to the first link of the list.
+**		char *key: a string that will be compared against t_env->key
+** @return:
+**		char *: a string that correspond to the key that was sent.
+*/
 char	*find_env_value(t_list **env, char *key)
 {
 	t_list	*tmp_env;

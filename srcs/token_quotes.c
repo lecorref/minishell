@@ -42,7 +42,6 @@ int				create_final_str(char **str, char **line_ptr, char **final_str)
 ** the processed string, after the quote.
 ** It returns a malloc() address to a null-terminated string.
 */
-
 char			*double_quotes(t_list **env, char **line_ptr)
 {
 	char		*str;
@@ -79,7 +78,6 @@ char			*double_quotes(t_list **env, char **line_ptr)
 ** end of the processed string (eol or is_symbol() char).
 ** It returns a malloc() address to a null-terminated string.
 */
-
 char			*no_quotes(t_list **env, char **line_ptr)
 {
 	char		*str;
@@ -113,7 +111,6 @@ char			*no_quotes(t_list **env, char **line_ptr)
 ** the processed string, after the quote.
 ** It returns a malloc() address to a null-terminated string.
 */
-
 char			*simple_quotes(char **line_ptr)
 {
 	char		*word_object;

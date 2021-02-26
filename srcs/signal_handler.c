@@ -21,14 +21,23 @@ void	ctrl_c_handler(int signal)
 	if (signal == SIGINT)
 	{
 		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
-		errno = 1;// or 130???
+		errno = 130;// or 1???
 	}
 }
 
-void	ctrl_d_handler(char *line)//char *line)
+void	ctrl_d_handler(char *line)
 {
-	(void)line;
-//	free(line);// need to free even though there is no line??
-	ft_putstr_fd("exit\n", 2);
-	exit(0);//after a ctrlD on an empry prompt, the $? == 0
+	char	*save_line;
+
+	save_line = ft_strdup("");
+	if (!line[0])
+	{
+		ft_putstr_fd("exit\n", 2);
+		exit(0);//after a ctrlD on an empry prompt, the $? == 0
+	}
+	if (line[0])
+	{
+		line = ft_strjoin(save_line, line);
+		free(save_line);
+	}
 }

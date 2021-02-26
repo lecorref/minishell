@@ -11,11 +11,10 @@
 **
 ** 	6-	ls|rev||wc		>ls| >rev| >| >wc		-> 'or' not handled.
 ** 	In the case above, we have a logical 'or' which we don't handle, but we
-** 	still must make the commands before 'or' works. In this case the function
+** 	still must make the commands before 'or' work. In this case the function
 ** 	replaces the first character of all following splited lines by '\0' to make
 ** 	them invisible & by this way not usable.
 */
-
 int			parse_token_error(char **str, int i)
 {
 	char	*skiped;
@@ -56,7 +55,6 @@ int			parse_token_error(char **str, int i)
 ** means a pipe had been opened before to write into, so the current one must
 ** read into the read end pipe created before, which had been saved in fd_tmp.
 */
-
 int				pipe_it(char **piped_exec_line, int i,
 		int *fd_command, int *fd_tmp)
 {
@@ -95,7 +93,6 @@ int				pipe_it(char **piped_exec_line, int i,
 ** the find_redirections function which handles distribution of opened-file
 ** file descriptor and $ expand.
 */
-
 void		print_array3(char **array)
 {
         int                     i;
@@ -178,9 +175,7 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 ** 						-	fd[1] - fd to which exe write.
 ** 						-	fd[2] - fd to which exe write errors.
 **
-**
 ** -----------------------------------------------------------------------------
-**
 **
 ** To redirect fd to which called exe will read or write (to/from a file fd or
 ** to/from a pipe fd (=stream)) we will use the following way :
@@ -193,7 +188,7 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 ** an executable is coded to write to an object (screen) which is always pointed
 ** by fd=1. We can't change the number of the fd which is used by the
 ** executable, but we can change the object the fd=1 points to.
-** 
+**
 ** So instead of pointing to screen object, we can make fd=1 points to a file
 ** object, or a pipe object.
 **
@@ -202,13 +197,12 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 ** int	execve(char *path/to/exe, char **args, char **ev);
 **
 ** Then, execution process will use the content of each link as this :
-** 
+**
 ** 1 - Parse head->content->command[0] to extract the path & name of the exe
 ** 2 - If head->content->fd[0], [1], [2]  != 0, 1, 2 -> corresponding
 **     standard fd must be redirected with the technique described above
 ** 3 - Fork a child which will execute the exec with execve();
 */
-
 t_list			*tokenize_line_jb(char *line, t_list **env)
 {
 	int			i;
