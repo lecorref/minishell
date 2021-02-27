@@ -16,15 +16,19 @@ void		clear_commandlist(void *content)
 {
 	int		i;
 	int		*fdcp;
+	char	*file;
 	char	**args;
 
 	fdcp = ((t_command*)content)->fd;
 	args = ((t_command*)content)->command;
+	file = ((t_command*)content)->file;
 	free(fdcp);
 	i = -1;
 	while (args[++i])
 		free(args[i]);
 	free(args);
+	if (file)
+		free(file);
 	free((t_command*)content);
 }
 

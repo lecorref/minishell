@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:34:20 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/27 21:51:15 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/27 23:00:46 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 ** check it manually before or on the go).
 */
 
-int		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg)
+void	error_msg(char *bash, t_command *cmd, char *arg, char *err_msg)
 {
 //	printf("ENTERED ERROR_MSG\n");
 	if (bash)
@@ -47,6 +47,22 @@ int		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg)
 		ft_putchar_fd('\n', cmd->fd[2]);
 	}
 //	ft_free(cmd);  or free_command_list(t_list *cmd);//<- ??why
+}
+
+int		error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg)
+{
+	if (bash)
+		ft_putstr_fd("bash: ", cmd->fd[2]);
+	if (arg)
+	{
+		ft_putstr_fd(arg, cmd->fd[2]);
+		ft_putstr_fd(": ", cmd->fd[2]);
+	}
+	if (err_msg)
+	{
+		ft_putstr_fd(err_msg, cmd->fd[2]);
+		ft_putchar_fd('\n', cmd->fd[2]);
+	}
 	return (-1);
 }
 

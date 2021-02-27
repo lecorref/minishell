@@ -75,7 +75,7 @@ int			main_loop(t_list *env);
 */
 t_list		*tokenize_line_jb(char *line, t_list **env);
 int			find_redirections(t_list **cmd, t_list **env, char *command_line,
-				int *fd_command);
+				t_command *i_command);
 char		*skip_char(char *str, char c);
 /*
  * tokenize split
@@ -90,7 +90,7 @@ char		*double_quotes(t_list **env, char **line_ptr);
 char		*simple_quotes(char **line_ptr);
 char		*no_quotes(t_list **env, char **line_ptr);
 char		*quotes(t_list **env, char **line_ptr);
-int			redirections(t_list **env, char **line_ptr, int *fd_command);
+int			redirections(t_list **env, char **line_ptr, t_command *i_command);
 char		*doll_expand(t_list **env, char **line_ptr);
 /*
  * tokenize utils
@@ -100,7 +100,7 @@ char		*end_of_object(char *str);
 int			is_symbol(int c);
 int			is_symbol_v2(int c);
 char		*skip_char(char *str, char c);
-int			*init_fd();
+t_command	*init_command();
 /*
 ** clear lists
 */
@@ -145,7 +145,8 @@ int			executable_builtin(t_list **head, t_command *cmd);
  */
 
 //void		error_msg_bash(t_command *cmd, char *err_msg, char *arg);
-int			error_msg(char *bash, t_command *cmd, char *arg, char *err_msg);
+void		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg);
+int			error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
 void		ctrl_c_handler(int signal);

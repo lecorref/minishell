@@ -59,7 +59,8 @@ char		*expand_path(t_list **env, char *arg_zero)
 	if (!paths[i])
 	{
 		printf("command not found");
-			return (NULL);
+		ft_freetab(paths);
+		return (NULL);
 	}
 	if (!(path = ft_strjoin(paths[i], "/")))
 		return (NULL);
@@ -107,7 +108,7 @@ int			exec_t(t_list **env, t_command *cmd, char **arr_env)
 	if (!cmd->command || !cmd->command[0])
 		return (-1);
 	if (cmd->fd[3] != 0)
-		return (error_msg("y", cmd, cmd->command[1], strerror(cmd->fd[3])));
+		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
 	if (!(path = find_path(env, cmd->command[0])))
 		return (-1);
 	if ((cpid = fork()) == -1)

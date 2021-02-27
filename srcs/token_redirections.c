@@ -1,17 +1,5 @@
 #include "minishell.h"
 
-/*
-** redirections() translate the symbol of the first character from the given
-** line to a code to how to use open().
-** It then search for the first character of the string which must be the
-** filename, and will be give as parameter to open().
-** It must expand the dollar character '$' and also translate any relative path.
-** Once all data is fetched to use open accordingly, redirections() records the
-** given file descriptor in the the appropriate int array which had been given
-** from parameter.
-** It modifies the address where the given pointer line_ptr points to the end
-** of the processed string.
-*/
 int				remove_quotes(char **str)
 {
 	char		*sub;
@@ -26,6 +14,13 @@ int				remove_quotes(char **str)
 	*str = sub;
 	return (1);
 }
+
+/*
+** expand_filename() is here to deal with tricky tricky filename like :
+** > "HELLO$USER"THIS'is'still"a file name"'which is'solongand$USELESS
+**
+** yep, the string above could be only one filename.
+*/
 
 char			*expand_filename(t_list **env, char **line_ptr)
 {
@@ -54,6 +49,15 @@ char			*expand_filename(t_list **env, char **line_ptr)
 	return (filename);
 }
 
+/*
+** open_file() handle file opening thanks to open_code which says which flag
+** to give to open & file name 'file', processed just before.
+**
+** If an error occurs while opening, errno is recorded in fd_command[3], to be
+** used at execution time to set the error message. So, even if open() fails,
+** processing continues, error just will be displayed after.
+*/
+
 int				open_file(int open_code, int *fd_command, char *file)
 {
 	if (open_code == 3)
@@ -75,7 +79,21 @@ int				open_file(int open_code, int *fd_command, char *file)
 	return (1);
 }
 
-int				redirections(t_list **env, char **line_ptr, int *fd_command)
+/*
+** redirections() translate the symbol of the first character from the given
+** line ('<' , '>') to a code to how to use open().
+** It then search for the first character of the string which must be the
+** filename, this string will be highly processed by expand_filename() to
+** give the expanded string (if necessary) as parameter to open().
+** It must expand the dollar character '$', quotes, and also translate tilde.
+** Once all data is fetched to use open accordingly, redirections() records the
+** given file descriptor in the the appropriate int array which had been given
+** from the t_command struct in parameter.
+** It modifies the address where the given pointer line_ptr points to the end
+** of the processed string.
+*/
+
+int				redirections(t_list **env, char **line_ptr, t_command *i_cmd)
 {
 	int			open_code;
 	char		*file;
@@ -89,9 +107,9 @@ int				redirections(t_list **env, char **line_ptr, int *fd_command)
 	*line_ptr = skip_char((*line_ptr + 1), ' ');
 	if (!(file = expand_filename(env, line_ptr)))
 		return (0);
-	if (!open_file(open_code, fd_command, file))
+	if (!open_file(open_code, i_cmd->fd, file))
 		return (0);
-	free(file);
+	i_cmd->file = file;
 	return (1);
 }
 

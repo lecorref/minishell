@@ -2,16 +2,17 @@
 
 void		delete_remaining_char(char *str, char c)
 {
-	int			end_index;
+	int		end_index;
 
 	end_index = ft_strlen(str) - 1;
 	if (str[end_index] == c)
 		str[end_index] = 0;
 }
 
-int			*init_fd()
+t_command		*init_command()
 {
-	int		*fd;
+	int			*fd;
+	t_command	*command;	
 
 	errno = 0;
 	if (!(fd = (int*)malloc(sizeof(int) * 4)))
@@ -20,7 +21,11 @@ int			*init_fd()
 	fd[1] = 1;
 	fd[2] = 2;
 	fd[3] = 0;
-	return (fd);
+	if (!(command = (t_command*)malloc(sizeof(t_command) * 1)))
+		return (0);
+	command->fd = fd;
+	command->file = NULL;
+	return (command);
 }
 
 char		*skip_char(char *str, char c)

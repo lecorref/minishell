@@ -107,7 +107,7 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 		char *execution_line)
 {
 	char		**piped_exec_line;
-	int			*fd_command;
+	t_command	*i_command;	
 	int			fd_tmp;
 	int			i;
 
@@ -119,11 +119,11 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 	{
 		if (!parse_token_error(piped_exec_line, i))
 			return (0);//token error
-		if (!(fd_command = init_fd()))
+		if (!(i_command = init_command()))
 			return (0);//malloc error
-		if (!pipe_it(piped_exec_line, i, fd_command, &fd_tmp))
+		if (!pipe_it(piped_exec_line, i, i_command->fd, &fd_tmp))
 			return (0);
-		if (!(find_redirections(cmd, env, piped_exec_line[i], fd_command)))
+		if (!(find_redirections(cmd, env, piped_exec_line[i], i_command)))
 			return (0);
 		free(piped_exec_line[i]);
 	}
