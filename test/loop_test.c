@@ -71,7 +71,6 @@ int			main(int ac, char *av[], char *ep[])
 		ft_lstclear(&cmd, &clear_commandlist);
 		ft_putstr("minishell-1.0$ ");
 	}
-	opendir()
 	free(line);
 	ft_lstclear(&env, &clear_envlist);
 	if (ret == -1)
