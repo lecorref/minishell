@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/26 22:31:08 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/27 16:36:11 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*find_absolute_path(char *cmd, char *env_path)
 
 	i = -1;
 	fd = 0;
-	each_path_dir = ft_split(env_path, ':');
+	each_path_dir = ft_split_jb(env_path, ':');
 	while (each_path_dir[++i])
 	{
 		add_slash_to_path = ft_strjoin(each_path_dir[i], "/");
@@ -81,7 +81,7 @@ char	*find_absolute_path(char *cmd, char *env_path)
 			break ;
 	}
 	ft_strdel(&add_slash_to_path);
-	ft_strdel(each_path_dir);
+	ft_freetab(each_path_dir);
 	if (fd > 2)
 		close(fd);
 	return (add_path_to_cmd);
@@ -107,11 +107,14 @@ char	*relative_path(char *cmd, char *env_path)
 
 	i = -1;
 	fd = 0;
-	each_path_dir = ft_split(env_path, ':');
+	if (!(each_path_dir = ft_split_jb(env_path, ':')))
+		return (NULL);
 	while (each_path_dir[++i])
 	{
-		cmd_without_tilde = ft_strdup(&cmd[1]);
-		add_path_till_root_to_cmd = ft_strjoin("../..", cmd_without_tilde);
+		if (!(cmd_without_tilde = ft_strdup(&cmd[1])))
+			return (NULL);
+		if (!(add_path_till_root_to_cmd = ft_strjoin("../..", cmd_without_tilde)))
+			return (NULL);
 		if ((fd = open(add_path_till_root_to_cmd, O_RDONLY)) == -1)
 		{
 			ft_strdel(&cmd_without_tilde);
@@ -121,7 +124,8 @@ char	*relative_path(char *cmd, char *env_path)
 			break ;
 	}
 	ft_strdel(&cmd_without_tilde);
-	ft_strdel(each_path_dir);
+	//ft_strdel(each_path_dir);//Not sufficient, as u now know.
+	ft_freetab(each_path_dir);//for 'tableau" in french, but this is freearray
 	if (fd > 2)
 		close(fd);
 	return (add_path_till_root_to_cmd);
@@ -159,7 +163,10 @@ char	*path_to_executable(t_list **env, t_command *cmd)
 		ft_strncmp(cmd->command[0], "~/", 2) != 0)
 	{
 		if ((abs_path = find_absolute_path(cmd->command[0], env_path)) == NULL)
-			return ("exit");
+		{
+			if (!(abs_path = ft_strdup("exit")))//to have a malloc(string)
+				return (NULL);
+		}
 	}
 	else
 	{
@@ -219,6 +226,7 @@ int		executable_builtin(t_list **env, t_command *cmd)
 
 	else if (fork_pid == 0)//child will exec
 	{
+		dup_fd(cmd->fd);
 		if (execve(path_to_cmd, cmd->command, envir) == -1)
 		{
 			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
@@ -237,8 +245,12 @@ int		executable_builtin(t_list **env, t_command *cmd)
 			exit(127);
 		}
 	}
-	free(envir);
+	printf("path_to_cmd : %s\n", path_to_cmd);
+	fflush(stdout);
+	free(path_to_cmd);
+	clean_fd(cmd->fd);
 	parent_process(fork_pid);//child fork pid returned to the parent
+	ft_freetab(envir);
 	return (0);
 }
 //bash: <cmd>: No such file or directory (errno 2 for this message)
