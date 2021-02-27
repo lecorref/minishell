@@ -11,7 +11,7 @@ void		print_array2(char **array)
         int                     i;
 
         i = -1;
-		printf(LINE(PRINT_LIST));
+		//printf(LINE(PRINT_LIST));
         while (array[++i])
                 printf("array[%d] :|%s|\n", i, array[i]);
 		printf("array[%d] :|%s|\n", i, array[i]);
@@ -21,6 +21,7 @@ void		print_array2(char **array)
 void		print_fd(int *fd)
 {
 	printf("fd[0] = %d\tfd[1] = %d\tfd[2] = %d\n", fd[0], fd[1], fd[2]);
+	printf(LINE2);
 }
 
 void		print_list(t_list *cmd)
@@ -41,9 +42,11 @@ int			main(int ac, char *av[], char *ep[])
 	t_list	*cmd_cp;
 	t_list	*env;
 	int		ret;
+	char	**arr_env;
 
 	signal(SIGINT, handle_sigint);
 	env = create_env_list(ep);
+	arr_env = env_list_to_tab(env);
 	ft_putstr("minishell-1.0$ ");
 	while ((ret = get_next_line(0, &line)) > 0)
 	{
@@ -56,8 +59,15 @@ int			main(int ac, char *av[], char *ep[])
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-			execute_command(&env, (t_command*)(cmd_cp->content));
+			printf(LINE(PRINT_LINK));
+			print_array2(((t_command*)(cmd_cp->content))->command);
+			print_fd(((t_command*)(cmd_cp->content))->fd);
+			exec_t(&env, (t_command*)(cmd_cp->content), arr_env);
+			//execute_command(&env, (t_command*)(cmd_cp->content));
 			cmd_cp = cmd_cp->next;
+			printf(LINE2);
+			printf(LINE2);
+			printf(LINE2);
 		}
 		//print_list(cmd);
 		ft_lstclear(&cmd, &clear_commandlist);
@@ -65,6 +75,7 @@ int			main(int ac, char *av[], char *ep[])
 	}
 	free(line);
 	ft_lstclear(&env, &clear_envlist);
+	ft_freetab(arr_env);
 	if (ret == -1)
 		return (-1);
 	if (ret == 0)

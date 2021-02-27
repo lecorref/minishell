@@ -13,6 +13,7 @@
 # include <fcntl.h>
 # include <sys/errno.h>
 # include <errno.h>
+# include <dirent.h>
 # ifdef LINUX
 #  include <linux/errno.h>
 # endif
@@ -112,7 +113,13 @@ void		ft_array_string_del(char **array);
  * This function will find if the command is a builtin and execute it, or
  * execute said command with execve.
  */
+int			exec_t(t_list **env, t_command *cmd, char **arr_env);//test purpose
+void		clean_fd_n_wait(int *fd, int cpid);
+void		dup_it(int *fd);
+
 void		execute_command(t_list **env, t_command *cmd);
+void		clean_fd(int *fd);
+void		dup_fd(int *fd);
 
 
 /* ------------------------------------------------------------------------- */

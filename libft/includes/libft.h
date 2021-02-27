@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/24 10:38:00 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/22 01:03:16 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/27 01:25:27 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ void				ft_putstr(char const *s);
 void				ft_putstr_fd(char *s, int fd);
 void				*ft_realloc(void *ptr, size_t size);
 char				**ft_split(char const *s, char c);
+char				**ft_split_jb(char const *s, char c);
+void				*ft_freetab(char **tab);
 char				*ft_strcat(char *s1, char const *s2);
 char				*ft_strchr(char const *s, int c);
 char				*ft_strcpy(char *dest, char const *src);

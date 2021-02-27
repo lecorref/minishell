@@ -192,7 +192,6 @@ int		main_loop(t_list *env)
 	if (ret_gnl == 0)
 	{
 		ctrl_d_handler(line);
-		main_loop(env);
 	}
 	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
 
