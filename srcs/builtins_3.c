@@ -45,7 +45,7 @@ int			export_builtin(t_list **env, t_command *cmd)
 	i = 0;
 	envir = alpha_order_string(*env);
 	if (cmd->command[0] && cmd->command[1])
-		add_env_variable(env, cmd->command[1]);
+		add_env_variable(env, cmd->command[1]);// FREE??
 	else if (cmd->command[0] && !cmd->command[1])
 	{
 		while (envir[i] && envir[i + 1])
@@ -61,7 +61,7 @@ int			export_builtin(t_list **env, t_command *cmd)
 			i++;
 		}
 	}
-	free(envir);
+	ft_freetab(envir);
 	return (0);
 }
 
