@@ -57,7 +57,10 @@ char		*expand_path(t_list **env, char *arg_zero)
 		if (!find_exec(paths[i], arg_zero))
 			break;
 	if (!paths[i])
-		return (NULL);
+	{
+		printf("command not found");
+			return (NULL);
+	}
 	if (!(path = ft_strjoin(paths[i], "/")))
 		return (NULL);
 	if (!(join_newstr(&path, arg_zero)))
@@ -110,8 +113,9 @@ int			exec_t(t_list **env, t_command *cmd)
 	if (cpid == 0)
 	{
 		dup_it(cmd->fd);
-		execv(path, cmd->command);
-		printf("shouldn't be printed here\n");
+		if (execv(path, cmd->command) == -1)
+			printf("%s\n", strerror(errno));
+		exit(127);
 	}
 	clean_fd_n_wait(cmd->fd, cpid);
 	free(path);
