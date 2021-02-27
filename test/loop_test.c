@@ -60,7 +60,8 @@ int			main(int ac, char *av[], char *ep[])
 			printf(LINE(PRINT_LINK));
 			print_array2(((t_command*)(cmd_cp->content))->command);
 			print_fd(((t_command*)(cmd->content))->fd);
-			execute_command(&env, (t_command*)(cmd_cp->content));
+			exec_t(&env, (t_command*)(cmd_cp->content));
+			//execute_command(&env, (t_command*)(cmd_cp->content));
 			cmd_cp = cmd_cp->next;
 			printf(LINE2);
 			printf(LINE2);
@@ -70,6 +71,7 @@ int			main(int ac, char *av[], char *ep[])
 		ft_lstclear(&cmd, &clear_commandlist);
 		ft_putstr("minishell-1.0$ ");
 	}
+	opendir()
 	free(line);
 	ft_lstclear(&env, &clear_envlist);
 	if (ret == -1)

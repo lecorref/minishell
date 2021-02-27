@@ -18,6 +18,10 @@
 * https://www.geeksforgeeks.org/pipe-system-call/?ref=rp
 * https://www.tutorialspoint.com/unix/unix-signals-traps.htm
 * https://www.tutorialspoint.com/unix_system_calls/execve.htm
+* http://www.rozmichelle.com/pipes-forks-dups/
+* http://tzimmermann.org/2017/08/17/file-descriptors-during-fork-and-exec/
+* http://tzimmermann.org/2017/09/01/the-internals-of-unix-pipes-and-fifos/
+* https://catonmat.net/ftp/bash-redirections-cheat-sheet.pdf
 
 ### Testers
 * https://github.com/cacharle/minishell_test
