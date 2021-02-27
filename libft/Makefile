@@ -94,7 +94,8 @@ SRCS =	srcs/ft_atoi.c \
 
 SRCS += $(addprefix srcs/, ft_lstadd_back_jb.c ft_lstdelone_jb.c \
 		ft_lstmap_jb.c ft_lstadd_front_jb.c ft_lstiter_jb.c ft_lstnew_jb.c \
-		ft_lstclear_jb.c ft_lstlast_jb.c ft_lstsize_jb.c get_next_line.c)
+		ft_lstclear_jb.c ft_lstlast_jb.c ft_lstsize_jb.c get_next_line.c \
+		ft_split_jb.c ft_freetab.c)
 
 OBJ = $(SRCS:srcs/%.c=$(OBJDIR)/%.o)
 

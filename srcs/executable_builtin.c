@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/25 00:32:10 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/26 22:31:08 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,3 +241,6 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	parent_process(fork_pid);//child fork pid returned to the parent
 	return (0);
 }
+//bash: <cmd>: No such file or directory (errno 2 for this message)
+////<cmd>: command not found (there's no errno number for this message)
+////child pid returned to the parent
