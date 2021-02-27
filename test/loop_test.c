@@ -62,6 +62,7 @@ int			main(int ac, char *av[], char *ep[])
 			printf(LINE(PRINT_LINK));
 			print_array2(((t_command*)(cmd_cp->content))->command);
 			print_fd(((t_command*)(cmd_cp->content))->fd);
+			errno = 0;
 			exec_t(&env, (t_command*)(cmd_cp->content), arr_env);
 			//execute_command(&env, (t_command*)(cmd_cp->content));
 			cmd_cp = cmd_cp->next;

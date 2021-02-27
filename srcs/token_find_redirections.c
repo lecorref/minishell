@@ -46,21 +46,17 @@ int				join_word_object(char **command_string, char **word_object)
 	return (1);
 }
 
-int				create_array_n_link(t_list **cmd, int	*fd_command,
+int				create_array_n_link(t_list **cmd, t_command *i_command,
 		char **command_string)
 {
 	char		**command_array;
-	t_command	*command;	
 	t_list		*new;	
 
 	if (!(command_array = split_with_exception_v2(*command_string, ' ', "\'\"")))
 		return (0);
 	free(*command_string);
-	if (!(command = (t_command*)malloc(sizeof(t_command) * 1)))
-		return (0);
-	command->command = command_array;
-	command->fd = fd_command;
-	if (!(new = ft_lstnew(command)))
+	i_command->command = command_array;
+	if (!(new = ft_lstnew(i_command)))
 		return (0);
 	ft_lstadd_back(cmd, new);
 	return (1);
@@ -150,7 +146,7 @@ int				create_array_n_link(t_list **cmd, int	*fd_command,
 **						which will be malloc in the function which creates links
 */
 int				find_redirections(t_list **cmd, t_list **env,
-		char *command_line, int *fd_command)
+		char *command_line, t_command *i_command)
 {
 	char		*line_ptr;
 	char		*word_object;
@@ -162,7 +158,7 @@ int				find_redirections(t_list **cmd, t_list **env,
 	{
 		line_ptr = skip_char(line_ptr, ' ');
 		if (*line_ptr && (*line_ptr == '>' || *line_ptr == '<'))
-			if (!(redirections(env, &line_ptr, fd_command)))
+			if (!(redirections(env, &line_ptr, i_command)))
 				return (0);
 		line_ptr = skip_char(line_ptr, ' ');
 		if (*line_ptr && (*line_ptr == '\'' || *line_ptr == '\"'))
@@ -174,7 +170,7 @@ int				find_redirections(t_list **cmd, t_list **env,
 		if (!(join_word_object(&command_string, &word_object)))
 			return (0);
 	}
-	if (!(create_array_n_link(cmd, fd_command, &command_string)))
+	if (!(create_array_n_link(cmd, i_command, &command_string)))
 		return (0);
 	return (1);
 }
