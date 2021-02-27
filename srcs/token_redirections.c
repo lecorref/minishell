@@ -60,7 +60,8 @@ int				open_file(int open_code, int *fd_command, char *file)
 	{
 		if (fd_command[0] != 0)
 			close(fd_command[0]);
-		fd_command[0] = open(file, O_RDONLY);
+		if ((fd_command[0] = open(file, O_RDONLY)) == -1)
+			fd_command[3] = errno;
 		return (1);
 	}
 	if (fd_command[1] != 1)
@@ -69,6 +70,8 @@ int				open_file(int open_code, int *fd_command, char *file)
 		fd_command[1] = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	else
 		fd_command[1] = open(file, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	if (fd_command[1] == -1)
+		fd_command[3] = errno;
 	return (1);
 }
 

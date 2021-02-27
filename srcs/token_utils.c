@@ -13,11 +13,13 @@ int			*init_fd()
 {
 	int		*fd;
 
-	if (!(fd = (int*)malloc(sizeof(int) * 3)))
+	errno = 0;
+	if (!(fd = (int*)malloc(sizeof(int) * 4)))
 		return (NULL);
 	fd[0] = 0;
 	fd[1] = 1;
 	fd[2] = 2;
+	fd[3] = 0;
 	return (fd);
 }
 

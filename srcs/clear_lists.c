@@ -28,7 +28,9 @@ void		clear_commandlist(void *content)
 	free((t_command*)content);
 }
 
-void	ft_array_string_del(char **array)// or a function to free_env that Francois did (but to free a command typed that was passed to the struct (and then linked to the list).
+// or a function to free_env that Francois did (but to free a command typed that
+// was passed to the struct (and then linked to the list).
+void	ft_array_string_del(char **array)
 {
 	int i;
 

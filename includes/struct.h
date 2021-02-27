@@ -5,6 +5,7 @@ typedef struct	s_command
 {
 	char		**command;
 	int			*fd;
+	char		*file;
 }				t_command;
 
 

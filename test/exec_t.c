@@ -106,6 +106,8 @@ int			exec_t(t_list **env, t_command *cmd, char **arr_env)
 
 	if (!cmd->command || !cmd->command[0])
 		return (-1);
+	if (cmd->fd[3] != 0)
+		return (error_msg("y", cmd, cmd->command[1], strerror(cmd->fd[3])));
 	if (!(path = find_path(env, cmd->command[0])))
 		return (-1);
 	if ((cpid = fork()) == -1)
