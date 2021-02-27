@@ -99,7 +99,7 @@ char		*find_path(t_list **env, char *arg_zero)
 	return (path);
 }
 
-int			exec_t(t_list **env, t_command *cmd)
+int			exec_t(t_list **env, t_command *cmd, char **arr_env)
 {
 	char	*path;
 	int		cpid;
@@ -113,7 +113,7 @@ int			exec_t(t_list **env, t_command *cmd)
 	if (cpid == 0)
 	{
 		dup_it(cmd->fd);
-		if (execv(path, cmd->command) == -1)
+		if (execve(path, cmd->command, arr_env) == -1)
 			printf("%s\n", strerror(errno));
 		exit(127);
 	}
