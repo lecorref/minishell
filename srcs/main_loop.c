@@ -44,7 +44,6 @@ void	execute_command(t_list **env, t_command *cmd)
 ** variable that is inside of the char **ep argument of the main.
 ** Then spliting the line by / and : just to get the exact name to then print
 ** it on the stdout (fd1).
-*/
 int		prompt(t_list *env)
 {
 	char	*find_env;
@@ -70,7 +69,7 @@ int		prompt(t_list *env)
 		return (0);
 	}
 	return (0);
-}
+}*/
 
 int		gnl_ctrld(int fd, char **line)
 {
@@ -155,13 +154,13 @@ int		main_loop(t_list *env)
 
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, ctrl_back_slash_handler);
-	prompt(env);
+	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) == 1)
 	{
 		if (!line[0])
 		{
 			free(line);
-			prompt(env);
+			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 			continue ;
 		}
 		cmd = tokenize_line_jb(line, &env);
@@ -182,7 +181,7 @@ int		main_loop(t_list *env)
 			execute_command(&env, (t_command*)(cmd_cp->content));
 			cmd_cp = cmd_cp->next;
 		}
-		prompt(env);
+		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);// same as void free_command_list(t_list **command)???
 		// ft_lstdel(&env, free_env); -> at the very end of everything??? or here insede this loop????
 		free(line);

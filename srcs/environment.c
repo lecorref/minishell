@@ -62,6 +62,7 @@ char	**env_list_to_tab(t_list *env)
 		count++;
 	new_env = (char **)malloc(sizeof(char *) * (count + 1));
 	new_env(count) = NULL;
+	ft_bzero(new_env, count + 1);
 	while (--count >= 0 && env != NULL)
 	{
 		tmp_str = ft_strjoin(ENV_KEY(env), "=");
