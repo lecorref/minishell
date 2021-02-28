@@ -6,28 +6,11 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/28 04:19:36 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/28 04:51:58 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-** child process fork will execute things here.
-**
-** Execve will receive only absolute path executables, that will be either
-** input by the user, or transformed into an aboslute path executable by the
-** functions inside the file executable_builtin_path.c
-** If execve fails, it outputs an error message.
-** exit 127 to exit the child process
-*/
-void	child_process(t_command *cmd, char *path_to_cmd, char **envir)
-{
-	if (execve(path_to_cmd, cmd->command, envir) == -1)
-		error_msg("bash", cmd, NULL, strerror(2));
-	free(path_to_cmd);
-	exit(127);
-}
 
 /*
 ** waitpid will wait until child process exits.
@@ -66,10 +49,16 @@ void	parent_process(pid_t fork_pid)
 ** On success:
 **		the PID of the child process is returned in the parent, and 0 is
 ** returned in the child.
+**		child process fork will execute things here.
+**		Execve will receive only absolute path executables, that will be either
+**		input by the user, or transformed into an aboslute path executable by
+**		the functions inside the file executable_builtin_path.c
+**		If execve fails, it outputs an error message.
+**		exit 127 to exit the child process
 **
 ** On failure:
 **		-1 is returned in  the parent, no child process is created, and
-** errno is set appropriately.
+** errno is set appropriately inside the function parent_process().
 */
 int		executable_builtin(t_list **env, t_command *cmd)
 {
@@ -102,7 +91,9 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	else if (fork_pid == 0)
 	{
 		dup_fd(cmd->fd);
-		child_process(cmd, path_to_cmd, envir);
+		if (execve(path_to_cmd, cmd->command, envir) == -1)
+			error_msg("bash", cmd, NULL, strerror(2));
+		exit(127);
 	}
 	fflush(stdout);
 	free(path_to_cmd);

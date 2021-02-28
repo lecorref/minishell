@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/28 04:16:27 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/28 04:57:54 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ char	*relative_path(t_command *cmd, char **each_path_dir, char *pwd_path)
 
 	i = -1;
 	ret_env_path = -1;
-	add_path = ft_strdup("");
+	add_path = NULL;
 	if ((ret_pwd_path = test_cmd(pwd_path, cmd->command[0])) == 0)
 	{
 		add_path = add_path_to_cmd(pwd_path, cmd->command[0]);
@@ -123,6 +123,7 @@ char	*absolute_path(char *cmd)
 	int		i;
 
 	i = -1;
+	add_path_to_cmd = NULL;
 	if (ft_strncmp(cmd, "~/", 2) == 0)
 	{
 		if (!(cmd_no_tilde = ft_strdup(&cmd[1])))
@@ -160,8 +161,7 @@ char	*path_to_executable(t_list **env, t_command *cmd)
 
 	if (!cmd->command)
 		return (NULL);
-	if (!(abs_path = ft_strdup("")))
-		return (NULL);
+	abs_path = NULL;
 	pwd_path = find_env_value(env, "PWD");
 	env_path = find_env_value(env, "PATH");
 	if (!(each_path_dir = ft_split_jb(env_path, ':')))
