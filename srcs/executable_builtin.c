@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/27 16:36:11 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/02/28 04:51:58 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 /*
 ** waitpid will wait until child process exits.
+** Here the child fork pid is returned to the parent.
 **
 ** setting uo errno:
 ** WIFEXITED(wstatus) - macro that returns true if the child terminated normally
@@ -30,7 +31,6 @@ void	parent_process(pid_t fork_pid)
 {
 	int		wstatus;
 
-//	ft_array_string_del(cmd->command);// or a function like free_env (inside environment_2 file)???
 	wstatus = 0;
 	waitpid(fork_pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
@@ -41,163 +41,24 @@ void	parent_process(pid_t fork_pid)
 }
 
 /*
-** Command typed is not an absulute path, so in this function, an path from the
-** $PATH env line (passed to the argument env_path, by the funtion
-** path_to_executable) will be added to the command.
-** The $PATH will be splitted by : to get an array of strings, with a path per
-** line.
-**
-** 1. A slash will be joinned to the end of each env_path line, and then the
-** command will be added after this slash, creatinf then an absolute path.
-** 2. This absolute path will be tested by open(), if it does not open,
-** variables will be freed. else, continue testing the other env_path lines
-** untill one of them opens.
-** 3. Return the absolute path that was opened (close its fd before the return)
-** or NULL if cmd = NULL inside (then FT_strjoin returns NULL), or if the file
-** does not open with any of the paths from $PATH (because then add_path_to_cmd
-** will be freed and set to nULL by the ft_strdel function).
-*/
-char	*find_absolute_path(char *cmd, char *env_path)
-{
-	char	**each_path_dir;
-	char	*add_slash_to_path;
-	char	*add_path_to_cmd;
-	int		i;
-	int		fd;
-
-	i = -1;
-	fd = 0;
-	each_path_dir = ft_split_jb(env_path, ':');
-	while (each_path_dir[++i])
-	{
-		add_slash_to_path = ft_strjoin(each_path_dir[i], "/");
-		add_path_to_cmd = ft_strjoin(add_slash_to_path, cmd);
-		if ((fd = open(add_path_to_cmd, O_RDONLY)) == -1)
-		{
-			ft_strdel(&add_slash_to_path);
-			ft_strdel(&add_path_to_cmd);
-		}
-		else
-			break ;
-	}
-	ft_strdel(&add_slash_to_path);
-	ft_freetab(each_path_dir);
-	if (fd > 2)
-		close(fd);
-	return (add_path_to_cmd);
-}
-
-/*
-** Here the command typed will start with a ~/
-** Same as find_absolute_path(), but here I duplicate the command but starting
-** from it's index 1 (not 0 which is the tilde) and then I add "../.." to the
-** beginning of the command.
-**
-** Ex: ~/../../bin/ls
-** cmd_without_tilde = /../../bin/ls
-** add_path_till_root_to_cmd = ../../../../bin/ls
-*/
-char	*relative_path(char *cmd, char *env_path)
-{
-	char	**each_path_dir;
-	char	*cmd_without_tilde;
-	char	*add_path_till_root_to_cmd;
-	int		i;
-	int		fd;
-
-	i = -1;
-	fd = 0;
-	if (!(each_path_dir = ft_split_jb(env_path, ':')))
-		return (NULL);
-	while (each_path_dir[++i])
-	{
-		if (!(cmd_without_tilde = ft_strdup(&cmd[1])))
-			return (NULL);
-		if (!(add_path_till_root_to_cmd = ft_strjoin("../..", cmd_without_tilde)))
-			return (NULL);
-		if ((fd = open(add_path_till_root_to_cmd, O_RDONLY)) == -1)
-		{
-			ft_strdel(&cmd_without_tilde);
-			ft_strdel(&add_path_till_root_to_cmd);
-		}
-		else
-			break ;
-	}
-	ft_strdel(&cmd_without_tilde);
-	//ft_strdel(each_path_dir);//Not sufficient, as u now know.
-	ft_freetab(each_path_dir);//for 'tableau" in french, but this is freearray
-	if (fd > 2)
-		close(fd);
-	return (add_path_till_root_to_cmd);
-}
-
-/*
-** 1. If command is not a absolute path:
-**		Call find_absolute_path() funtion to handle it and return string "exit"
-**		so I know it was not an absoulte path command that was typed, and then
-**		I can output the correct error message.
-**
-** 2. If command starts with a ~/:
-**		Call function relative_path() to handle it.
-** If command is an absoulte path:
-**		Duplicate command since it is already an absolute path.
-** Open the absolute path command: Returns the string "exit_bash" so I know it
-**	was an absoulte path command that was typed (or ~/), and then I can output
-**	the correct error message.
-**
-** If all goes well, return the absolute path command (abs_path). either because
-** it was already typed like that, or because it was turned into an absolute
-** path.
-*/
-char	*path_to_executable(t_list **env, t_command *cmd)
-{
-	char	*abs_path;
-	char	*env_path;
-	int		fd;
-
-	env_path = find_env_value(env, "PATH");
-	if (!cmd->command)
-		return (NULL);
-	if (cmd->command[0][0] != '/' && ft_strncmp(cmd->command[0], "./", 2) != 0
-		&& ft_strncmp(cmd->command[0], "../", 3) != 0 && env_path != NULL &&
-		ft_strncmp(cmd->command[0], "~/", 2) != 0)
-	{
-		if ((abs_path = find_absolute_path(cmd->command[0], env_path)) == NULL)
-		{
-			if (!(abs_path = ft_strdup("exit")))//to have a malloc(string)
-				return (NULL);
-		}
-	}
-	else
-	{
-		if (ft_strncmp(cmd->command[0], "~/", 2) == 0)
-			abs_path = relative_path(cmd->command[0], env_path);
-		else
-			abs_path = ft_strdup(cmd->command[0]);
-		if ((fd = open(abs_path, O_RDONLY)) == -1)
-			return ("exit_bash");
-		if (fd > 2)
-			close(fd);
-	}
-	return (abs_path);
-}
-
-/*
  * Here, enter has already been precessed (so ret_gnl = 1). So it'll wait for
 ** a SIGQUIT (ctrl\) and Quit (core dumped) if so.
-**
 **
 ** Fork - creates a new process (child) from the calling process (parent).
 **
 ** On success:
 **		the PID of the child process is returned in the parent, and 0 is
 ** returned in the child.
-**		If execve fails, it checks the return of path_to_cmd() to see which
-**		error message it will output.
+**		child process fork will execute things here.
+**		Execve will receive only absolute path executables, that will be either
+**		input by the user, or transformed into an aboslute path executable by
+**		the functions inside the file executable_builtin_path.c
+**		If execve fails, it outputs an error message.
+**		exit 127 to exit the child process
 **
 ** On failure:
-**		-1 is returned in  the  parent, no child process is created, and
-** errno is set appropriately.
+**		-1 is returned in  the parent, no child process is created, and
+** errno is set appropriately inside the function parent_process().
 */
 int		executable_builtin(t_list **env, t_command *cmd)
 {
@@ -206,10 +67,14 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	pid_t	fork_pid;
 
 	envir = env_list_to_tab(*env);
-//	envir = ft_split(find_env_value(env, "PATH"), ':');
-	path_to_cmd = path_to_executable(env, cmd);
+//	if (cmd->fd[3] != 0)
+//		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
+	if (!(path_to_cmd = path_to_executable(env, cmd)))
+		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-////////////////// tests
+
+/////////delete
+	printf("\n----------TESTING PURPOSES----------\n");
 	int	i;
 	i = 0;
 	while (cmd->command[i])
@@ -217,42 +82,23 @@ int		executable_builtin(t_list **env, t_command *cmd)
 		printf("cmd->command[%d] = %s\n", i, cmd->command[i]);
 		i++;
 	}
-//	i = 0;
-//	while (envir[i])
-//		printf("env = %s\n", envir[i++]);
-////////////////////
+	printf("path_to_cmd : %s\n", path_to_cmd);
+	printf("----------TESTING PURPOSES----------\n\n");
+/////////delete
+
 	if ((fork_pid = fork()) == -1)
 		exit(errno);
-
-	else if (fork_pid == 0)//child will exec
+	else if (fork_pid == 0)
 	{
 		dup_fd(cmd->fd);
 		if (execve(path_to_cmd, cmd->command, envir) == -1)
-		{
-			if (ft_strcmp(path_to_cmd, "exit_bash") == 0)
-			//{
-				//errno = 2;
-				error_msg("bash", cmd, NULL, strerror(2));
-				//bash: <cmd>: No such file or directory (errno 2 for this msg)
-			//}
-			if (ft_strcmp(path_to_cmd, "exit") == 0)
-			{
-				printf("\n%s\n", path_to_cmd);
-				error_msg(NULL, cmd, NULL, "command not found");
-			}
-				//<cmd>: command not found (no errno number for this message)
-			free(path_to_cmd);
-			exit(127);
-		}
+			error_msg("bash", cmd, NULL, strerror(2));
+		exit(127);
 	}
-	printf("path_to_cmd : %s\n", path_to_cmd);
 	fflush(stdout);
 	free(path_to_cmd);
 	clean_fd(cmd->fd);
-	parent_process(fork_pid);//child fork pid returned to the parent
+	parent_process(fork_pid);
 	ft_freetab(envir);
 	return (0);
 }
-//bash: <cmd>: No such file or directory (errno 2 for this message)
-////<cmd>: command not found (there's no errno number for this message)
-////child pid returned to the parent

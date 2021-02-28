@@ -53,7 +53,6 @@
  * These functions will create/add/find/delete/free a list of the t_env struct,
  * from the envp (char **ep) argument of the main.
 */
-
 t_list		*create_env_list(char **envp);
 char		**env_list_to_tab(t_list *head);
 void		add_env_variable(t_list **head, char *var);
@@ -66,7 +65,6 @@ void		free_env(void *env, size_t size);
 /*
  * Loop functions
  */
-
 int			main_loop(t_list *env);
 
 /*
@@ -109,34 +107,39 @@ void		clear_envlist(void *content);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
+/* ------------------------------------------------------------------------- */
+
 /*
  * This function will find if the command is a builtin and execute it, or
  * execute said command with execve.
  */
+void		execute_command(t_list **env, t_command *cmd);
 int			exec_t(t_list **env, t_command *cmd, char **arr_env);//test purpose
 void		clean_fd_n_wait(int *fd, int cpid);
 void		dup_it(int *fd);
-
-void		execute_command(t_list **env, t_command *cmd);
 void		clean_fd(int *fd);
 void		dup_fd(int *fd);
-
-
-/* ------------------------------------------------------------------------- */
-
 /*
  * Builtins
  */
-
 int			echo_builtin(t_command *cmd);
 int			pwd_builtin(t_command *cmd);
 int			exit_builtin(t_command *cmd);
-int			cd_builtin(t_list **head, t_command *cmd);
-int			export_builtin(t_list **head, t_command *cmd);
-int			unset_builtin(t_list **head, t_command *cmd);
-int			env_builtin(t_list **head, t_command *cmd);
-int			executable_builtin(t_list **head, t_command *cmd);
-
+int			cd_builtin(t_list **env, t_command *cmd);
+int			export_builtin(t_list **env, t_command *cmd);
+int			unset_builtin(t_list **env, t_command *cmd);
+int			env_builtin(t_list **env, t_command *cmd);
+/*
+** Executable builtin functions
+*/
+int			executable_builtin(t_list **env, t_command *cmd);
+void		parent_process(pid_t fork_pid);
+void		child_process(t_command *cmd, char *path_to_cmd, char **envir);
+char		*path_to_executable(t_list **env, t_command *cmd);
+char		*absolute_path(char *cmd);
+char		*relative_path(t_command *cmd, char **each_pathdir, char *pwd_path);
+char		*add_path_to_cmd(char *abs_path, char *executable);
+int			test_cmd(char *each_path_dir, char *executable);
 
 /* ------------------------------------------------------------------------- */
 
@@ -144,7 +147,6 @@ int			executable_builtin(t_list **head, t_command *cmd);
  * errors/signal handlins/exits functions
  */
 
-//void		error_msg_bash(t_command *cmd, char *err_msg, char *arg);
 void		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg);
 int			error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
