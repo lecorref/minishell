@@ -6,14 +6,14 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/28 04:57:54 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/28 16:37:29 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-** It opens the directories passed as absolute paths to the argum each_path_dir.
+** It opens the directories passed as absolute paths to the argum env_path.
 ** Then it reads this directory and returns a pointer to a structure called
 ** dirent. One of the variables inside this struc is d_name which contains
 ** the filename.
@@ -22,13 +22,13 @@
 ** indeed exists inside this directory (return 0). Otherwise, there is not
 ** executable with the given name inside this directoy (return -1).
 */
-int			test_cmd(char *each_path_dir, char *executable)
+int			test_cmd(char *env_path, char *executable)
 {
 	int				cmp;
 	DIR				*dp;
 	struct dirent	*dirp;
 
-	if (!(dp = opendir(each_path_dir)))
+	if (!(dp = opendir(env_path)))
 		return (-1);
 	while ((dirp = readdir(dp)))
 		if (!(cmp = ft_strcmp(executable, dirp->d_name)))
@@ -73,7 +73,7 @@ char	*add_path_to_cmd(char *abs_path, char *executable)
 ** 4. if both $PATH and $PWD tests returned -1, it means that the executable
 ** input was not found in any directory, then,  display the error message.
 */
-char	*relative_path(t_command *cmd, char **each_path_dir, char *pwd_path)
+char	*relative_path(t_command *cmd, char **env_path, char *pwd_path)
 {
 	char	*add_path;
 	int		ret_pwd_path;
@@ -88,11 +88,11 @@ char	*relative_path(t_command *cmd, char **each_path_dir, char *pwd_path)
 		add_path = add_path_to_cmd(pwd_path, cmd->command[0]);
 		return (add_path);
 	}
-	while (each_path_dir[++i])
-		if ((ret_env_path = test_cmd(each_path_dir[i], cmd->command[0])) == 0)
+	while (env_path[++i])
+		if ((ret_env_path = test_cmd(env_path[i], cmd->command[0])) == 0)
 			break ;
 	if (ret_env_path == 0)
-		add_path = add_path_to_cmd(each_path_dir[i], cmd->command[0]);
+		add_path = add_path_to_cmd(env_path[i], cmd->command[0]);
 	else if (ret_env_path == -1 && ret_pwd_path  == -1)
 	{
 		error_msg(NULL, cmd, NULL, "Command not found");
@@ -107,18 +107,16 @@ char	*relative_path(t_command *cmd, char **each_path_dir, char *pwd_path)
 ** tilde) and then I add "../.." to the beginning of the command.
 **
 ** Ex: ~/../../bin/ls
-** cmd_no_tilde = /../../bin/ls
-** add_path_to_cmd = ../../../../bin/ls
+** add_path_to_cmd = /home/user42/../../bin/ls
 **
 **
-** If command is an absoulte path: (ex: /bin/ls or ./minishell)
+** If cmd is an absoulte path: (ex: /bin/ls, ./minishell, /bin/lo, ../sbin/ip)
 **		Duplicate command since it is already an absolute path.
 **
-** Obs.: execve will handle if the absolute path executable given dos't exist)
+** Obs.: execve will handle if the absolute path executable given does't exist)
 */
-char	*absolute_path(char *cmd)
+char	*absolute_path(char *cmd, char *home_path)
 {
-	char	*cmd_no_tilde;
 	char	*add_path_to_cmd;
 	int		i;
 
@@ -126,11 +124,8 @@ char	*absolute_path(char *cmd)
 	add_path_to_cmd = NULL;
 	if (ft_strncmp(cmd, "~/", 2) == 0)
 	{
-		if (!(cmd_no_tilde = ft_strdup(&cmd[1])))
+		if (!(add_path_to_cmd = ft_strjoin(home_path, (cmd + 1))))
 			return (NULL);
-		if (!(add_path_to_cmd = ft_strjoin("../..", cmd_no_tilde)))// or /home/user42??
-			return (NULL);
-		ft_strdel(&cmd_no_tilde);
 	}
 	else
 	{
@@ -152,28 +147,26 @@ char	*absolute_path(char *cmd)
 ** by the funtion relative_path() or absolute_path().
 ** Returns a malloc string, so it needs to be freed later on.
 */
-char	*path_to_executable(t_list **env, t_command *cmd)
+char	*path_to_executable(t_list **env, t_command *cmd, char **env_path)
 {
 	char	*abs_path;
 	char	*pwd_path;
-	char	*env_path;
-	char	**each_path_dir;
+	char	*home_path;
 
 	if (!cmd->command)
 		return (NULL);
 	abs_path = NULL;
 	pwd_path = find_env_value(env, "PWD");
-	env_path = find_env_value(env, "PATH");
-	if (!(each_path_dir = ft_split_jb(env_path, ':')))
-		return (NULL);
+	home_path = find_env_value(env, "HOME");
 	if (cmd->command[0][0] != '/'
-			&& ft_strncmp(cmd->command[0], "./", 2) != 0
-			&& ft_strncmp(cmd->command[0], "../", 3) != 0
-			&& ft_strncmp(cmd->command[0], "~/", 2) != 0
-			&& env_path != NULL)
-		abs_path = relative_path(cmd, each_path_dir, pwd_path);
+		&& ft_strncmp(cmd->command[0], "./", 2) != 0
+		&& ft_strncmp(cmd->command[0], "../", 3) != 0
+		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
+	{
+		if ((abs_path = relative_path(cmd, env_path, pwd_path)) == NULL)
+			ft_freetab(env_path);
+	}
 	else
-		abs_path = absolute_path(cmd->command[0]);
-	ft_freetab(each_path_dir);
+		abs_path = absolute_path(cmd->command[0], home_path);
 	return (abs_path);
 }

@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/28 04:51:58 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/28 16:45:34 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,9 @@ void	parent_process(pid_t fork_pid)
 **		the functions inside the file executable_builtin_path.c
 **		If execve fails, it outputs an error message.
 **		exit 127 to exit the child process
+**		OBS.: I think that as "the child process and the parent process run in
+**		separate memory spaces"), the memory is also duplicated, therefore it
+**		needs to be freed inside the child too (and then also on the parent).
 **
 ** On failure:
 **		-1 is returned in  the parent, no child process is created, and
@@ -62,14 +65,19 @@ void	parent_process(pid_t fork_pid)
 */
 int		executable_builtin(t_list **env, t_command *cmd)
 {
-	char	**envir;
+//	char	**envir;
+	char	*path;
+	char	**env_path;
 	char	*path_to_cmd;
 	pid_t	fork_pid;
 
-	envir = env_list_to_tab(*env);
 //	if (cmd->fd[3] != 0)
 //		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
-	if (!(path_to_cmd = path_to_executable(env, cmd)))
+//	envir = env_list_to_tab(*env);
+	path = find_env_value(env, "PATH");
+	if (!(env_path = ft_split_jb(path, ':')))
+		return (-1);
+	if (!(path_to_cmd = path_to_executable(env, cmd, env_path)))
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 
@@ -91,14 +99,19 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	else if (fork_pid == 0)
 	{
 		dup_fd(cmd->fd);
-		if (execve(path_to_cmd, cmd->command, envir) == -1)
+		if (execve(path_to_cmd, cmd->command, env_path) == -1)
+		{
+			ft_freetab(env_path);
+			free(path_to_cmd);
 			error_msg("bash", cmd, NULL, strerror(2));
+		}
 		exit(127);
 	}
 	fflush(stdout);
 	free(path_to_cmd);
 	clean_fd(cmd->fd);
 	parent_process(fork_pid);
-	ft_freetab(envir);
+	ft_freetab(env_path);
+//	ft_freetab(envir);
 	return (0);
 }
