@@ -34,6 +34,10 @@ void	execute_command(t_list **env, t_command *cmd)
 	else if (ft_strcmp(cmd->command[0], "env") == 0)
 		env_builtin(env, cmd);
 
+
+	else if (ft_strcmp(cmd->command[0], "test") == 0)
+		test_builtin(env, cmd);
+
 	//else if cmd == $ ??
 	else
 		executable_builtin(env, cmd);
@@ -155,7 +159,7 @@ int		main_loop(t_list *env)
 	signal(SIGINT, ctrl_c_handler);
 	signal(SIGQUIT, ctrl_back_slash_handler);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
-	while ((ret_gnl = gnl_ctrld(0, &line)) == 1)
+	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
 		if (!line[0])
 		{

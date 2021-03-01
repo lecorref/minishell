@@ -51,7 +51,7 @@ t_list	*create_env_list(char **envp)
 */
 char	**env_list_to_tab(t_list *env)
 {
-	int		count;
+	size_t	count;
 	t_list	*tmp_env;
 	char	**new_env;
 	char	*tmp_str;
@@ -60,8 +60,9 @@ char	**env_list_to_tab(t_list *env)
 	tmp_env = env;
 	while ((tmp_env = tmp_env->next))
 		count++;
-	new_env = (char **)malloc(sizeof(char *) * (count + 1));
-	new_env[count] = NULL;
+	if (!(new_env = (char **)malloc(sizeof(char *) * (count + 1))))
+		return (NULL);
+	new_env[count] = NULL;//setting last string of the array to NULL
 	while (--count >= 0 && env != NULL)
 	{
 		tmp_str = ft_strjoin(ENV_KEY(env), "=");

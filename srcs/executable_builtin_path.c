@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/28 16:37:29 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/01 19:30:36 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ char	*add_path_to_cmd(char *abs_path, char *executable)
 ** 4. if both $PATH and $PWD tests returned -1, it means that the executable
 ** input was not found in any directory, then,  display the error message.
 */
-char	*relative_path(t_command *cmd, char **env_path, char *pwd_path)
+char	*relative_path(t_command *cmd, char **split_path, char *pwd_path)
 {
 	char	*add_path;
 	int		ret_pwd_path;
@@ -88,15 +88,15 @@ char	*relative_path(t_command *cmd, char **env_path, char *pwd_path)
 		add_path = add_path_to_cmd(pwd_path, cmd->command[0]);
 		return (add_path);
 	}
-	while (env_path[++i])
-		if ((ret_env_path = test_cmd(env_path[i], cmd->command[0])) == 0)
+	while (split_path[++i])
+		if ((ret_env_path = test_cmd(split_path[i], cmd->command[0])) == 0)
 			break ;
 	if (ret_env_path == 0)
-		add_path = add_path_to_cmd(env_path[i], cmd->command[0]);
+		add_path = add_path_to_cmd(split_path[i], cmd->command[0]);
 	else if (ret_env_path == -1 && ret_pwd_path  == -1)
 	{
 		error_msg(NULL, cmd, NULL, "Command not found");
-			return (NULL);
+		return (NULL);
 	}
 	return (add_path);
 }
@@ -147,26 +147,27 @@ char	*absolute_path(char *cmd, char *home_path)
 ** by the funtion relative_path() or absolute_path().
 ** Returns a malloc string, so it needs to be freed later on.
 */
-char	*path_to_executable(t_list **env, t_command *cmd, char **env_path)
+char	*path_to_executable(t_list **env, t_command *cmd)
 {
 	char	*abs_path;
 	char	*pwd_path;
 	char	*home_path;
+	char	*path;
+	char	**split_path;
 
 	if (!cmd->command)
 		return (NULL);
 	abs_path = NULL;
 	pwd_path = find_env_value(env, "PWD");
 	home_path = find_env_value(env, "HOME");
-	if (cmd->command[0][0] != '/'
-		&& ft_strncmp(cmd->command[0], "./", 2) != 0
-		&& ft_strncmp(cmd->command[0], "../", 3) != 0
+	path = find_env_value(env, "PATH");
+	if (!(split_path = ft_split_jb(path, ':')))
+		return (NULL);
+	if (cmd->command[0][0] != '/' && cmd->command[0][0] != '.'
 		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
-	{
-		if ((abs_path = relative_path(cmd, env_path, pwd_path)) == NULL)
-			ft_freetab(env_path);
-	}
+		abs_path = relative_path(cmd, split_path, pwd_path);
 	else
 		abs_path = absolute_path(cmd->command[0], home_path);
+	ft_freetab(split_path);
 	return (abs_path);
 }

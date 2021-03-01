@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/01 22:36:10 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/01 22:39:38 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,22 +65,16 @@ void	parent_process(pid_t fork_pid)
 */
 int		executable_builtin(t_list **env, t_command *cmd)
 {
-//	char	**envir;
-	char	*path;
-	char	**env_path;
+	char	**env_tab;
 	char	*path_to_cmd;
 	pid_t	fork_pid;
 
 //	if (cmd->fd[3] != 0)
 //		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
-//	envir = env_list_to_tab(*env);
-	path = find_env_value(env, "PATH");
-	if (!(env_path = ft_split_jb(path, ':')))
-		return (-1);
-	if (!(path_to_cmd = path_to_executable(env, cmd, env_path)))
+	if (!(path_to_cmd = path_to_executable(env, cmd)))
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-
+	env_tab = env_list_to_tab(*env);
 /////////delete
 	printf("\n----------TESTING PURPOSES----------\n");
 	int	i;
@@ -99,19 +93,18 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	else if (fork_pid == 0)
 	{
 		dup_fd(cmd->fd);
-		if (execve(path_to_cmd, cmd->command, env_path) == -1)
+		if (execve(path_to_cmd, cmd->command, env_tab) == -1)
 		{
-			ft_freetab(env_path);
 			free(path_to_cmd);
+			ft_freetab(env_tab);
 			error_msg("bash", cmd, NULL, strerror(2));
 		}
 		exit(127);
 	}
 	fflush(stdout);
 	free(path_to_cmd);
+	ft_freetab(env_tab);
 	clean_fd(cmd->fd);
 	parent_process(fork_pid);
-	ft_freetab(env_path);
-//	ft_freetab(envir);
 	return (0);
 }
