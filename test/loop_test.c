@@ -1,10 +1,6 @@
 #include "minishell.h"
 
-void		handle_sigint(int sign)
-{
-	if (sign == SIGINT)
-		ft_putstr("\nminishell-1.0$ ");
-}
+int	line_eraser;
 
 void		print_array2(char **array)
 {
@@ -35,6 +31,25 @@ void		print_list(t_list *cmd)
 	}
 }
 
+void		display_prompt(int sign)
+{
+	if (sign == SIGINT)
+	{
+		ft_putstr("\nminishell-1.0$ ");
+		fflush(stdout);
+	}
+}
+
+void		set_line_eraser(int sign)
+{
+	if (sign == SIGINT)
+	{
+		line_eraser = 1;
+		ft_putstr("\nminishell-1.0e$ ");
+		fflush(stdout);
+	}
+}
+
 /*
 ** if the char is 'n' instead of '\n' :
 ** if I type '\n', it writes a newline. But if I type 'n', many times
@@ -49,34 +64,87 @@ void		print_list(t_list *cmd)
 ** 0 at the place of flag character.
 **
 ** If I type '\n' before typing 'n', it just writes '\n', BUT, we can't backspace
-** it. That means that read() has read. But since 'n' hasn't been met, buffer
+** it. That means that read() has read. But since 'n' hasn't been met, line
 ** is still full and gnl didn't returned
 ** So, when it's a '\n' character' inside gnl, it sends signal to read() to read
 ** plus returning gnl has he met '\n'
 ** 
 ** ctrl^D sends EOT signal where read() then returns 0. So it says to read()
-** to read 0 Bytes, so that read() returns 0.
+** not to read 0 Bytes but to read the fifo buffer then returns 0.
 */
 
-int		check_status(char **line, char *buf)
+/*
+** We enter into check_ctrld when read returns 0, so When ctrl^D or ctrl^C is
+** typed.
+**
+** ctrl^D after inputing  : line exists -read() had read and gnl joined buf to line
+** ctrl^D with empty input: exit read() & so the minishell.
+** ctrl^C 				  : line inputed before doesn't exists bc read() hadn't
+**							read. If inputed ctrl^D had been hited before, a line
+**							exists.
+**
+** When ctrl^D is hited, 2 behaviors :
+**				- If Nothing had already been typed, exit the loop (return 0).
+**				- else we want to stay into the read() loop to continue to
+**				creates the line : don't return.
+**
+** When ctrl^C is hited, 1 behavior :
+**				- Display a new prompt, line erased.
+**
+** If ctrl^D has been typed, signal() into check_ctrld will take advantage.
+** Therefore, the ctrl^C signal handler called into this func has to set global
+** variable line_eraser to 1, to say to the loop to erase the line.
+**
+** When ctrl^C is typed after a ctrl^D this is signal() inside check_ctrld()
+** which catch it although we don't enter again in this func(). The only moment
+** when we go into it is when ctrl^D is hited.
+** But when ctrl^D is hited & read() continues, this signal() takes effect and
+** takes advantage and will act when ctrl^C will be hited, until we go out of
+** gnl which would have returned 1, then the more general signal() go back
+*/
+
+int		check_ctrld(char **line)
 {
-	if (**line)
+	signal(SIGINT, set_line_eraser);
+	if (**line && line_eraser == 0)
 		return (1);
 	else
 		return (0);
-	(void)buf;
+}
+
+void	eraser_checker(char *line)
+{
+	if (line_eraser == 1)
+	{
+		ft_memset(line, 0, ft_strlen(line));
+		line_eraser = 0;
+	}
 }
 
 /*
+** 'ENTER':							~> fifo write end closed(?). read() can read
+**									   the fifo buffer, then wait to read again.
+** ctrl^D : read(fd0) -> returns 0	~> EOT. fifo write end closed and read()
+**									   returns 0, buffer looks like being
+**									   fullfiled anyway, which means read() act.
+** ctrl^C : no read() -> no return  ~> sigint. As signal() is used, pgm doesn't
+**									   interrupt & currently print a new prompt,
+**									   but still interrupt read without any read
+**									   of buffer. No read() at all from the fifo
+**									   buffer. read() returns 0 anyway.
+**									   So, ctr^C handler must erase the line
+**									   and display a new prompt.
+**
+**
 **		(ctrl^D)-,       ,-(ctrl^C)
 **               v       v
 ** > "hello      \0"world  
 ** > Bla
 **
-** My current behavior----->line--->|helloBla|
+** Old behavior       ----->line--->|helloBla|
 ** what we should have----->line--->|Bla|
 **
-** When ctrl^C is sent, buffer is empty. Why ?
+** When ctrl^C is sent, line is empty because if it exists it has been erased.
 */
 
 int		gnl_hacked(int fd, char **line)
@@ -89,21 +157,21 @@ int		gnl_hacked(int fd, char **line)
 		return (-1);
 	if (!(*line = ft_strnew(0)))
 		return (0);
+	signal(SIGINT, display_prompt);
 	while (!(adr = ft_strchr(buf[fd], '\n')))
 	{
-		printf("a");
 		if (!(join_newstr(line, buf[fd])))
 			return (-1);
 		ft_memset(buf[fd], 0, BUFFER_SIZE);
 		if (!(read(fd, buf[fd], BUFFER_SIZE)))
-			if (!check_status(line, buf[fd]))
+			if (!check_ctrld(line))
 				return (0);
+		eraser_checker(*line);
 	}
 	*adr = 0;
 	if (!(join_newstr(line, buf[fd])))
 		return (-1);
 	ft_strncpy(buf[fd], adr + 1, sizeof(buf[fd]));
-	printf("\nb\n");
 	return (1);
 }
 
@@ -116,11 +184,10 @@ int			main(int ac, char *av[], char *ep[])
 	int		ret;
 	char	**arr_env;
 
-	signal(SIGINT, handle_sigint);
+	line_eraser = 0;
 	env = create_env_list(ep);
 	arr_env = env_list_to_tab(env);
 	ft_putstr("minishell-1.0$ ");
-	//while ((ret = get_next_line(0, &line)) > 0)
 	while ((ret = gnl_hacked(0, &line)) > 0)
 	{
 		printf("this shit has to be parsed: %s\n", line);
