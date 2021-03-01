@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/05 13:44:53 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/11/14 10:49:42 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/01 18:52:28 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,5 @@ void	*ft_memset(void *b, int c, size_t len)
 		str[i] = (unsigned char)c;
 		i++;
 	}
-	return (b);
+	return (str);
 }

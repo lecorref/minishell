@@ -65,7 +65,7 @@ void		free_env(void *env, size_t size);
 /*
  * Loop functions
  */
-int			main_loop(t_list *env);
+int			main_loop(t_list *env, char **env_tab);
 
 /*
  * Lexer/parser function that will buid t_command structure
@@ -113,7 +113,7 @@ void		ft_array_string_del(char **array);
  * This function will find if the command is a builtin and execute it, or
  * execute said command with execve.
  */
-void		execute_command(t_list **env, t_command *cmd);
+void		execute_command(t_list **env, t_command *cmd, char **env_tab);
 int			exec_t(t_list **env, t_command *cmd, char **arr_env);//test purpose
 void		clean_fd_n_wait(int *fd, int cpid);
 void		dup_it(int *fd);
@@ -126,17 +126,21 @@ int			echo_builtin(t_command *cmd);
 int			pwd_builtin(t_command *cmd);
 int			exit_builtin(t_command *cmd);
 int			cd_builtin(t_list **env, t_command *cmd);
-int			export_builtin(t_list **env, t_command *cmd);
+int			export_builtin(t_list **env, t_command *cmd, char **env_tab);
 int			unset_builtin(t_list **env, t_command *cmd);
 int			env_builtin(t_list **env, t_command *cmd);
+
+int			test_builtin(t_list **env, t_command *cmd);
+
+
 /*
 ** Executable builtin functions
 */
-int			executable_builtin(t_list **env, t_command *cmd);
+int			executable_builtin(t_list **env, t_command *cmd, char **env_tab);
 void		parent_process(pid_t fork_pid);
-char		*path_to_executable(t_list **env, t_command *cmd, char **env_path);
+char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
-char		*relative_path(t_command *cmd, char **env_path, char *pwd_path);
+char		*relative_path(t_command *cmd, char **split_path, char *pwd_path);
 char		*add_path_to_cmd(char *abs_path, char *executable);
 int			test_cmd(char *each_path_dir, char *executable);
 
