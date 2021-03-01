@@ -60,7 +60,7 @@ int			echo_builtin(t_command *cmd)
 	free(arg);
 	return (expanded);
 }*/
-char	*expand_tilde_and_exceptions(t_list **env, char *arg, t_command *cmd )
+char	*expand_tilde_and_exceptions(t_list **env, char *arg, t_command *cmd)
 {
 	char	*expanded;
 

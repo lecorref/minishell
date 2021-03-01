@@ -80,7 +80,7 @@ int		exit_builtin(t_command *cmd)
 			i++;
 		if (i != ft_strlen(cmd->command[1]))
 		{
-			error_msg("b", cmd, cmd->command[1], ": numeric argument required");
+			error_msg("b", cmd, cmd->command[1], "numeric argument required");
 			exit(2);
 		}
 		exit_arg(cmd, i);
