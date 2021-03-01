@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/01 19:34:07 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/01 21:45:20 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,9 @@ void	parent_process(pid_t fork_pid)
 **		-1 is returned in  the parent, no child process is created, and
 ** errno is set appropriately inside the function parent_process().
 */
-int		executable_builtin(t_list **env, t_command *cmd, char **env_tab)
+int		executable_builtin(t_list **env, t_command *cmd)
 {
+	char	**env_tab;
 	char	*path_to_cmd;
 	pid_t	fork_pid;
 
@@ -73,7 +74,7 @@ int		executable_builtin(t_list **env, t_command *cmd, char **env_tab)
 	if (!(path_to_cmd = path_to_executable(env, cmd)))
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-
+	env_tab = env_list_to_tab(*env);
 /////////delete
 	printf("\n----------TESTING PURPOSES----------\n");
 	int	i;
@@ -102,6 +103,7 @@ int		executable_builtin(t_list **env, t_command *cmd, char **env_tab)
 	}
 	fflush(stdout);
 	free(path_to_cmd);
+	ft_freetab(env_tab);
 	clean_fd(cmd->fd);
 	parent_process(fork_pid);
 	return (0);

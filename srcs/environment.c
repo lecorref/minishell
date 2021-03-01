@@ -62,9 +62,8 @@ char	**env_list_to_tab(t_list *env)
 		count++;
 	if (!(new_env = (char **)malloc(sizeof(char *) * (count + 1))))
 		return (NULL);
-	new_env[count] = NULL;//setting last string og the array to NULL
-//	ft_memset(new_env[count], '\0', 1);
-	while (--count >= 0 && env != NULL)//setting other strings to KEY=VALUE
+	new_env[count] = NULL;//setting last string of the array to NULL
+	while (--count >= 0 && env != NULL)
 	{
 		tmp_str = ft_strjoin(ENV_KEY(env), "=");
 		new_env[count] = ft_strjoin(tmp_str, ENV_VALUE(env));

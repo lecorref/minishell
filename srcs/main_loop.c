@@ -17,7 +17,7 @@
 //{
 //	(func)(env, cmd);
 //} ???? I DON'T KNOW HOW TO DO IT WITH POINTER TO FUNCITONS :/ HELLLLP
-void	execute_command(t_list **env, t_command *cmd, char **env_tab)
+void	execute_command(t_list **env, t_command *cmd)
 {
 	if (ft_strcmp(cmd->command[0], "echo") == 0)
 		echo_builtin(cmd);
@@ -28,7 +28,7 @@ void	execute_command(t_list **env, t_command *cmd, char **env_tab)
 	else if (ft_strcmp(cmd->command[0], "cd") == 0)
 		cd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "export") == 0)
-		export_builtin(env, cmd, env_tab);
+		export_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "unset") == 0)
 		unset_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "env") == 0)
@@ -40,7 +40,7 @@ void	execute_command(t_list **env, t_command *cmd, char **env_tab)
 
 	//else if cmd == $ ??
 	else
-		executable_builtin(env, cmd, env_tab);
+		executable_builtin(env, cmd);
 }
 
 /*
@@ -149,7 +149,7 @@ int		gnl_ctrld(int fd, char **line)
 ** 0 = EOF
 ** -1 = error
 */
-int		main_loop(t_list *env, char **env_tab)
+int		main_loop(t_list *env)
 {
 	t_list	*cmd;
 	t_list	*cmd_cp;
@@ -182,7 +182,7 @@ int		main_loop(t_list *env, char **env_tab)
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-			execute_command(&env, (t_command*)(cmd_cp->content), env_tab);
+			execute_command(&env, (t_command*)(cmd_cp->content));
 			cmd_cp = cmd_cp->next;
 		}
 		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
