@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/28 16:37:29 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/01 03:00:48 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,7 @@ char	*path_to_executable(t_list **env, t_command *cmd, char **env_path)
 	abs_path = NULL;
 	pwd_path = find_env_value(env, "PWD");
 	home_path = find_env_value(env, "HOME");
-	if (cmd->command[0][0] != '/'
-		&& ft_strncmp(cmd->command[0], "./", 2) != 0
-		&& ft_strncmp(cmd->command[0], "../", 3) != 0
+	if (cmd->command[0][0] != '/' && cmd->command[0][0] != '.'
 		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
 	{
 		if ((abs_path = relative_path(cmd, env_path, pwd_path)) == NULL)
