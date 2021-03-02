@@ -65,7 +65,7 @@ void		free_env(void *env, size_t size);
 /*
  * Loop functions
  */
-int			main_loop(t_list *env);
+int			main_loop(t_list **env);
 
 /*
  * Lexer/parser function that will buid t_command structure

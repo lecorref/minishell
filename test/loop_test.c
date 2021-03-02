@@ -31,7 +31,7 @@ void		print_list(t_list *cmd)
 	}
 }
 
-void		display_prompt(int sign)
+void		display_promptt(int sign)
 {
 	if (sign == SIGINT)
 	{
@@ -40,7 +40,7 @@ void		display_prompt(int sign)
 	}
 }
 
-void		set_line_eraser(int sign)
+void		set_line_eraserr(int sign)
 {
 	if (sign == SIGINT)
 	{
@@ -103,16 +103,16 @@ void		set_line_eraser(int sign)
 ** gnl which would have returned 1, then the more general signal() go back
 */
 
-int		check_ctrld(char **line)
+int		check_ctrldd(char **line)
 {
-	signal(SIGINT, set_line_eraser);
+	signal(SIGINT, set_line_eraserr);
 	if (**line && line_eraser == 0)
 		return (1);
 	else
 		return (0);
 }
 
-void	eraser_checker(char *line)
+void	eraser_checkerr(char *line)
 {
 	if (line_eraser == 1)
 	{
@@ -157,16 +157,16 @@ int		gnl_hacked(int fd, char **line)
 		return (-1);
 	if (!(*line = ft_strnew(0)))
 		return (0);
-	signal(SIGINT, display_prompt);
+	signal(SIGINT, display_promptt);
 	while (!(adr = ft_strchr(buf[fd], '\n')))
 	{
 		if (!(join_newstr(line, buf[fd])))
 			return (-1);
 		ft_memset(buf[fd], 0, BUFFER_SIZE);
 		if (!(read(fd, buf[fd], BUFFER_SIZE)))
-			if (!check_ctrld(line))
+			if (!check_ctrldd(line))
 				return (0);
-		eraser_checker(*line);
+		eraser_checkerr(*line);
 	}
 	*adr = 0;
 	if (!(join_newstr(line, buf[fd])))
