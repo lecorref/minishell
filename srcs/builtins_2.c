@@ -1,5 +1,43 @@
 #include "minishell.h"
 
+static int	echo_n_parser(char *str)
+{
+	if (*str != '-')
+		return (1);
+	while (*(str + 1))
+	{
+		if (*(str + 1) != 'n')
+			return (1);
+		str++;
+	}
+	return (0);
+}
+
+int			echo_builtin(t_command *cmd)
+{
+	int		flag;
+	int		i;
+
+	i = 0;
+	if (!cmd->command[i + 1])
+	{
+		ft_putchar_fd('\n', cmd->fd[1]);
+		return (0);
+	}
+	flag = 0;
+	while (!echo_n_parser(cmd->command[++i]))
+		flag = 1;
+	while (cmd->command[i] != NULL)
+	{
+		ft_putstr_fd(cmd->command[i], cmd->fd[1]);
+		ft_putchar_fd(' ', cmd->fd[1]);
+		i++;
+	}
+	if (!flag)
+		ft_putchar_fd('\n', cmd->fd[1]);
+	return (0);
+}
+
 int		pwd_builtin(t_command *cmd)
 {
 	char	*stored;

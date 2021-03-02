@@ -49,6 +49,7 @@
 
 /* ------------------------------------------------------------------------- */
 
+int	g_line_eraser;
 /*
  * These functions will create/add/find/delete/free a list of the t_env struct,
  * from the envp (char **ep) argument of the main.
@@ -59,6 +60,7 @@ void		add_env_variable(t_list **head, char *var);
 char		*find_env_value(t_list **head, char *key);
 void		delete_env_variable(t_list **head, char *key);
 void		free_env(void *env, size_t size);
+int			update_underscore(t_list **env, char *path_cmd);
 
 /* ------------------------------------------------------------------------- */
 
@@ -113,7 +115,7 @@ void		ft_array_string_del(char **array);
  * This function will find if the command is a builtin and execute it, or
  * execute said command with execve.
  */
-void		execute_command(t_list **env, t_command *cmd);
+int			execute_command(t_list **env, t_command *cmd);
 int			exec_t(t_list **env, t_command *cmd, char **arr_env);//test purpose
 void		clean_fd_n_wait(int *fd, int cpid);
 void		dup_it(int *fd);
@@ -159,8 +161,8 @@ void		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg);
 int			error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
-void		ctrl_c_handler(int signal);
-void		ctrl_d_handler(char *line);
+void		display_prompt(int sign);
+void		set_line_eraser(int sign);
 
 /* ------------------------------------------------------------------------- */
 
