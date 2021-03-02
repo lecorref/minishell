@@ -11,7 +11,7 @@ void	ctrl_back_slash_handler_quit(int signal)
 	if (signal == SIGQUIT)
 	{
 		ft_putstr_fd("Quit (core dumped)\n", 2);
-		errno = 131; //need that????
+		errno = 131; //do it like that????
 	//	need to free any variable? maybe environment variables?
 	}
 }
