@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 15:04:48 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/02 15:39:00 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,6 @@ int		main(int ac, char **av, char **ep)
 	//that it exists just for the record to know how many levels of shell there
 	//are currenclty in the current tab/window.
 	main_loop(&env);
-	system("leaks minishell");
+	//system("leaks minishell");
 	return (0);
 }
