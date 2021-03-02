@@ -148,6 +148,7 @@ char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
 char		*relative_path(t_command *cmd, char **split_path, char *pwd_path);
 char		*add_path_to_cmd(char *abs_path, char *executable);
+int			test_cmd(char *env_path, char *executable);
 
 /* ------------------------------------------------------------------------- */
 
