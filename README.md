@@ -22,6 +22,10 @@
 * http://tzimmermann.org/2017/08/17/file-descriptors-during-fork-and-exec/
 * http://tzimmermann.org/2017/09/01/the-internals-of-unix-pipes-and-fifos/
 * https://catonmat.net/ftp/bash-redirections-cheat-sheet.pdf
+* http://minirighi.sourceforge.net/html/errno_8h-source.html
+* https://tldp.org/LDP/abs/html/exitcodes.html
+* https://pubs.opengroup.org/onlinepubs/9699919799.2018edition/utilities/V3_chap02.html
+* https://linuxhint.com/bash-environment-variables/
 
 ### Testers
 * https://github.com/cacharle/minishell_test

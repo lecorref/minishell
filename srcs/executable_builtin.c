@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 21:13:36 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/03 00:19:41 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,17 @@ void	printthis(t_command *cmd, char *path_to_cmd)/////////delete
 	fflush(stdout);
 }/////////delete
 
+int		update_underscore(t_list **env, char *path_cmd)
+{
+	char	*keyvalue;
+
+	if (!(keyvalue = ft_strjoin("_=", path_cmd)))
+		return (1);
+	add_env_variable(env, keyvalue);
+	free(keyvalue);
+	return (1);
+}
+
 int		executable_builtin(t_list **env, t_command *cmd)
 {
 	char	**env_tab;
@@ -92,7 +103,8 @@ int		executable_builtin(t_list **env, t_command *cmd)
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 	env_tab = env_list_to_tab(*env);
-	printthis(cmd, path_to_cmd);/////////delete
+	printthis(cmd, path_to_cmd);////////delete
+	update_underscore(env, path_to_cmd);
 	if ((fork_pid = fork()) == -1)
 		exit(errno);// check if its 2?
 	else if (fork_pid == 0)
