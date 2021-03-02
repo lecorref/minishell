@@ -117,7 +117,7 @@ void		execute_command(t_list **env, t_command *cmd);
 int			exec_t(t_list **env, t_command *cmd, char **arr_env);//test purpose
 void		clean_fd_n_wait(int *fd, int cpid);
 void		dup_it(int *fd);
-void		clean_fd(int *fd);
+void		close_fd(int *fd);
 void		dup_fd(int *fd);
 /*
  * Builtins
