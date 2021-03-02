@@ -133,7 +133,6 @@ int			update_pwd(t_list **env);
 char		*expand_tilde_and_exceptions(t_list **env, char *a, t_command *cmd);
 
 int			export_builtin(t_list **env, t_command *cmd);
-int			test_builtin(t_list **env, t_command *cmd);
 
 int			unset_builtin(t_list **env, t_command *cmd);
 int			env_builtin(t_list **env, t_command *cmd);
@@ -147,7 +146,6 @@ char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
 char		*relative_path(t_command *cmd, char **split_path, char *pwd_path);
 char		*add_path_to_cmd(char *abs_path, char *executable);
-int			test_cmd(char *each_path_dir, char *executable);
 
 /* ------------------------------------------------------------------------- */
 

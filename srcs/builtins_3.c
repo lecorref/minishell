@@ -11,24 +11,6 @@ int			env_builtin(t_list **env, t_command *cmd)
 	return (0);
 }
 
-int			test_builtin(t_list **env, t_command *cmd)
-{
-	char	**env_tab;
-	int		i;
-
-	i = 0;
-	if (!(env_tab = env_list_to_tab(*env)))
-		return (-1);
-	while (env_tab[i])
-	{
-		ft_putstr_fd(env_tab[i], cmd->fd[1]);
-		ft_putchar_fd('\n', cmd->fd[1]);
-		i++;
-	}
-	ft_freetab(env_tab);
-	return (0);
-}
-
 /*
 ** while the next index array of the env command exists, compare the current
 ** index with the next one (meaning envir[i] is a char bigger than envir[i + 1].
