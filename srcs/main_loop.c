@@ -1,47 +1,36 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main_loop.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-
-/*   Updated: 2021/02/23 20:57:56 by jle-corr         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
-int	line_eraser;
-//void	ope(t_list **env, t_command *cmd, void (func)(t_list *, t_command *))
-//{
-//	(func)(env, cmd);
-//} ???? I DON'T KNOW HOW TO DO IT WITH POINTER TO FUNCITONS :/ HELLLLP
-void	execute_command(t_list **env, t_command *cmd)
+
+int		execute_command(t_list **env, t_command *cmd)
 {
+	int		ret;
+	char	*builtin;
+	
+	builtin = NULL;
 	if (ft_strcmp(cmd->command[0], "echo") == 0)
-		echo_builtin(cmd);
-	else if (ft_strcmp(cmd->command[0], "pwd") == 0)
-		pwd_builtin(cmd);
+		ret = echo_builtin(cmd);
+	else if (ft_strcmp(cmd->command[0], "pwd") == 0 && (builtin = "pwd"))
+		ret = pwd_builtin(cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
-		exit_builtin(cmd);
+		ret = exit_builtin(cmd);
 	else if (ft_strcmp(cmd->command[0], "cd") == 0)
-		cd_builtin(env, cmd);
+		ret = cd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "export") == 0)
-		export_builtin(env, cmd);
+		ret = export_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "unset") == 0)
-		unset_builtin(env, cmd);
+		ret = unset_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "env") == 0)
-		env_builtin(env, cmd);
-
-
+	{
+		update_underscore(env, "env");
+		ret = env_builtin(env, cmd);
+	}
 	else if (ft_strcmp(cmd->command[0], "test") == 0)
-		test_builtin(env, cmd);
-
-	//else if cmd == $ ??
+		ret = test_builtin(env, cmd);
 	else
-		executable_builtin(env, cmd);
+		ret = executable_builtin(env, cmd);
+	if (builtin)
+		update_underscore(env, builtin);
+	return (ret);
 }
 
 /*
@@ -76,21 +65,6 @@ int		prompt(t_list *env)
 	return (0);
 }*/
 
-void		display_prompt(int sign)
-{
-	if (sign == SIGINT)
-		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
-}
-
-void		set_line_eraser(int sign)
-{
-	if (sign == SIGINT)
-	{
-		line_eraser = 1;
-		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
-	}
-}
-
 /*
 ** if the char is 'n' instead of '\n' :
 ** if I type '\n', it writes a newline. But if I type 'n', many times
@@ -110,11 +84,10 @@ void		set_line_eraser(int sign)
 ** So, when it's a '\n' character' inside gnl, it sends signal to read() to read
 ** plus returning gnl has he met '\n'
 ** 
+**
 ** ctrl^D sends EOT signal where read() then returns 0. So it says to read()
 ** not to read 0 Bytes but to read the fifo buffer then returns 0.
-*/
-
-/*
+**
 ** We enter into check_ctrld when read returns 0, so When ctrl^D or ctrl^C is
 ** typed.
 **
@@ -147,7 +120,7 @@ void		set_line_eraser(int sign)
 int		check_ctrld(char **line)
 {
 	signal(SIGINT, set_line_eraser);
-	if (**line && line_eraser == 0)
+	if (**line && g_line_eraser == 0)
 		return (1);
 	else
 	{
@@ -158,10 +131,10 @@ int		check_ctrld(char **line)
 
 void	eraser_checker(char *line)
 {
-	if (line_eraser == 1)
+	if (g_line_eraser == 1)
 	{
 		ft_memset(line, 0, ft_strlen(line));
-		line_eraser = 0;
+		g_line_eraser = 0;
 	}
 }
 
@@ -270,17 +243,11 @@ int		main_loop(t_list **env)
 	char	*line;
 	int		ret_gnl;
 
-	line_eraser = 0;
+	g_line_eraser = 0;
 	signal(SIGQUIT, ctrl_back_slash_handler);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
-		/*if (!line[0])
-		{
-			free(line);
-			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
-			continue ;
-		}*/
 		cmd = tokenize_line_jb(line, env);
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the
@@ -306,13 +273,6 @@ int		main_loop(t_list **env)
 		// or here insede this loop????
 		free(line);
 	}
-	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
-	/*if (ret_gnl == 0)
-	{
-		ctrl_d_handler(line);
-	}*/
-	/////////////////////JOY WORKING ON CTRLD AFTER CTRLC
-
 	free(line);
 	ft_lstclear(env, &clear_envlist);
 	if (ret_gnl == -1)//??do that all errors should have been already handled
