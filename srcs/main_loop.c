@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 02:15:57 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/02 22:47:08 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,24 @@ int	line_eraser;// GLOBAL VARIABLE MUST START WITH g_
 //{
 //	(func)(env, cmd);
 //} ???? I DON'T KNOW HOW TO DO IT WITH POINTER TO FUNCITONS :/ HELLLLP
-void	execute_command(t_list **env, t_command *cmd)
+int		execute_command(t_list **env, t_command *cmd)
 {
+	int ret;
+
 	if (ft_strcmp(cmd->command[0], "echo") == 0)
 		echo_builtin(cmd);
 	else if (ft_strcmp(cmd->command[0], "pwd") == 0)
 		pwd_builtin(cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
-		exit_builtin(cmd);
+	{
+		ret = exit_builtin(cmd);
+		printf("\n%d\n", ret);
+		if (ret >= 0)
+		{
+		//	printf("total exit ret = %d\n", ret);
+			return (errno);
+		}
+	}
 	else if (ft_strcmp(cmd->command[0], "cd") == 0)
 		cd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "export") == 0)
@@ -36,6 +46,7 @@ void	execute_command(t_list **env, t_command *cmd)
 	//else if cmd == $ ??
 	else
 		executable_builtin(env, cmd);
+	return (-1);
 }
 
 /*
@@ -73,7 +84,10 @@ int		prompt(t_list *env)
 void		display_prompt(int sign)
 {
 	if (sign == SIGINT)
+	{
 		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
+		errno = 130;
+	}
 }
 
 void		set_line_eraser(int sign)
@@ -82,6 +96,7 @@ void		set_line_eraser(int sign)
 	{
 		line_eraser = 1;
 		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
+		errno = 130;
 	}
 }
 
@@ -287,7 +302,13 @@ int		main_loop(t_list **env)
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-			execute_command(env, (t_command*)(cmd_cp->content));
+			if (execute_command(env, (t_command*)(cmd_cp->content)) >= 0)
+			{
+				ft_lstclear(&cmd, &clear_commandlist);
+				free(line);
+				ft_lstclear(env, &clear_envlist);
+				return (errno);
+			}
 			cmd_cp = cmd_cp->next;
 		}
 		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);

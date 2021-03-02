@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 18:34:28 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/02 21:13:36 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	env_tab = env_list_to_tab(*env);
 	printthis(cmd, path_to_cmd);/////////delete
 	if ((fork_pid = fork()) == -1)
-		exit(errno);
+		exit(errno);// check if its 2?
 	else if (fork_pid == 0)
 	{
 		dup_fd(cmd->fd);

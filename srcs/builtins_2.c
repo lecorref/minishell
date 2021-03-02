@@ -21,7 +21,6 @@ int		pwd_builtin(t_command *cmd)
 */
 int		exit_arg(t_command *cmd, size_t i)
 {
-
 	if (i == ft_strlen(cmd->command[1]))
 	{
 		if (!cmd->command[2])
@@ -29,12 +28,14 @@ int		exit_arg(t_command *cmd, size_t i)
 			errno = ft_atoi(cmd->command[1]);
 			errno += 256;
 			errno %= 256;
+		//	return (errno);
 			exit(errno);
 		}
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			return (1);
+			errno = 1;
+			return (errno);
 		}
 	}
 	return (0);
@@ -69,9 +70,11 @@ int		exit_builtin(t_command *cmd)
 	size_t	i;
 
 	i = 0;
+	errno = 0;
 	ft_putstr_fd("exit\n", 2);
 	if (cmd->command[1] == NULL)
-		exit(0);
+		return (0);
+	//	exit(0);
 	else if (cmd->command[1])
 	{
 		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
@@ -80,8 +83,10 @@ int		exit_builtin(t_command *cmd)
 			i++;
 		if (i != ft_strlen(cmd->command[1]))
 		{
-			error_msg("b", cmd, cmd->command[1], "numeric argument required");
-			exit(2);
+			error_msg("bas", cmd, cmd->command[1], "numeric argument required");
+			errno = 2;
+			return (errno);
+		//	exit(2);
 		}
 		exit_arg(cmd, i);
 	}
