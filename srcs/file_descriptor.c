@@ -14,7 +14,7 @@ void		dup_fd(int *fd)
 	}
 }
 
-void		clean_fd(int *fd)
+void		close_fd(int *fd)
 {
 	if (fd[1] != 1)
 		close(fd[1]);

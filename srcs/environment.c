@@ -101,6 +101,7 @@ void	add_env_variable(t_list **env, char *var)
 			free(new->key);
 			free(ENV_VALUE(tmp_env));
 			ENV_VALUE(tmp_env) = new->value;
+			free(new);
 			break;
 		}
 		tmp_env = tmp_env->next;
