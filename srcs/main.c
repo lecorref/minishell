@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 01:04:44 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/02 15:39:00 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int		increase_shlvl(t_list **env)
 	}
 	shlvl_nb = ft_atoi(shlvl_str);
 	shlvl_nb++;
-	ft_strdel(&shlvl_str);//should be erased when leak pb solved (addenvvariable)
 	if (!(shlvl_str = ft_itoa(shlvl_nb)))
 		return (-1);
 	if (!(keyvalue = ft_strjoin("SHLVL=", shlvl_str)))
@@ -35,8 +34,6 @@ int		increase_shlvl(t_list **env)
 	ft_strdel(&keyvalue);
 	return (0);
 }
-//I think that add_env_variable miss to free the value that we give to it.
-//something like this...
 
 int		main(int ac, char **av, char **ep)
 {

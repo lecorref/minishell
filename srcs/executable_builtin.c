@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/01 22:39:38 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/02 15:38:13 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,19 +63,9 @@ void	parent_process(pid_t fork_pid)
 **		-1 is returned in  the parent, no child process is created, and
 ** errno is set appropriately inside the function parent_process().
 */
-int		executable_builtin(t_list **env, t_command *cmd)
-{
-	char	**env_tab;
-	char	*path_to_cmd;
-	pid_t	fork_pid;
 
-//	if (cmd->fd[3] != 0)
-//		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
-	if (!(path_to_cmd = path_to_executable(env, cmd)))
-		return (127);
-	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-	env_tab = env_list_to_tab(*env);
-/////////delete
+void	printthis(t_command *cmd, char *path_to_cmd)/////////delete
+{
 	printf("\n----------TESTING PURPOSES----------\n");
 	int	i;
 	i = 0;
@@ -86,8 +76,22 @@ int		executable_builtin(t_list **env, t_command *cmd)
 	}
 	printf("path_to_cmd : %s\n", path_to_cmd);
 	printf("----------TESTING PURPOSES----------\n\n");
-/////////delete
+	fflush(stdout);
+}/////////delete
 
+int		executable_builtin(t_list **env, t_command *cmd)
+{
+	char	**env_tab;
+	char	*path_to_cmd;
+	pid_t	fork_pid;
+
+	if (cmd->fd[3] != 0)
+		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
+	if (!(path_to_cmd = path_to_executable(env, cmd)))
+		return (127);
+	signal(SIGQUIT, ctrl_back_slash_handler_quit);
+	env_tab = env_list_to_tab(*env);
+	printthis(cmd, path_to_cmd);
 	if ((fork_pid = fork()) == -1)
 		exit(errno);
 	else if (fork_pid == 0)
@@ -101,10 +105,9 @@ int		executable_builtin(t_list **env, t_command *cmd)
 		}
 		exit(127);
 	}
-	fflush(stdout);
 	free(path_to_cmd);
 	ft_freetab(env_tab);
-	clean_fd(cmd->fd);
+	close_fd(cmd->fd);
 	parent_process(fork_pid);
 	return (0);
 }
