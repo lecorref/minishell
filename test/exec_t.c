@@ -58,7 +58,7 @@ char		*expand_path(t_list **env, char *arg_zero)
 			break;
 	if (!paths[i])
 	{
-		printf("command not found");
+		printf("command not found\n");
 		ft_freetab(paths);
 		return (NULL);
 	}
