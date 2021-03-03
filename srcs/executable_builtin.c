@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 23:46:31 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/03 02:08:40 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,16 @@
 ** waiting for a SIGQUIT (ctrl\) signal if any, while child does not quit (if
 ** it gets to quit).
 */
-void	parent_process(pid_t fork_pid)
+void	parent_process(pid_t pid, t_command *cmd, char *pathcmd, char **env_tab)
 {
 	int		wstatus;
 
 	wstatus = 0;
-	waitpid(fork_pid, &wstatus, 0);
+	printf("\nPARENT\n");
+	free(pathcmd);
+	ft_freetab(env_tab);
+	close_fd(cmd->fd);
+	waitpid(pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
 		errno = WEXITSTATUS(wstatus);
 	else if (WIFSIGNALED(wstatus))
@@ -55,6 +59,7 @@ void	parent_process(pid_t fork_pid)
 **		the functions inside the file executable_builtin_path.c
 **		If execve fails, it outputs an error message.
 **		exit 127 to exit the child process
+**
 **		OBS.: I think that as "the child process and the parent process run in
 **		separate memory spaces"), the memory is also duplicated, therefore it
 **		needs to be freed inside the child too (and then also on the parent).
@@ -90,7 +95,7 @@ int		update_underscore(t_list **env, char *path_cmd)
 	return (1);
 }
 
-int		executable_builtin(t_list **env, t_command *cmd)
+int		executable_builtin(t_list **env, t_command *cmd)// iTS MORE THAN 25 LINES JOY'LL CHANGE IT
 {
 	char	**env_tab;
 	char	*path_to_cmd;
@@ -102,10 +107,10 @@ int		executable_builtin(t_list **env, t_command *cmd)
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 	env_tab = env_list_to_tab(*env);
-	printthis(cmd, path_to_cmd);
+	printthis(cmd, path_to_cmd);////////delete
 	update_underscore(env, path_to_cmd);
 	if ((fork_pid = fork()) == -1)
-		exit(errno);
+		exit(errno);// check if its 2?
 	else if (fork_pid == 0)
 	{
 		dup_fd(cmd->fd);
@@ -115,11 +120,10 @@ int		executable_builtin(t_list **env, t_command *cmd)
 			ft_freetab(env_tab);
 			error_msg("bash", cmd, NULL, strerror(2));
 		}
-		exit(127);
+		errno = 127;
+		return (-2);
+	//	exit(127);
 	}
-	free(path_to_cmd);
-	ft_freetab(env_tab);
-	close_fd(cmd->fd);
-	parent_process(fork_pid);
+	parent_process(fork_pid, cmd, path_to_cmd, env_tab);
 	return (0);
 }

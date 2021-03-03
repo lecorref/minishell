@@ -4,9 +4,9 @@ static int	create_env_struct(char *keyvalue, t_env *env)
 {
 	char	*needle;
 
-	if (!(needle = ft_strrchr(keyvalue, '=')))
+	if (!(needle = ft_strrchr(keyvalue, '=')))// split_jb here?
 		return (0);
-	env->key = ft_substr(keyvalue, 0, needle - keyvalue);
+	env->key = ft_substr(keyvalue, 0, ft_strlen(keyvalue) - ft_strlen(needle));
 	env->value = ft_strdup(needle + 1);
 	return (1);
 }
@@ -30,7 +30,8 @@ t_list	*create_env_list(char **envp)
 	env = NULL;
 	while (*envp != NULL)
 	{
-		new = (t_env*)malloc(sizeof(t_env));
+		if (!(new = (t_env*)malloc(sizeof(t_env))))
+			return (NULL);
 		create_env_struct(*envp, new);
 		tmp_env = ft_lstnew(new);
 		ft_lstadd_front(&env, tmp_env);
@@ -88,7 +89,8 @@ void	add_env_variable(t_list **env, char *var)
 	t_env	*new;
 	t_list	*tmp_env;
 
-	new = (t_env*)malloc(sizeof(t_env));
+	if (!(new = (t_env*)malloc(sizeof(t_env))))
+		return ;
 	if (!create_env_struct(var, new))
 			return ;
 	tmp_env = *env;

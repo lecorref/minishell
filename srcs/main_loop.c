@@ -1,5 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_loop.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
+/*   Updated: 2021/03/03 01:56:08 by jfreitas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
+#include "minishell.h"
 
 int		execute_command(t_list **env, t_command *cmd)
 {
@@ -12,7 +23,12 @@ int		execute_command(t_list **env, t_command *cmd)
 	else if (ft_strcmp(cmd->command[0], "pwd") == 0 && (builtin = "pwd"))
 		ret = pwd_builtin(cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
+	{
 		ret = exit_builtin(cmd);
+		printf("\nexit ret = %d\n", ret);// testing
+		if (ret == -2)// means to exit shell
+			return (-2);
+	}
 	else if (ft_strcmp(cmd->command[0], "cd") == 0)
 		ret = cd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "export") == 0)
@@ -24,8 +40,6 @@ int		execute_command(t_list **env, t_command *cmd)
 		update_underscore(env, "env");
 		ret = env_builtin(env, cmd);
 	}
-	else if (ft_strcmp(cmd->command[0], "test") == 0)
-		ret = test_builtin(env, cmd);
 	else
 		ret = executable_builtin(env, cmd);
 	if (builtin)
@@ -66,41 +80,41 @@ int		prompt(t_list *env)
 }*/
 
 /*
-** if the char is 'n' instead of '\n' :
+** If the char is 'n' instead of '\n':
 ** if I type '\n', it writes a newline. But if I type 'n', many times
 ** and continue after, it does nothing UNTIL I type '\n'.
-** that's mean that the 'enter' key sends a signal to read() saying :
-** "now you read all that has been wrote to the stdin !". Like when a fifo
-** write end fd is closed (which says to read end that it can read the buffer)
+** that means that the 'enter' key sends a signal to read() saying:
+** "now you read all that has been wrote to the stdin!". Like when a fifo
+** write end fd is closed (which says to read end that it can read the buffer).
 **
 ** We could say that keyboard & read(fd0) are linked by a fifo buffer (pipe)
 ** & that enter key closes the write end fd.
-** All characters typed after n aren't displayed bc my gnl puts a
-** 0 at the place of flag character.
+** All characters typed after n aren't displayed because my gnl puts a 0 at
+** the place of flag character.
 **
-** If I type '\n' before typing 'n', it just writes '\n', BUT, we can't backspace
-** it. That means that read() has read. But since 'n' hasn't been met, line
-** is still full and gnl didn't returned
-** So, when it's a '\n' character' inside gnl, it sends signal to read() to read
-** plus returning gnl has he met '\n'
-** 
+** If I type '\n' before typing 'n', it just writes '\n', BUT, we can't
+** backspace it. That means that read() has read. But since 'n' hasn't been met,
+** line is still full and gnl didn't returned.
+** So, when it's a '\n' character inside gnl, it sends a signal to read() to
+** read, plus returning gnl has the met '\n'.
+**
 **
 ** ctrl^D sends EOT signal where read() then returns 0. So it says to read()
 ** not to read 0 Bytes but to read the fifo buffer then returns 0.
 **
-** We enter into check_ctrld when read returns 0, so When ctrl^D or ctrl^C is
+**
+** We enter into check_ctrld when read returns 0, so when ctrl^D or ctrl^C is
 ** typed.
 **
-** ctrl^D after inputing  : line exists -read() had read and gnl joined buf to line
+** ctrl^D after input: line exists -read() has read and gnl joined buf to line.
 ** ctrl^D with empty input: exit read() & so the minishell.
-** ctrl^C 				  : line inputed before doesn't exists bc read() hadn't
-**							read. If inputed ctrl^D had been hited before, a line
-**							exists.
+** ctrl^C: line inputed before doesn't exists because read() hadn't read.
+** If inputed ctrl^D had been hited before, a line exists.
 **
-** When ctrl^D is hited, 2 behaviors :
+** When ctrl^D is hited, 2 behaviors:
 **				- If Nothing had already been typed, exit the loop (return 0).
 **				- else we want to stay into the read() loop to continue to
-**				creates the line : don't return.
+**				  create the line : don't return.
 **
 ** When ctrl^C is hited, 1 behavior :
 **				- Display a new prompt, line erased.
@@ -114,9 +128,8 @@ int		prompt(t_list *env)
 ** when we go into it is when ctrl^D is hited.
 ** But when ctrl^D is hited & read() continues, this signal() takes effect and
 ** takes advantage and will act when ctrl^C will be hited, until we go out of
-** gnl which would have returned 1, then the more general signal() go back
+** gnl which would have returned 1, then the more general signal() goes back.
 */
-
 int		check_ctrld(char **line)
 {
 	signal(SIGINT, set_line_eraser);
@@ -139,23 +152,23 @@ void	eraser_checker(char *line)
 }
 
 /*
-** 'ENTER':							~> fifo write end closed(?). read() can read
-**									   the fifo buffer, then wait to read again.
-** ctrl^D : read(fd0) -> returns 0	~> EOT. fifo write end closed and read()
-**									   returns 0, buffer looks like being
-**									   fullfiled anyway, which means read() act.
-** ctrl^C : no read() -> no return  ~> sigint. As signal() is used, pgm doesn't
-**									   interrupt & currently print a new prompt,
-**									   but still interrupt read without any read
-**									   of buffer. No read() at all from the fifo
-**									   buffer. read() returns 0 anyway.
-**									   So, ctr^C handler must erase the line
-**									   and display a new prompt.
+** 'ENTER':						   ~> fifo write end closed(?). read() can read
+**									  the fifo buffer, then wait to read again.
+** ctrl^D : read(fd0) -> returns 0 ~> EOT. fifo write end closed and read()
+**									  returns 0, buffer looks like being
+**									  fullfiled anyway, which means read() act.
+** ctrl^C : no read() -> no return ~> SIGINT. As signal() is used, pgm doesn't
+**									  interrupt & currently print a new prompt,
+**									  but still interrupt read without any read
+**									  of buffer. No read() at all from the fifo
+**									  buffer. read() returns 0 anyway.
+**									  So, ctr^C handler must erase the line
+**									  and display a new prompt.
 **
 **
-**		(ctrl^D)-,       ,-(ctrl^C)
-**               v       v
-** > "hello      \0"world  
+**			(ctrl^D)-,       ,-(ctrl^C)
+**                   v       v
+** > "hello          \0"world
 ** > Bla
 **
 ** Old behavior       ----->line--->|helloBla|
@@ -163,7 +176,6 @@ void	eraser_checker(char *line)
 **
 ** When ctrl^C is sent, line is empty because if it exists it has been erased.
 */
-
 int		gnl_ctrld(int fd, char **line)
 {
 	static char		buf[MAX_FD][BUFFER_SIZE + 1];
@@ -227,7 +239,7 @@ int		gnl_ctrld(int fd, char **line)
 ** does nothing.
 */
 
-/* This loop should only exit on ctrlD, sigquit and "exit" builtin.
+/* This loop should only exit on ctrlD (sigquit) and "exit" builtin.
 ** It should be able to refuse to exit on Ctrl-d if needed (when something is
 ** typed and then the ctrlD is typed before the return button, it doesn't exit;
 ** otherwise it'll exit, either the command or the shell).
@@ -252,7 +264,7 @@ int		main_loop(t_list **env)
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the
 		// t_cmd cmd->command (multiples of the same redirection has to fail) -
-		// try to mix pipes and redirections 
+		// try to mix pipes and redirections
 		// 2.0. handle single quotes - try single quotes at arguments of
 		// functions (also quoted empty args '', or whitespace, or ';' or and
 		// also environment variables)
@@ -263,7 +275,14 @@ int		main_loop(t_list **env)
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-			execute_command(env, (t_command*)(cmd_cp->content));
+		//	execute_command(env, (t_command*)(cmd_cp->content));
+			if (execute_command(env, (t_command*)(cmd_cp->content)) == -2)
+			{
+				ft_lstclear(&cmd, &clear_commandlist);
+				free(line);
+				ft_lstclear(env, &clear_envlist);
+				return (errno);
+			}
 			cmd_cp = cmd_cp->next;
 		}
 		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
@@ -275,9 +294,8 @@ int		main_loop(t_list **env)
 	}
 	free(line);
 	ft_lstclear(env, &clear_envlist);
-	if (ret_gnl == -1)//??do that all errors should have been already handled
-		//before it gets to this part
+	if (ret_gnl == -1)//??do thati? all errors should have been already handled
+					  //before it gets to this part?
 		return (-1);
 	return (0);
 }
-
