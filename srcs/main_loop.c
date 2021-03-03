@@ -6,12 +6,12 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/03 01:56:08 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/04 00:33:59 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*
 int		execute_command(t_list **env, t_command *cmd)
 {
 	int		ret;
@@ -39,9 +39,9 @@ int		execute_command(t_list **env, t_command *cmd)
 		ret = env_builtin(env, cmd);
 	}
 	else
-		ret = executable_builtin(env, cmd);
+		ret = execute_extern(env, cmd);
 	return (ret);
-}
+}*/
 
 /*
 ** Printing the propt by searching for the SESSION_MANAGER environmetal
@@ -198,6 +198,18 @@ int		gnl_ctrld(int fd, char **line)
 		return (-1);
 	ft_strncpy(buf[fd], adr + 1, sizeof(buf[fd]));
 	return (1);
+}
+
+int		execute_command(t_list **env, t_command *cmd)
+{
+	int	ret;
+
+	if ((ret = is_builtin(cmd)))
+		ret = execute_builtin(env, cmd, ret);
+	else
+		ret = execute_extern(env, cmd);
+	close_fd(cmd->fd);
+	return (ret);
 }
 
 /* Signal
