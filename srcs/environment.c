@@ -4,7 +4,7 @@ static int	create_env_struct(char *keyvalue, t_env *env)
 {
 	char	*needle;
 
-	if (!(needle = ft_strrchr(keyvalue, '=')))// split_jb here?
+	if (!(needle = ft_strchr(keyvalue, '=')))
 		return (0);
 	env->key = ft_substr(keyvalue, 0, ft_strlen(keyvalue) - ft_strlen(needle));
 	env->value = ft_strdup(needle + 1);
