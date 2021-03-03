@@ -53,7 +53,7 @@ SRCS_PGM = $(addprefix $(SRC_PATH)/,builtins_1.c builtins_2.c environment.c \
 		   exit_error_manager.c tokenizer.c token_find_redirections.c \
 		   token_utils.c token_quotes.c token_expand.c token_spliters.c \
 		   token_redirections.c clear_lists.c main_loop.c builtins_3.c \
-		   file_descriptor.c executable_builtin_path.c)
+		   file_descriptor.c executable_builtin_path.c utils.c)
 
 
 

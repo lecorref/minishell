@@ -20,10 +20,10 @@
 /* ------------------------------------------------------------------------- */
 
 /*
- * Just for printf debug
+** Just for printf debug
 */
-#define LINE(NAME) "\n======================-"#NAME"-========================\n"
-#define LINE2 "-----------------\n"
+# define LINE(NAME) "\n======================-"#NAME"-========================\n"
+# define LINE2 "-----------------\n"
 /*
 ** Macros
 */
@@ -34,13 +34,22 @@
 # endif
 
 /*
- * Environment control
- */
+** builtin code magic numbers
+*/
 
-/*
- * These defines shorten literals to make the code more understandable.
- * NAME is of type t_list.
- */
+# define BT_ECHO 1
+# define BT_PWD 2
+# define BT_EXIT 3
+# define BT_CD 4
+# define BT_EXPORT 5
+# define BT_UNSET 6
+# define BT_ENV 7
+
+/* 
+** Environment control
+** These defines shorten literals to make the code more understandable.
+** NAME is of type t_list.
+*/
 # define ENV_KEY(NAME) ((t_env *)((NAME)->content))->key
 # define ENV_VALUE(NAME) ((t_env *)((NAME)->content))->value
 
@@ -50,9 +59,10 @@
 /* ------------------------------------------------------------------------- */
 
 int	g_line_eraser;
+
 /*
- * These functions will create/add/find/delete/free a list of the t_env struct,
- * from the envp (char **ep) argument of the main.
+** These functions will create/add/find/delete/free a list of the t_env struct,
+** from the envp (char **ep) argument of the main.
 */
 t_list		*create_env_list(char **envp);
 char		**env_list_to_tab(t_list *head);
@@ -66,26 +76,28 @@ char		*last_arg(t_command *cmd);
 /* ------------------------------------------------------------------------- */
 
 /*
- * Loop functions
- */
+** Loop functions
+*/
 int			main_loop(t_list **env);
 
 /*
- * Lexer/parser function that will buid t_command structure
- * These functions will create a list of t_command from the input line.
+** Lexer/parser function that will buid t_command structure
+** These functions will create a list of t_command from the input line.
 */
 t_list		*tokenize_line_jb(char *line, t_list **env);
 int			find_redirections(t_list **cmd, t_list **env, char *command_line,
 				t_command *i_command);
 char		*skip_char(char *str, char c);
+
 /*
- * tokenize split
+** tokenize split
 */
 char		**split_with_exception(char *str, char c, char *exception_set);
 char		**split_with_exception_v2(char *str, char c, char *exception_set);
 char		*ghosting(char *str, char c, char *exception_set, int *error);
+
 /*
- * tokenize quotes
+** tokenize quotes
 */
 char		*double_quotes(t_list **env, char **line_ptr);
 char		*simple_quotes(char **line_ptr);
@@ -93,8 +105,9 @@ char		*no_quotes(t_list **env, char **line_ptr);
 char		*quotes(t_list **env, char **line_ptr);
 int			redirections(t_list **env, char **line_ptr, t_command *i_command);
 char		*doll_expand(t_list **env, char **line_ptr);
+
 /*
- * tokenize utils
+** tokenize utils
 */
 void		delete_remaining_char(char *str, char c);
 char		*end_of_object(char *str);
@@ -102,6 +115,7 @@ int			is_symbol(int c);
 int			is_symbol_v2(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command();
+
 /*
 ** clear lists
 */
@@ -113,18 +127,21 @@ void		ft_array_string_del(char **array);
 /* ------------------------------------------------------------------------- */
 
 /*
- * This function will find if the command is a builtin and execute it, or
- * execute said command with execve.
- */
+** This function will find if the command is a builtin and execute it, or
+** execute said command with execve.
+*/
 int			execute_command(t_list **env, t_command *cmd);
-int			exec_t(t_list **env, t_command *cmd, char **arr_env);//test purpose
-void		clean_fd_n_wait(int *fd, int cpid);
-void		dup_it(int *fd);
 void		close_fd(int *fd);
 void		dup_fd(int *fd);
+
+//tests
+int			exec_t(t_list **env, t_command *cmd, char **arr_env);
+void		clean_fd_n_wait(int *fd, int cpid);
+void		dup_it(int *fd);
+
 /*
- * Builtins
- */
+** Builtins
+*/
 int			echo_builtin(t_command *cmd);
 int			pwd_builtin(t_list **env, t_command *cmd);
 
@@ -141,10 +158,11 @@ int			unset_builtin(t_list **env, t_command *cmd);
 int			env_builtin(t_list **env, t_command *cmd);
 
 /*
-** Executable builtin functions
+** Executable external functions
 */
-int			executable_builtin(t_list **env, t_command *cmd);
-//void		parent_process(pid_t fork_pid);
+int			execute_extern(t_list **env, t_command *cmd);
+int			is_builtin(t_command *cmd);
+int			execute_builtin(t_list **env, t_command *cmd, int builtin_code);
 void		parent_process(pid_t p, t_command *cmd, char *p_cmd, char **ev_tab);
 char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
@@ -155,9 +173,8 @@ int			test_cmd(char *env_path, char *executable);
 /* ------------------------------------------------------------------------- */
 
 /*
- * errors/signal handlins/exits functions
- */
-
+** errors/signal handlins/exits functions
+*/
 void		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg);
 int			error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
