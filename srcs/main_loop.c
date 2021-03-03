@@ -15,13 +15,11 @@
 int		execute_command(t_list **env, t_command *cmd)
 {
 	int		ret;
-	char	*builtin;
 	
-	builtin = NULL;
 	if (ft_strcmp(cmd->command[0], "echo") == 0)
 		ret = echo_builtin(cmd);
-	else if (ft_strcmp(cmd->command[0], "pwd") == 0 && (builtin = "pwd"))
-		ret = pwd_builtin(cmd);
+	else if (ft_strcmp(cmd->command[0], "pwd") == 0)
+		ret = pwd_builtin(env, cmd);
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
 	{
 		ret = exit_builtin(cmd);
@@ -42,8 +40,6 @@ int		execute_command(t_list **env, t_command *cmd)
 	}
 	else
 		ret = executable_builtin(env, cmd);
-	if (builtin)
-		update_underscore(env, builtin);
 	return (ret);
 }
 

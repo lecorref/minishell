@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   executable_builtin.c                               :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/03 02:08:40 by jfreitas         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 /*
@@ -84,6 +72,18 @@ void	printthis(t_command *cmd, char *path_to_cmd)/////////delete
 	fflush(stdout);
 }/////////delete
 
+char	*last_arg(t_command *cmd)
+{
+	int		i;
+
+	i = 0;
+	while (cmd->command[i])
+		i++;
+	if (i > 0)
+		i -= 1;
+	return (cmd->command[i]);
+}
+
 int		update_underscore(t_list **env, char *path_cmd)
 {
 	char	*keyvalue;
@@ -95,8 +95,8 @@ int		update_underscore(t_list **env, char *path_cmd)
 	return (1);
 }
 
-int		executable_builtin(t_list **env, t_command *cmd)// iTS MORE THAN 25 LINES JOY'LL CHANGE IT
-{
+int		executable_builtin(t_list **env, t_command *cmd)// iTS MORE THAN
+{// 25 LINES JOY'LL CHANGE IT
 	char	**env_tab;
 	char	*path_to_cmd;
 	pid_t	fork_pid;
@@ -107,8 +107,8 @@ int		executable_builtin(t_list **env, t_command *cmd)// iTS MORE THAN 25 LINES J
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 	env_tab = env_list_to_tab(*env);
-	printthis(cmd, path_to_cmd);////////delete
-	update_underscore(env, path_to_cmd);
+	printthis(cmd, path_to_cmd);
+	update_underscore(env, last_arg(cmd));
 	if ((fork_pid = fork()) == -1)
 		exit(errno);// check if its 2?
 	else if (fork_pid == 0)
