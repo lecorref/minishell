@@ -38,10 +38,11 @@ int			echo_builtin(t_command *cmd)
 	return (0);
 }
 
-int		pwd_builtin(t_command *cmd)
+int		pwd_builtin(t_list **env, t_command *cmd)
 {
 	char	*stored;
 
+	update_underscore(env, last_arg(cmd));
 	stored = getcwd(NULL, 0);
 	ft_putstr_fd(stored, cmd->fd[1]);
 	ft_putchar_fd('\n', cmd->fd[1]);

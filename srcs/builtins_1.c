@@ -101,26 +101,15 @@ int		update_pwd(t_list **env)
 */
 //cmd->command[1] = expand_tilde(env, cmd->command[1]);
 
-void	update_cd_underscore(t_list **env, char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-		i++;
-	if (i > 0)
-		update_underscore(env, args[i - 1]);
-}
-
 int		cd_builtin(t_list **env, t_command *cmd)
 {
 	if (!(cmd->command[1]))
-		if (!(cmd->command[1] = ft_strjoin("~", "")))
-			return (-1);
+		if (!(cmd->command[1] = ft_strjoin("~", "")))//!!! -> the array is not 
+			return (-1);//anymore NULL terminated ?! check this
 	if (!(cmd->command[1][0]))
 		return (0);
 	cmd->command[1] = expand_tilde_and_exceptions(env, cmd->command[1], cmd);
-	update_cd_underscore(env, cmd->command);
+	update_underscore(env, last_arg(cmd));
 	if ((chdir(cmd->command[1])) == -1)
 	{
 		if (cmd->command[2])

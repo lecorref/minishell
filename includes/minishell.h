@@ -61,6 +61,7 @@ char		*find_env_value(t_list **head, char *key);
 void		delete_env_variable(t_list **head, char *key);
 void		free_env(void *env, size_t size);
 int			update_underscore(t_list **env, char *path_cmd);
+char		*last_arg(t_command *cmd);
 
 /* ------------------------------------------------------------------------- */
 
@@ -125,7 +126,7 @@ void		dup_fd(int *fd);
  * Builtins
  */
 int			echo_builtin(t_command *cmd);
-int			pwd_builtin(t_command *cmd);
+int			pwd_builtin(t_list **env, t_command *cmd);
 
 int			exit_builtin(t_command *cmd);
 int			exit_arg(t_command *cmd, size_t i);
