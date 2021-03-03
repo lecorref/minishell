@@ -143,7 +143,8 @@ int			env_builtin(t_list **env, t_command *cmd);
 ** Executable builtin functions
 */
 int			executable_builtin(t_list **env, t_command *cmd);
-void		parent_process(pid_t fork_pid);
+//void		parent_process(pid_t fork_pid);
+void		parent_process(pid_t p, t_command *cmd, char *p_cmd, char **ev_tab);
 char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
 char		*relative_path(t_command *cmd, char **split_path, char *pwd_path);

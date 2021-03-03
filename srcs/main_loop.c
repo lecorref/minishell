@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/03 00:18:31 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/03 01:56:08 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,9 @@ int		execute_command(t_list **env, t_command *cmd)
 	else if (ft_strcmp(cmd->command[0], "exit") == 0)
 	{
 		ret = exit_builtin(cmd);
-		printf("\n%d\n", ret);
-		if (ret >= 0)
-		{
-		//	printf("total exit ret = %d\n", ret);
-			return (errno);
-		}
+		printf("\nexit ret = %d\n", ret);// testing
+		if (ret == -2)// means to exit shell
+			return (-2);
 	}
 	else if (ft_strcmp(cmd->command[0], "cd") == 0)
 		ret = cd_builtin(env, cmd);
@@ -278,7 +275,8 @@ int		main_loop(t_list **env)
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-			if (execute_command(env, (t_command*)(cmd_cp->content)) >= 0)
+		//	execute_command(env, (t_command*)(cmd_cp->content));
+			if (execute_command(env, (t_command*)(cmd_cp->content)) == -2)
 			{
 				ft_lstclear(&cmd, &clear_commandlist);
 				free(line);

@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/03 00:19:41 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/03 02:08:40 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,12 +27,16 @@
 ** waiting for a SIGQUIT (ctrl\) signal if any, while child does not quit (if
 ** it gets to quit).
 */
-void	parent_process(pid_t fork_pid)
+void	parent_process(pid_t pid, t_command *cmd, char *pathcmd, char **env_tab)
 {
 	int		wstatus;
 
 	wstatus = 0;
-	waitpid(fork_pid, &wstatus, 0);
+	printf("\nPARENT\n");
+	free(pathcmd);
+	ft_freetab(env_tab);
+	close_fd(cmd->fd);
+	waitpid(pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
 		errno = WEXITSTATUS(wstatus);
 	else if (WIFSIGNALED(wstatus))
@@ -91,7 +95,7 @@ int		update_underscore(t_list **env, char *path_cmd)
 	return (1);
 }
 
-int		executable_builtin(t_list **env, t_command *cmd)
+int		executable_builtin(t_list **env, t_command *cmd)// iTS MORE THAN 25 LINES JOY'LL CHANGE IT
 {
 	char	**env_tab;
 	char	*path_to_cmd;
@@ -116,11 +120,10 @@ int		executable_builtin(t_list **env, t_command *cmd)
 			ft_freetab(env_tab);
 			error_msg("bash", cmd, NULL, strerror(2));
 		}
-		exit(127);
+		errno = 127;
+		return (-2);
+	//	exit(127);
 	}
-	free(path_to_cmd);
-	ft_freetab(env_tab);
-	close_fd(cmd->fd);
-	parent_process(fork_pid);
+	parent_process(fork_pid, cmd, path_to_cmd, env_tab);
 	return (0);
 }
