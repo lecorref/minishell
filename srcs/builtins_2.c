@@ -30,7 +30,7 @@ int			echo_builtin(t_command *cmd)
 	while (cmd->command[i] != NULL)
 	{
 		ft_putstr_fd(cmd->command[i], cmd->fd[1]);
-		ft_putchar_fd(' ', cmd->fd[1]);
+	//	ft_putchar_fd(' ', cmd->fd[1]);// there is no space after string whith -n
 		i++;
 	}
 	if (!flag)
@@ -60,7 +60,6 @@ int		pwd_builtin(t_list **env, t_command *cmd)
 */
 int		exit_arg(t_command *cmd, size_t i)
 {
-
 	if (i == ft_strlen(cmd->command[1]))
 	{
 		if (!cmd->command[2])
@@ -68,15 +67,16 @@ int		exit_arg(t_command *cmd, size_t i)
 			errno = ft_atoi(cmd->command[1]);
 			errno += 256;
 			errno %= 256;
-			exit(errno);
+			return (-2);//means to exit the shell
 		}
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			return (1);
+			errno = 1;
+			return (0);//means to NOT exit the shell
 		}
 	}
-	return (0);
+	return (-2);
 }
 
 /*
@@ -110,7 +110,10 @@ int		exit_builtin(t_command *cmd)
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
 	if (cmd->command[1] == NULL)
-		exit(0);
+	{
+		errno = 0;
+		return (-2);//means to exit the shell
+	}
 	else if (cmd->command[1])
 	{
 		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
@@ -119,10 +122,12 @@ int		exit_builtin(t_command *cmd)
 			i++;
 		if (i != ft_strlen(cmd->command[1]))
 		{
-			error_msg("b", cmd, cmd->command[1], "numeric argument required");
-			exit(2);
+			error_msg("bas", cmd, cmd->command[1], "numeric argument required");
+			errno = 2;
+			return (-2);//means to exit the shell
 		}
-		exit_arg(cmd, i);
+		if (exit_arg(cmd, i) == 0)
+			return (0);//means to NOT exit the shell
 	}
-	return (0);
+	return (-2);//means to exit the shell
 }

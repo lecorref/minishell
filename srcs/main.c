@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/02 19:34:06 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/03 01:19:15 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ int		increase_shlvl(t_list **env)
 	if (!(shlvl_str = ft_itoa(shlvl_nb)))
 		return (-1);
 	if (!(keyvalue = ft_strjoin("SHLVL=", shlvl_str)))
+	{
+		ft_strdel(&shlvl_str);
 		return (-1);
+	}
 	ft_strdel(&shlvl_str);
 	add_env_variable(env, keyvalue);
 	ft_strdel(&keyvalue);
@@ -52,6 +55,7 @@ int		main(int ac, char **av, char **ep)
 	//that it exists just for the record to know how many levels of shell there
 	//are currenclty in the current tab/window.
 	main_loop(&env);
+	//ft_freetab(env_tab);
 	//system("leaks minishell");
-	return (0);
+	return (errno);
 }
