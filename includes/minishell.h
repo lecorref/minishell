@@ -56,9 +56,11 @@
 # define CMD(NAME) ((t_command *)((NAME)->content))->command
 # define CMD_FD(NAME) ((t_command *)((NAME)->content))->fd
 
+# define COMMAND(NAME) (t_command *)((NAME)->content)
 /* ------------------------------------------------------------------------- */
 
 int	g_line_eraser;
+int	g_exit_status;
 
 /*
 ** These functions will create/add/find/delete/free a list of the t_env struct,
@@ -104,7 +106,7 @@ char		*simple_quotes(char **line_ptr);
 char		*no_quotes(t_list **env, char **line_ptr);
 char		*quotes(t_list **env, char **line_ptr);
 int			redirections(t_list **env, char **line_ptr, t_command *i_command);
-char		*doll_expand(t_list **env, char **line_ptr);
+char		*doll_expand(t_list **env, char **line_ptr, char quote);
 
 /*
 ** tokenize utils
@@ -112,7 +114,9 @@ char		*doll_expand(t_list **env, char **line_ptr);
 void		delete_remaining_char(char *str, char c);
 char		*end_of_object(char *str);
 int			is_symbol(int c);
+int			is_symbol_doll(int c);
 int			is_symbol_v2(int c);
+int			authorized_char(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command();
 
@@ -144,7 +148,7 @@ void		dup_it(int *fd);
 /*
 ** Builtins
 */
-int			echo_builtin(t_command *cmd);
+int			echo_builtin(t_list **env, t_command *cmd);
 int			pwd_builtin(t_list **env, t_command *cmd);
 
 int			exit_builtin(t_command *cmd);
@@ -165,7 +169,7 @@ int			env_builtin(t_list **env, t_command *cmd);
 int			execute_extern(t_list **env, t_command *cmd);
 int			is_builtin(t_command *cmd);
 int			execute_builtin(t_list **env, t_command *cmd, int builtin_code);
-void		parent_process(pid_t p, t_command *cmd, char *p_cmd, char **ev_tab);
+int			parent_process(pid_t pid, char *pathcmd, char **env_tab);
 char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
 char		*relative_path(t_command *cmd, char **split_path, char *pwd_path);

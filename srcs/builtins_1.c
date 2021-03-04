@@ -121,9 +121,9 @@ int		cd_builtin(t_list **env, t_command *cmd)
 		}
 		else if (!cmd->command[2])
 			error_msg("bash", cmd, cmd->command[1], strerror(errno));
-		return (-1);
+		return (1);
 	}
 	if (update_pwd(env) == -1)
-		return (-1);
+		return (1);
 	return (0);
 }

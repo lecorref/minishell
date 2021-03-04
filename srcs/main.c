@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/03 01:19:15 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/04 20:22:20 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ int		main(int ac, char **av, char **ep)
 	//does not close the shell/window when its exported to any number, I think
 	//that it exists just for the record to know how many levels of shell there
 	//are currenclty in the current tab/window.
+	g_exit_status = 0;
+	g_line_eraser = 0;
 	main_loop(&env);
 	//ft_freetab(env_tab);
 	//system("leaks minishell");

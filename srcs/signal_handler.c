@@ -28,6 +28,7 @@ void	display_prompt(int sign)
 {
 	if (sign == SIGINT)
 	{
+		g_exit_status = 1;
 		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
 		errno = 130;
 	}
@@ -37,6 +38,7 @@ void	set_line_eraser(int sign)
 {
 	if (sign == SIGINT)
 	{
+		g_exit_status = 1;
 		g_line_eraser = 1;
 		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
 	}
