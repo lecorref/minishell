@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/04 00:33:59 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/04 01:56:47 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,7 @@ int		execute_command(t_list **env, t_command *cmd)
 {
 	int	ret;
 
+	print_cmd(cmd);//TEST - TO DELETE LATER
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret);
 	else
