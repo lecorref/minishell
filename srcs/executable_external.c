@@ -59,18 +59,40 @@ void	parent_process(pid_t pid, t_command *cmd, char *pathcmd, char **env_tab)
 
 void	printthis(t_command *cmd, char *path_to_cmd)/////////delete
 {
-	printf("\n----------TESTING PURPOSES----------\n");
 	int	i;
-	i = 0;
-	while (cmd->command[i])
-	{
+
+	printf("\n----------TESTING PURPOSES----------\n");
+	printf("\t\t\t\tfd[0] : %d\tfd[1] : %d\n", cmd->fd[0], cmd->fd[1]);
+	i = -1;
+	while (cmd->command[++i])
 		printf("cmd->command[%d] = %s\n", i, cmd->command[i]);
-		i++;
-	}
 	printf("path_to_cmd : %s\n", path_to_cmd);
 	printf("----------TESTING PURPOSES----------\n\n");
 	fflush(stdout);
 }/////////delete
+
+int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
+{
+	int	cpid;
+
+	if ((cpid = fork()) == -1)
+		exit(errno);// check if its 2?
+	else if (cpid == 0)
+	{
+		dup_fd(cmd->fd);
+		if (execve(path_to_cmd, cmd->command, env_tab) == -1)
+		{
+			free(path_to_cmd);
+			ft_freetab(env_tab);
+			error_msg("bash", cmd, NULL, strerror(2));
+		}
+		//errno = 127;
+		//return (-2);
+		exit(127);//I think, as it's a child which would fail & not the main
+	}//pgm (parent), that it would be better to exit() it ?
+	else
+		return (cpid);
+}
 
 int		execute_extern(t_list **env, t_command *cmd)// iTS MORE THAN
 {// 25 LINES JOY'LL CHANGE IT
@@ -84,23 +106,9 @@ int		execute_extern(t_list **env, t_command *cmd)// iTS MORE THAN
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 	env_tab = env_list_to_tab(*env);
-	printthis(cmd, path_to_cmd);
+	printthis(cmd, path_to_cmd);//TEST PURPOSE. DELETE AFTER
 	update_underscore(env, last_arg(cmd));
-	if ((fork_pid = fork()) == -1)
-		exit(errno);// check if its 2?
-	else if (fork_pid == 0)
-	{
-		dup_fd(cmd->fd);
-		if (execve(path_to_cmd, cmd->command, env_tab) == -1)
-		{
-			free(path_to_cmd);
-			ft_freetab(env_tab);
-			error_msg("bash", cmd, NULL, strerror(2));
-		}
-		errno = 127;
-		return (-2);
-	//	exit(127);
-	}
+	fork_pid = fork_extern(cmd, path_to_cmd, env_tab);
 	parent_process(fork_pid, cmd, path_to_cmd, env_tab);
 	return (0);
 }
