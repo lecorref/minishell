@@ -27,7 +27,7 @@ int		execute_builtin(t_list **env, t_command *cmd, int builtin_code)
 	int		ret;
 
 	if (builtin_code == BT_ECHO)
-		ret = echo_builtin(cmd);
+		ret = echo_builtin(env, cmd);
 	else if (builtin_code == BT_PWD)
 		ret = pwd_builtin(env, cmd);
 	else if (builtin_code == BT_EXIT)

@@ -37,6 +37,11 @@ int				join_word_object(char **command_string, char **word_object)
 {
 	if (!*word_object)
 		return (0);
+	if (!**word_object)
+	{
+		free(*word_object);
+		return (1);
+	}
 	if (!(join_newstr(command_string, *word_object)))
 		return (0);
 	free(*word_object);
@@ -49,13 +54,13 @@ int				join_word_object(char **command_string, char **word_object)
 int				create_array_n_link(t_list **cmd, t_command *i_command,
 		char **command_string)
 {
-	char		**command_array;
+	char		**cmd_array;
 	t_list		*new;	
 
-	if (!(command_array = split_with_exception_v2(*command_string, ' ', "\'\"")))
+	if (!(cmd_array = split_with_exception_v2(*command_string, ' ', "\'\"")))
 		return (0);
 	free(*command_string);
-	i_command->command = command_array;
+	i_command->command = cmd_array;
 	if (!(new = ft_lstnew(i_command)))
 		return (0);
 	ft_lstadd_back(cmd, new);
