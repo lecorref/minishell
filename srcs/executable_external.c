@@ -57,24 +57,11 @@ void	parent_process(pid_t pid, t_command *cmd, char *pathcmd, char **env_tab)
 ** errno is set appropriately inside the function parent_process().
 */
 
-void	printthis(t_command *cmd, char *path_to_cmd)/////////delete
-{
-	int	i;
-
-	printf("\n----------TESTING PURPOSES----------\n");
-	printf("\t\t\t\tfd[0] : %d\tfd[1] : %d\n", cmd->fd[0], cmd->fd[1]);
-	i = -1;
-	while (cmd->command[++i])
-		printf("cmd->command[%d] = %s\n", i, cmd->command[i]);
-	printf("path_to_cmd : %s\n", path_to_cmd);
-	printf("----------TESTING PURPOSES----------\n\n");
-	fflush(stdout);
-}/////////delete
-
 int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
+	printf("\tpath_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
 	if ((cpid = fork()) == -1)
 		exit(errno);// check if its 2?
 	else if (cpid == 0)
@@ -106,7 +93,6 @@ int		execute_extern(t_list **env, t_command *cmd)// iTS MORE THAN
 		return (127);
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 	env_tab = env_list_to_tab(*env);
-	printthis(cmd, path_to_cmd);//TEST PURPOSE. DELETE AFTER
 	update_underscore(env, last_arg(cmd));
 	fork_pid = fork_extern(cmd, path_to_cmd, env_tab);
 	parent_process(fork_pid, cmd, path_to_cmd, env_tab);

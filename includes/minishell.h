@@ -116,6 +116,8 @@ int			is_symbol_v2(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command();
 
+void	print_cmd(t_command *cmd);/////////delete
+
 /*
 ** clear lists
 */
