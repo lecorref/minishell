@@ -116,6 +116,7 @@ char		*end_of_object(char *str);
 int			is_symbol(int c);
 int			is_symbol_doll(int c);
 int			is_symbol_v2(int c);
+int			authorized_char(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command();
 
@@ -147,7 +148,7 @@ void		dup_it(int *fd);
 /*
 ** Builtins
 */
-int			echo_builtin(t_command *cmd);
+int			echo_builtin(t_list **env, t_command *cmd);
 int			pwd_builtin(t_list **env, t_command *cmd);
 
 int			exit_builtin(t_command *cmd);

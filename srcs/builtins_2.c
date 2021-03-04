@@ -13,12 +13,13 @@ static int	echo_n_parser(char *str)
 	return (0);
 }
 
-int			echo_builtin(t_command *cmd)
+int			echo_builtin(t_list **env, t_command *cmd)
 {
 	int		flag;
 	int		i;
 
 	i = 0;
+	update_underscore(env, last_arg(cmd));
 	if (!cmd->command[i + 1])
 	{
 		ft_putchar_fd('\n', cmd->fd[1]);

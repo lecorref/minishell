@@ -52,7 +52,8 @@ char			*doll_expand(t_list **env, char **line_ptr, char quote)
 	value = NULL;
 	if ((value = check_special_value(line_ptr, quote)))
 		return (value);
-	while (**line_ptr && !is_symbol_doll(**line_ptr) && ft_isalnum(**line_ptr))
+	while (**line_ptr && !is_symbol_doll(**line_ptr)
+			&& authorized_char(**line_ptr))
 		*line_ptr += 1;
 	if (!(doll = ft_substr(doll, 0, (*line_ptr - doll))))
 		return (NULL);
