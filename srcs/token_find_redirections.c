@@ -166,12 +166,10 @@ int				find_redirections(t_list **cmd, t_list **env,
 			if (!(redirections(env, &line_ptr, i_command)))
 				return (0);
 		line_ptr = skip_char(line_ptr, ' ');
-		if (*line_ptr && (*line_ptr == '\'' || *line_ptr == '\"'))
-			word_object = quotes(env, &line_ptr);
-		else if (*line_ptr && (*line_ptr != '<' && *line_ptr != '>'))
-			word_object = no_quotes(env, &line_ptr);
-		else
+		if (*line_ptr && (*line_ptr == '>' || *line_ptr == '<'))
 			continue;
+		if (!(word_object = expand_filename(env, &line_ptr)))
+			return (0);
 		if (!(join_word_object(&command_string, &word_object)))
 			return (0);
 	}
