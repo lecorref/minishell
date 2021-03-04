@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/04 01:56:47 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/04 02:13:33 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int		execute_command(t_list **env, t_command *cmd)
 	{
 		update_underscore(env, "env");
 		ret = env_builtin(env, cmd);
+		printf("env return = %d", ret);
 	}
 	else
 		ret = execute_extern(env, cmd);
@@ -130,7 +131,10 @@ int		check_ctrld(char **line)
 {
 	signal(SIGINT, set_line_eraser);
 	if (**line && g_line_eraser == 0)
+	{
+		errno = 130;
 		return (1);
+	}
 	else
 	{
 		ft_putstr_fd("exit\n", 2);
@@ -270,6 +274,7 @@ int		main_loop(t_list **env)
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
 		cmd = tokenize_line_jb(line, env);
+		free(line);
 		// inside this tokenize_line function -> to do:
 		// 1.split it by | or ; or > or < or >>  and save it to the
 		// t_cmd cmd->command (multiples of the same redirection has to fail) -
@@ -288,7 +293,6 @@ int		main_loop(t_list **env)
 			if (execute_command(env, (t_command*)(cmd_cp->content)) == -2)
 			{
 				ft_lstclear(&cmd, &clear_commandlist);
-				free(line);
 				ft_lstclear(env, &clear_envlist);
 				return (errno);
 			}
@@ -299,7 +303,6 @@ int		main_loop(t_list **env)
 		// same as void free_command_list(t_list **command)???
 		// ft_lstdel(&env, free_env); -> at the very end of everything???
 		// or here insede this loop????
-		free(line);
 	}
 	free(line);
 	ft_lstclear(env, &clear_envlist);

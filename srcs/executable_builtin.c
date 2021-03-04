@@ -3,8 +3,8 @@
 int		is_builtin(t_command *cmd)
 {
 	char	*name[8];
-	int	builtin_code;
-	int	i;
+	int		builtin_code;
+	int		i;
 
 	name[0] = "echo";
 	name[1] = "pwd";
