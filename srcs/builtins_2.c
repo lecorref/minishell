@@ -79,6 +79,7 @@ int		exit_arg(t_command *cmd, size_t i)
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
 			errno = 1;
+			g_exit_status = 1;
 			return (0);//means to NOT exit the shell
 		}
 	}
