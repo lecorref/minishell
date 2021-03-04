@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/03 15:48:18 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/03 21:52:39 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,13 @@ int		execute_command(t_list **env, t_command *cmd)
 	{
 		update_underscore(env, "env");
 		ret = env_builtin(env, cmd);
+		printf("env return = %d", ret);
 	}
 	else
+	{
 		ret = executable_builtin(env, cmd);
+		printf("executable return = %d", ret);
+	}
 	return (ret);
 }
 
@@ -130,7 +134,10 @@ int		check_ctrld(char **line)
 {
 	signal(SIGINT, set_line_eraser);
 	if (**line && g_line_eraser == 0)
+	{
+		errno = 130;
 		return (1);
+	}
 	else
 	{
 		ft_putstr_fd("exit\n", 2);

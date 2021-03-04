@@ -20,7 +20,7 @@ void	parent_process(pid_t pid, t_command *cmd, char *pathcmd, char **env_tab)
 	int		wstatus;
 
 	wstatus = 0;
-	printf("\nPARENT\n");
+	printf("\n -- EXITED CHILD -- \n\n ->->->-> MINISHELL 0UTPUT ->->->->\n\n");
 	free(pathcmd);
 	ft_freetab(env_tab);
 	close_fd(cmd->fd);
@@ -120,9 +120,8 @@ int		executable_builtin(t_list **env, t_command *cmd)// iTS MORE THAN
 			ft_freetab(env_tab);
 			error_msg("bash", cmd, NULL, strerror(2));
 		}
-		errno = 127;
+		errno = 127;// maybe it'll be something else, see later with $?
 		return (-2);
-	//	exit(127);
 	}
 	parent_process(fork_pid, cmd, path_to_cmd, env_tab);
 	return (0);

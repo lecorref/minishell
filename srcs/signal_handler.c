@@ -24,7 +24,7 @@ void	ctrl_back_slash_handler_quit(int signal)
 	}
 }
 
-void		display_prompt(int sign)
+void	display_prompt(int sign)
 {
 	if (sign == SIGINT)
 	{
@@ -33,7 +33,7 @@ void		display_prompt(int sign)
 	}
 }
 
-void		set_line_eraser(int sign)
+void	set_line_eraser(int sign)
 {
 	if (sign == SIGINT)
 	{
