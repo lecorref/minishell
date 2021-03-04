@@ -29,6 +29,7 @@ void	print_cmd(t_command *cmd)/////////delete
 
 	printf("\n----------TESTING PURPOSES----------\n");
 	printf("\t\t\t\tfd[0] : %d\tfd[1] : %d\n", cmd->fd[0], cmd->fd[1]);
+	printf("\t\t\t\tfile : %s\n", cmd->file);
 	i = -1;
 	while (cmd->command[++i])
 		printf("cmd->command[%d] = %s\n", i, cmd->command[i]);

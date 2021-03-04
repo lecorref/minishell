@@ -109,6 +109,8 @@ int				redirections(t_list **env, char **line_ptr, t_command *i_cmd)
 		return (0);
 	if (!open_file(open_code, i_cmd->fd, file))
 		return (0);
+	if (i_cmd->file)
+		free(i_cmd->file);
 	i_cmd->file = file;
 	return (1);
 }
