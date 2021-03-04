@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executable_external.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
+/*   Updated: 2021/03/04 20:14:59 by jle-corr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 /*
@@ -19,7 +31,6 @@ int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 {
 	int		wstatus;
 
-	printf("\nPARENT\n");//TESTING - TO DEL LATER
 	free(pathcmd);
 	ft_freetab(env_tab);
 	wstatus = 0;
@@ -75,14 +86,16 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 		}
 		//errno = 127;
 		//return (-2);
+	//	ft_lstclear(cmd, &clear_commandlist); DELETE THINGS BEFORE EXIT
+	//	ft_lstclear(env, &clear_envlist); DELETE THINGS BEFORE EXIT
 		exit(127);//I think, as it's a child which would fail & not the main
 	}//pgm (parent), that it would be better to exit() it ?
 	else
 		return (cpid);
 }
 
-int		execute_extern(t_list **env, t_command *cmd)// iTS MORE THAN
-{// 25 LINES JOY'LL CHANGE IT
+int		execute_extern(t_list **env, t_command *cmd)
+{
 	char	**env_tab;
 	char	*path_to_cmd;
 	pid_t	fork_pid;

@@ -13,6 +13,10 @@ static int	echo_n_parser(char *str)
 	return (0);
 }
 
+/*
+** space between strings but not ont he last one
+** there is no space after string whith -n
+*/
 int			echo_builtin(t_list **env, t_command *cmd)
 {
 	int		flag;
@@ -31,7 +35,8 @@ int			echo_builtin(t_list **env, t_command *cmd)
 	while (cmd->command[i] != NULL)
 	{
 		ft_putstr_fd(cmd->command[i], cmd->fd[1]);
-	//	ft_putchar_fd(' ', cmd->fd[1]);// there is no space after string whith -n
+		if (!flag && cmd->command[i + 1])
+			ft_putchar_fd(' ', cmd->fd[1]);
 		i++;
 	}
 	if (!flag)
