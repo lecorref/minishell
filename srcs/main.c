@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/27 00:47:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/04 16:55:57 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/04 20:22:20 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,6 @@ int		main(int ac, char **av, char **ep)
 	g_line_eraser = 0;
 	main_loop(&env);
 	//ft_freetab(env_tab);
-	system("leaks minishell");
+	//system("leaks minishell");
 	return (errno);
 }
