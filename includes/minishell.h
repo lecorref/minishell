@@ -101,6 +101,7 @@ char		*ghosting(char *str, char c, char *exception_set, int *error);
 /*
 ** tokenize quotes
 */
+char		*expand_filename(t_list **env, char **line_ptr);
 char		*double_quotes(t_list **env, char **line_ptr);
 char		*simple_quotes(char **line_ptr);
 char		*no_quotes(t_list **env, char **line_ptr);
