@@ -15,21 +15,21 @@
 ** waiting for a SIGQUIT (ctrl\) signal if any, while child does not quit (if
 ** it gets to quit).
 */
-void	parent_process(pid_t pid, t_command *cmd, char *pathcmd, char **env_tab)
+int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 {
 	int		wstatus;
 
-	(void)cmd;
-	wstatus = 0;
-	printf("\nPARENT\n");
+	printf("\nPARENT\n");//TESTING - TO DEL LATER
 	free(pathcmd);
 	ft_freetab(env_tab);
+	wstatus = 0;
 	waitpid(pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
 		errno = WEXITSTATUS(wstatus);
 	else if (WIFSIGNALED(wstatus))
 		errno = WTERMSIG(wstatus);
 	signal(SIGQUIT, ctrl_back_slash_handler);
+	return (errno);
 }
 
 /*
@@ -95,6 +95,6 @@ int		execute_extern(t_list **env, t_command *cmd)// iTS MORE THAN
 	env_tab = env_list_to_tab(*env);
 	update_underscore(env, last_arg(cmd));
 	fork_pid = fork_extern(cmd, path_to_cmd, env_tab);
-	parent_process(fork_pid, cmd, path_to_cmd, env_tab);
-	return (0);
+	return (parent_process(fork_pid, path_to_cmd, env_tab));
+	//return (0);
 }

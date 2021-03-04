@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/06 21:13:42 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/04 01:56:47 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/04 14:02:09 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,42 +264,26 @@ int		main_loop(t_list **env)
 	char	*line;
 	int		ret_gnl;
 
-	g_line_eraser = 0;
 	signal(SIGQUIT, ctrl_back_slash_handler);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
 		cmd = tokenize_line_jb(line, env);
-		// inside this tokenize_line function -> to do:
-		// 1.split it by | or ; or > or < or >>  and save it to the
-		// t_cmd cmd->command (multiples of the same redirection has to fail) -
-		// try to mix pipes and redirections
-		// 2.0. handle single quotes - try single quotes at arguments of
-		// functions (also quoted empty args '', or whitespace, or ';' or and
-		// also environment variables)
-		// 2.1. and double quotes (and weird use of \ for double quotes, and
-		// enrironment variabes - NO need to try multilines)
-		// 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
-		// 4. handle $? and send it to a function
+		free(line);
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-		//	execute_command(env, (t_command*)(cmd_cp->content));
-			if (execute_command(env, (t_command*)(cmd_cp->content)) == -2)
+			if ((g_exit_status = execute_command(env, COMMAND(cmd_cp))) == -2)
 			{
 				ft_lstclear(&cmd, &clear_commandlist);
-				free(line);
 				ft_lstclear(env, &clear_envlist);
-				return (errno);
+				return (g_exit_status);
 			}
 			cmd_cp = cmd_cp->next;
+			printf("ex_stat : %d\n", g_exit_status);//TEST.DLT LATER
 		}
 		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
-		// same as void free_command_list(t_list **command)???
-		// ft_lstdel(&env, free_env); -> at the very end of everything???
-		// or here insede this loop????
-		free(line);
 	}
 	free(line);
 	ft_lstclear(env, &clear_envlist);
@@ -308,3 +292,19 @@ int		main_loop(t_list **env)
 		return (-1);
 	return (0);
 }
+
+// inside this tokenize_line function -> to do:
+// 1.split it by | or ; or > or < or >>  and save it to the
+// t_cmd cmd->command (multiples of the same redirection has to fail) -
+// try to mix pipes and redirections
+// 2.0. handle single quotes - try single quotes at arguments of
+// functions (also quoted empty args '', or whitespace, or ';' or and
+// also environment variables)
+// 2.1. and double quotes (and weird use of \ for double quotes, and
+// enrironment variabes - NO need to try multilines)
+// 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
+// 4. handle $? and send it to a function
+//
+// same as void free_command_list(t_list **command)???
+// ft_lstdel(&env, free_env); -> at the very end of everything???
+// or here insede this loop????

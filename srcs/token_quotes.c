@@ -1,25 +1,19 @@
 #include "minishell.h"
 
 int				expand_doll_quote(t_list **env, char **str,
-		char **line_ptr, char **final_str)
+		char **final_str, char quote)
 {
-	char		*tmp;
 	char		*expanded;
 
-	if (!(tmp = ft_substr(*line_ptr, 0, (*str - *line_ptr))))
-		return (0);
-	if (!(join_newstr(final_str, tmp)))
-		return (0);
-	free(tmp);
-	if (!(expanded = doll_expand(env, str)))
+	if (!(expanded = doll_expand(env, str, quote)))
 		return (0);
 	if (!(join_newstr(final_str, expanded)))
 		return (0);
-	*line_ptr = *str;
+	free(expanded);
 	return (1);
 }
 
-int				create_final_str(char **str, char **line_ptr, char **final_str)
+int				join_str_before(char **str, char **line_ptr, char **final_str)
 {
 	char		*tmp;
 
@@ -55,15 +49,18 @@ char			*double_quotes(t_list **env, char **line_ptr)
 	{
 		if (*str == '$')
 		{
-			if (!(expand_doll_quote(env, &str, line_ptr, &final_str)))
+			if (!(join_str_before(&str, line_ptr, &final_str)))
 				return (NULL);
+			if (!(expand_doll_quote(env, &str, &final_str, 'y')))
+				return (NULL);
+			*line_ptr = str;
 			continue;
 		}
 		str++;
 	}
 	if (*str)
 		str++;
-	if (!(create_final_str(&str, line_ptr, &final_str)))
+	if (!(join_str_before(&str, line_ptr, &final_str)))
 		return (NULL);
 	return (final_str);
 }
@@ -90,13 +87,16 @@ char			*no_quotes(t_list **env, char **line_ptr)
 	{
 		if (*str == '$')
 		{
-			if (!(expand_doll_quote(env, &str, line_ptr, &final_str)))
+			if (!(join_str_before(&str, line_ptr, &final_str)))
 				return (NULL);
+			if (!(expand_doll_quote(env, &str, &final_str, 'n')))
+				return (NULL);
+			*line_ptr = str;
 			continue;
 		}
 		str++;
 	}
-	if (!(create_final_str(&str, line_ptr, &final_str)))
+	if (!(join_str_before(&str, line_ptr, &final_str)))
 		return (NULL);
 	return (final_str);
 }
