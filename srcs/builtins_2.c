@@ -30,7 +30,8 @@ int			echo_builtin(t_command *cmd)
 	while (cmd->command[i] != NULL)
 	{
 		ft_putstr_fd(cmd->command[i], cmd->fd[1]);
-	//	ft_putchar_fd(' ', cmd->fd[1]);// there is no space after string whith -n
+		if (!flag)// there is no space after string whith -n
+			ft_putchar_fd(' ', cmd->fd[1]);
 		i++;
 	}
 	if (!flag)
