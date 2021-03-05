@@ -49,6 +49,7 @@ char			*expand_filename(t_list **env, char **line_ptr)
 	return (filename);
 }
 
+	//printf("filename : |%s|\n", filename);
 /*
 ** open_file() handle file opening thanks to open_code which says which flag
 ** to give to open & file name 'file', processed just before.

@@ -36,3 +36,15 @@ void	print_cmd(t_command *cmd)/////////delete
 	printf("----------TESTING PURPOSES----------\n\n");
 	fflush(stdout);
 }/////////delete
+
+void	print_array(char **arr)
+{
+	int	i;
+
+	printf("###printarray####\n");
+	i = -1;
+	while (arr[++i])
+		printf("str[%d] : |%s|\n", i, arr[i]);
+	printf("str[%d] : |%s|\n", i, arr[i]);
+	fflush(stdout);
+}

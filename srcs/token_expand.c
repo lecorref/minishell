@@ -35,6 +35,8 @@ char			*check_special_value(char **line_ptr, char quote)
 		else
 			return (value = ft_strdup("$"));
 	}
+	else if (is_special_char(**line_ptr))
+		value = ft_substr(*line_ptr - 1, 0, 2);
 	else
 		return (NULL);
 	*line_ptr += 1;
