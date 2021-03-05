@@ -279,7 +279,7 @@ int		main_loop(t_list **env)
 	}
 	free(line);
 	ft_lstclear(env, &clear_envlist);
-	if (ret_gnl == -1)//??do thati? all errors should have been already handled
+	if (ret_gnl == -1)//??do that? all errors should have been already handled
 					  //before it gets to this part?
 		return (-1);
 	return (0);

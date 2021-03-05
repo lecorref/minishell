@@ -1,0 +1,27 @@
+ls > x1 ; cat x1 | grep main
+echo "hello | this is some stuff > touch this file" | grep more
+echo | cd .. | pwd
+echo hello there | echo cou cou
+echo | poep
+echo | cd .. | pwd
+echo hello | echo hoi
+echo hello | echo hoi | cat
+export | grep -e "HOME="
+cat working.txt | grep stuff | echo tim
+cat | cat -e | cat
+ls filedoesnotexist | grep notme | echo "TEST"
+export | grep -e "PWD="
+cat x1 | grep Makefile
+echo 00\\\'pp ; echo 00\\\\\'pp
+echo 00\\\\'pp' ; echo “./hello”. ; echo ./hello ; echo ello
+Echo ; echo \n ' \n this is the; "first line"' ; echo "and right here;;; 'We have the second'" ; echo and" a fe"'w 'here'; with some slash and quotes   .'   '\' ; echo '\\' ; echo "\\" ; echo    "\"" ; echo   \\ ; echo   \' ; echo   \" "\\"    "\""   \\   \'   \"
+echo hi ; echo ; echo ; echo ; export ; env ; echo ; echo ; echo ; echo working ; echo $PWD
+echo $PWD ; echo $HOME ; echo "$PWD" ; echo '$PWD' ; echo "$HOME"
+echo hello there ; echo cou cou
+echo hello ; echo hoi
+export ; export a="\\" ; export b='\\' ; export c="\b" ; export
+export test=working ; export
+env ; echo ; export a=hijdoehet ; echo ; env ; echo ; export test=working;echo ;env ; echo ; export test1; export; echo ; env ; echo ; export test1= ; echo ; env
+export ; export a="\\" ; export b='\\' ; export c="\b" ; export
+export LS="ls -la" ; ls
+cd .. ;pwd;/bin/ls;cd .. ;      pwd    ;/bin/ls;     cd notworking;     cd .
