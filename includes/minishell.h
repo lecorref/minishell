@@ -190,7 +190,7 @@ int			error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
 void		display_prompt(int sign);
-void		set_line_eraser(int sign);
+//void		set_line_eraser(int sign);
 
 /* ------------------------------------------------------------------------- */
 
