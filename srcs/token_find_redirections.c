@@ -1,13 +1,10 @@
 #include "minishell.h"
 
-void			print_array(char **array)
+void			print_list(void *content)
 {
-	int			i;
-
-	i = -1;
-	while (array[++i])
-		printf("array[%d] :|%s|\n", i, array[i]);
-	printf(LINE2);
+	printf("###print_list###\n");
+	printf("|%s|\n", (char*)content);
+	fflush(stdout);
 }
 
 char			*quotes(t_list **env, char **line_ptr)
@@ -24,15 +21,16 @@ char			*quotes(t_list **env, char **line_ptr)
 }
 
 int				init_fr(char **line_ptr, char **command_line,
-		char **command_string)
+		char **command_string, t_list **arg)
 {
 	*line_ptr = *command_line;
+	*arg = NULL;
 	if (!(*command_string = ft_strnew(0)))
 		return (0);
 	delete_remaining_char(*command_line, '|');
 	return (1);
 }
-
+/*
 int				join_word_object(char **command_string, char **word_object)
 {
 	if (!*word_object)
@@ -65,7 +63,7 @@ int				create_array_n_link(t_list **cmd, t_command *i_command,
 		return (0);
 	ft_lstadd_back(cmd, new);
 	return (1);
-}
+}*/
 
 //printf(LINE(ARRAY SPACES));
 //print_array(command_array);
@@ -150,14 +148,64 @@ int				create_array_n_link(t_list **cmd, t_command *i_command,
 **						by the pointer to int created in the t_command struture
 **						which will be malloc in the function which creates links
 */
+
+void			add_arg_to_list(t_list **arg, char *wobj)
+{
+	t_list		*new;
+
+	if (!*wobj)
+	{
+		free(wobj);
+		return ;
+	}
+	new = ft_lstnew(wobj);
+	ft_lstadd_front(arg, new);
+}
+
+char			**convert_str_linkedlist_to_str_array(t_list *arg)
+{
+	int			size_list;
+	char		**str_arr;
+
+	size_list = ft_lstsize(arg);
+	str_arr = (char **)malloc(sizeof(char*) * (size_list + 1));
+	str_arr[size_list] = NULL;
+	while (arg)
+	{
+		str_arr[--size_list] = arg->content;
+		arg = arg->next;
+	}
+	return (str_arr);
+}
+
+//convertir list chainée de chaine de caractere en tableau de string
+//delete la LL de str
+//Rajouter arr_str dans le contenu i_command
+//créer un nouveau maillon avec i_command en contenu
+int				add_arglist_to_cmd(t_list **cmd, t_command *i_command, t_list **arg)
+{
+	t_list		*new;
+	char		**str_arr;
+
+	str_arr = convert_str_linkedlist_to_str_array(*arg);
+	ft_lstclear(arg, &clear_arglist);
+	i_command->command = str_arr;
+	if (!(new = ft_lstnew(i_command)))
+		return (0);
+	ft_lstadd_back(cmd, new);
+	return (1);
+}
+	//print_array(str_arr);
+
 int				find_redirections(t_list **cmd, t_list **env,
 		char *command_line, t_command *i_command)
 {
 	char		*line_ptr;
 	char		*word_object;
 	char		*command_string;
+	t_list		*arg;
 
-	if (!init_fr(&line_ptr, &command_line, &command_string))
+	if (!init_fr(&line_ptr, &command_line, &command_string, &arg))
 		return (0);
 	while (*line_ptr)
 	{
@@ -170,14 +218,13 @@ int				find_redirections(t_list **cmd, t_list **env,
 			continue;
 		if (!(word_object = expand_filename(env, &line_ptr)))
 			return (0);
-		if (!(join_word_object(&command_string, &word_object)))
-			return (0);
+		add_arg_to_list(&arg, word_object);
 	}
-	if (!(create_array_n_link(cmd, i_command, &command_string)))
-		return (0);
+	add_arglist_to_cmd(cmd, i_command, &arg);
 	return (1);
 }
 
+	//ft_lstiter(arg, &print_list);
 /*
 	printf(LINE(FIND_REDIRECTIONS));
 	printf("command_line RX : |%s|\n", command_line);

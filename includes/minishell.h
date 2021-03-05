@@ -118,16 +118,19 @@ int			is_symbol(int c);
 int			is_symbol_doll(int c);
 int			is_symbol_v2(int c);
 int			authorized_char(int c);
+int			is_special_char(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command();
 
 void	print_cmd(t_command *cmd);/////////delete
+void	print_array(char **arr);/////////delete
 
 /*
 ** clear lists
 */
 void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
+void		clear_arglist(void *content);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
