@@ -6,29 +6,32 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/21 16:35:13 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/07/22 19:15:58 by jfreitas         ###   ########.fr       */
+/*   Updated: 2019/11/21 11:58:21 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-char	*ft_strtrim(char const *s)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	size_t	i;
+	int		start;
+	int		len;
 	char	*str;
 
-	if (s)
+	if (s1)
 	{
-		str = ft_strdup(s);
-		if (str == NULL || s == NULL)
+		start = 0;
+		while (s1[start] && ft_strchr(set, s1[start]) != NULL)
+			start++;
+		len = ft_strlen(&s1[start]);
+		if (len != 0)
+			while (s1[start + len - 1] &&
+					ft_strchr(set, s1[start + len - 1]) != NULL)
+				len--;
+		str = ft_substr(s1, start, len);
+		if (s1 == NULL || str == NULL || set == NULL)
 			return (NULL);
-		while (*str == ' ' || *str == '\n' || *str == '\t')
-			str++;
-		i = ft_strlen(str) - 1;
-		while (str[i] == ' ' || str[i] == '\n' || str[i] == '\t')
-			i--;
-		str[++i] = '\0';
-		return (ft_strdup(str));
+		return (str);
 	}
 	return (0);
 }

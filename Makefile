@@ -3,7 +3,7 @@ NAME = minishell
 
 ##### COLORS #####
 BLUE = \033[1;35m
-GREY = \033[1;31m
+GREY = \033[3;31m
 GREEN = \033[1;37m
 RED = \033[1;31m
 END = \033[0m
@@ -30,12 +30,29 @@ LIBFT = $(LIBFTPATH)/libft.a
 CC = clang
 FLAGS = -Wall -Wextra -Werror -g# -fsanitize=address
 
+##### OSTYPE #####
+UNAME := $(shell uname)
+ifeq ($(UNAME), Darwin)
+	# mac
+	FLAGS += -D DARWIN
+else
+	#Linus and others...
+	FLAGS += -D LINUX
+endif
+
 #SRC & OBJ PATH
 SRCPATH = ./srcs
 OBJPATH = $(SRCPATH)/obj
 
 #SRCS
-SRCS = $(addprefix $(SRCPATH)/, builtins_1.c builtins_2.c environment.c environment_2.c main.c main_loop.c signal_handler.c executable_builtin.c exit_error_manager.c)
+SRCS = $(addprefix $(SRCPATH)/, builtins_1.c builtins_2.c builtins_3.c \
+	   environment.c environment_2.c main.c main_loop.c signal_handler.c \
+	   executable_external.c executable_external_path.c exit_error_manager.c \
+	   tokenizer.c token_spliters.c token_expand.c token_quotes.c \
+	   token_utils.c token_expander.c token_redirections.c \
+	   clear_lists.c file_descriptor.c utils.c executable_builtin.c \
+	   token_pipeline_n_link.c token_utils_2.c gnl_ctrld.c \
+	   token_quotes_utils.c token_double_quotes.c token_no_quotes.c )
 
 ##### OBJS #####
 OBJ = $(SRCS:$(SRCPATH)/%.c=$(OBJPATH)/%.o)

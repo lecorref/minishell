@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_prime.c                                         :+:      :+:    :+:   */
+/*   ft_intlen_base.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/14 12:44:52 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/14 13:42:55 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/08/14 17:03:05 by jfreitas          #+#    #+#             */
+/*   Updated: 2021/02/18 23:55:06 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-int		is_prime(unsigned int n)
+int				ft_intlen_base(unsigned long n, int base)
 {
-	unsigned int	i;
+	int	len;
 
-	i = 2;
-	if (n <= 1)
-		return (0);
-	while (i <= n / 2)
+	len = 0;
+	if (n < 0)
+		n *= -1;
+	if (n == 0)
+		len = 1;
+	while (n)
 	{
-		if (n % i == 0)
-			return (0);
-		else
-			i++;
+		n = n / base;
+		len++;
 	}
-	return (1);
+	return (len);
 }

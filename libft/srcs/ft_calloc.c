@@ -1,32 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lcm.c                                              :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: exam <marvin@42.fr>                        +#+  +:+       +#+        */
+/*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/26 16:57:33 by exam              #+#    #+#             */
-/*   Updated: 2019/08/14 16:56:53 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/11/14 10:30:54 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/15 15:39:43 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-unsigned int	lcm(unsigned int a, unsigned int b)
+void	*ft_calloc(size_t count, size_t size)
 {
-	int	i;
-
-	if (a > b)
-		i = a;
-	if (a < b)
-		i = b;
-	if (a == 0 || b == 0)
-		return (0);
-	while (i)
-	{
-		if (i % a == 0 && i % b == 0)
-			return (i);
-		i++;
-	}
-	return (0);
+	return (ft_memalloc(count * size));
 }

@@ -6,13 +6,13 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/21 16:36:04 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/16 11:30:30 by jfreitas         ###   ########.fr       */
+/*   Updated: 2020/01/28 15:09:03 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-char			*ft_itoa(int n)
+char				*ft_itoa(int n)
 {
 	size_t	len;
 	size_t	neg;

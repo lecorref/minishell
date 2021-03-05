@@ -1,23 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_list.c                                   :+:      :+:    :+:   */
+/*   ft_putnbr_long.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/27 11:05:51 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/01/27 00:03:33 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/06/25 13:26:03 by jfreitas          #+#    #+#             */
+/*   Updated: 2021/02/18 23:48:01 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-void	ft_putstr_list(t_list *str)
+void	ft_putnbr_long(long int n)
 {
-	while (((char*)str->content))
+	if (n < -9223372036854775807 - 1 || n > 9223372036854775807)
+		return ;
+	if (n == -9223372036854775807 - 1)
 	{
-		write(1, &str->content, 1);
-		str->content++;
+		ft_putstr("-9223372036854775808");
+		return ;
 	}
-	str = str->next;
+	if (n < 0)
+	{
+		ft_putchar('-');
+		n *= -n;
+	}
+	if (n > 9)
+	{
+		ft_putnbr_long(n / 10);
+		ft_putnbr_long(n % 10);
+	}
+	else
+		ft_putchar(n + 48);
 }

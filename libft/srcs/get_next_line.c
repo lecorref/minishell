@@ -3,76 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: jle-corr <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/25 12:19:28 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/01/26 23:59:38 by jfreitas         ###   ########.fr       */
+/*   Created: 2020/02/20 16:06:18 by jle-corr          #+#    #+#             */
+/*   Updated: 2020/02/21 01:13:48 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/libft.h"
+#include "libft.h"
 
-/*
-** OBS.: EOF is an integer, not a character, and if you want to check for it,
-** you need to use an int
-*/
-
-static int	check_line(char *str)
+int		get_next_line(int fd, char **line)
 {
-	size_t	i;
-	char	*tmp;
+	static char		buf[MAX_FD][BUFFER_SIZE + 1];
+	char			*adr;
 
-	i = 0;
-	tmp = str;
-	while (tmp[i] != '\n')
-		if (!(tmp[i++]))
-			return (0);
-	return (1);
-}
-
-static char	*read_file(int fd, char **str, char **line)
-{
-	char	buff[BUFFER_SIZE + 1];
-	int		ret;
-	char	*tmp;
-
-	if (fd < 0 || !line || BUFFER_SIZE <= 0 || read(fd, buff, 0) == -1)
-		return (NULL);
-	if (!*str)
-	{
-		if (!(*str = ft_strnew(BUFFER_SIZE + 1)))
-			return (NULL);
-	}
-	while ((check_line(*str) == 0) && (ret = read(fd, buff, BUFFER_SIZE)) > 0)
-	{
-		buff[ret] = '\0';
-		tmp = *str;
-		if (!(*str = ft_strjoin(tmp, buff)))
-			return (NULL);
-		free(tmp);
-	}
-	return (*str);
-}
-
-int			get_next_line(int fd, char **line)
-{
-	static char	*str;
-
-	*line = NULL;
-	if (read_file(fd, &str, line) == NULL)
+	if (BUFFER_SIZE < 1 || fd < 0 || !line ||
+			fd > MAX_FD || read(fd, buf[fd], 0) == -1)
 		return (-1);
-	else
-		str = read_file(fd, &str, line);
-	if (!*str)
-		*line = ft_strdup("");
-	else
-		*line = ft_substr(str, 0, ft_strclen(str, '\n'));
-	if (check_line(str) == 1)
+	if (!(*line = ft_strnew(0)))
+		return (0);
+	while (!(adr = ft_strchr(buf[fd], '\n')))
 	{
-		ft_memmove(str, ft_strchr(str, '\n') + 1, ft_strclen(str, '\0'));
-		return (1);
+		if (!(join_newstr(line, buf[fd])))
+			return (-1);
+		ft_memset(buf[fd], 0, BUFFER_SIZE);
+		if (!(read(fd, buf[fd], BUFFER_SIZE)))
+			return (0);
 	}
-	free(str);
-	str = NULL;
-	return (0);
+	*adr = 0;
+	if (!(join_newstr(line, buf[fd])))
+		return (-1);
+	ft_strncpy(buf[fd], adr + 1, sizeof(buf[fd]));
+	return (1);
 }

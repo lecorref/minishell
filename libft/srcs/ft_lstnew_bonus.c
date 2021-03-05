@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdel.c                                        :+:      :+:    :+:   */
+/*   ft_lstnew_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/08/24 19:50:45 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/27 12:49:57 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/08/16 11:31:08 by jfreitas          #+#    #+#             */
+/*   Updated: 2019/11/21 15:09:18 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-void	ft_lstdel(t_list **alst, void (*del)(void *, size_t))
+t_list	*ft_lstnew(void *content)
 {
 	t_list	*tmp;
 
-	while (*alst)
-	{
-		tmp = (*alst)->next;
-		(*del)((*alst)->content, (*alst)->content_size);
-		free(*alst);
-		*alst = tmp;
-	}
-	*alst = NULL;
+	tmp = (t_list*)malloc(sizeof(t_list));
+	if (tmp == NULL)
+		return (NULL);
+	tmp->content = content;
+	tmp->next = NULL;
+	return (tmp);
 }

@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/30 11:23:47 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/14 13:51:31 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/02/18 23:45:35 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	ft_atoi(char const *str)
 {
-	long long int	res;
-	long long int	neg;
+	unsigned int	res;
+	unsigned int	neg;
 
 	neg = 1;
 	res = 0;

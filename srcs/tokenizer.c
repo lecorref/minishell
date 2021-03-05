@@ -1,60 +1,43 @@
 #include "minishell.h"
 
-static int	*init_fd(void)
+void			link_lists(t_list **head, t_list *new)
 {
-	int		*fd;
+	t_list		*tmp;
 
-	fd = malloc(sizeof(int) * 4);
-	bzero(fd, sizeof(int) * 4);
-	fd[0] = 0;
-	fd[1] = 1;
-	fd[2] = 2;
-	return (fd);
+	if (!*head)
+	{
+		*head = new;
+		return ;
+	}
+	tmp = *head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }
 
-
-static void	check_pipe(char *line, t_list **head)
+t_list			*tokenizer(char *line)
 {
-	char	**commands;
-	char	**ptr;
-	int		*fd;
-	int		pip[2];
-	int		save;
+	int			i;
+	t_list		*head;
+	t_list		*tmp;
+	char		**execution_lines;
+	char		*skiped;
 
-	save = 0;
-	commands = ft_strsplit(line, '|');
-	ptr = commands;
-	while (*commands != NULL)
+	head = NULL;
+	if (!(execution_lines = split_with_exception(line, ';', "\'\"")))
+		return (NULL);
+	i = -1;
+	while (execution_lines[++i])
 	{
-		fd = init_fd();
-		pipe(pip);
-		fd[0] = save;
-		save = pip[0];
-		if (*(commands + 1) != NULL)
-			fd[1] = pip[1];
-		else
-			close(pip[1]);
-		check_redirect(*commands, head, fd);
-		free(*commands);
-		commands++;
+		tmp = NULL;
+		skiped = skip_char(execution_lines[i], ' ');
+		if (*skiped == ';')
+			printf("unexpected token ';'\n");
+		if (!(pipeline_n_link(&tmp, execution_lines[i])))
+			return (NULL);
+		link_lists(&head, tmp);
+		free(execution_lines[i]);
 	}
-	free(ptr);
-}
-
-void		tokenize_line(char *buff, t_list **head)
-{
-	char	**commands;
-	char	**ptr;
-	t_list	*list;
-
-	list = NULL;
-	commands = ft_strsplit(buff, ';');
-	ptr = commands;
-	while (*commands != NULL)
-	{
-		check_pipe(*commands, head);
-		free(*commands);
-		commands++;
-	}
-	free(ptr);
+	free(execution_lines);
+	return (head);
 }

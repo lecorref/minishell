@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_prime_sum.c                                    :+:      :+:    :+:   */
+/*   ft_putnbr_max.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/28 11:06:17 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/08/14 16:52:09 by jfreitas         ###   ########.fr       */
+/*   Created: 2019/06/25 13:26:03 by jfreitas          #+#    #+#             */
+/*   Updated: 2020/02/01 18:19:35 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/libft.h"
 
-int		add_prime_sum(unsigned int n)
+void	ft_putnbr_max(long int n)
 {
-	unsigned int	i;
-	unsigned int	res;
-
-	res = 0;
-	i = 2;
-	if (n <= 1)
-		return (0);
-	while (i <= n)
+	if (n > 9223372036854775807 || n < (-9223372036854775807) - 1)
+		return ;
+	if (n == (-9223372036854775807) - 1)
 	{
-		if (is_prime(i) == 1)
-			res = res + i;
-		i++;
+		ft_putstr("-9223372036854775808");
+		return ;
 	}
-	return (res);
+	if (n < 0)
+	{
+		ft_putchar('-');
+		n = -n;
+	}
+	if (n > 9)
+	{
+		ft_putnbr_max(n / 10);
+		ft_putnbr_max(n % 10);
+	}
+	else
+		ft_putchar(n + 48);
 }

@@ -1,5 +1,13 @@
 #include "minishell.h"
 
+/*
+ * Free each string from the t_env structure then free the structure.
+** The parameters are made so that the function is usable with ft_lstdel.
+**
+** @args:
+**		void *env: a pointer to the t_env struct to delete
+**		size_t size: necessary for pointer to function.
+*/
 void	free_env(void *env, size_t size)
 {
 	(void)size;
@@ -8,29 +16,37 @@ void	free_env(void *env, size_t size)
 	free(env);
 }
 
-void    delete_env_variable(t_list **list, char *key)
+/*
+** * Will find if a link from the env linked list contain a specific key,
+** delete this link and rebuild the list.
+**
+** @args:
+**		t_list **env: a pointer to the first link of the list
+**		char *key: a string that will be compared against t_env->key
+*/
+void	delete_env_variable(t_list **env, char *key)
 {
-	t_list	*env;
+	t_list	*tmp_env;
 	t_list	*tmp;
 
-	env = *list;
-	while (env->next)
+	tmp_env = *env;
+	while (tmp_env->next)
 	{
-		if (!ft_strcmp(key, ENV_KEY(env->next)))
+		if (!ft_strcmp(key, ENV_KEY(tmp_env->next)))
 		{
-			tmp = env->next->next;
-			free_env(env->next->content, sizeof(env));
-			free(env->next);
-			env->next = tmp;
+			tmp = tmp_env->next->next;
+			free_env(tmp_env->next->content, sizeof(env));
+			free(tmp_env->next);
+			tmp_env->next = tmp;
 			break;
 		}
-		env = env->next;
+		tmp_env = tmp_env->next;
 	}
-	if (!ft_strcmp(key, ENV_KEY(*list)))
+	if (!ft_strcmp(key, ENV_KEY(*env)))
 	{
-		tmp = (*list)->next;
-		free_env((*list)->content, sizeof(env));
-		free(*list);
-		*list = tmp;
+		tmp = (*env)->next;
+		free_env((*env)->content, sizeof(env));
+		free(*env);
+		*env = tmp;
 	}
 }

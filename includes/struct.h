@@ -4,7 +4,9 @@
 typedef struct	s_command
 {
 	char		**command;
+	char		*unexpanded;
 	int			*fd;
+	char		*file;
 }				t_command;
 
 
