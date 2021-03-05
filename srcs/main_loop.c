@@ -298,7 +298,8 @@ int		main_loop(t_list **env)
 			cmd_cp = cmd_cp->next;
 			printf("ex_stat : %d\n", g_exit_status);//TEST.DLT LATER
 		}
-		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
+		if (!g_line_eraser)//means ctrlC was typed so it already printed a prompt
+			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
 	}
 	free(line);
