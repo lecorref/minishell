@@ -20,13 +20,10 @@ char			*quotes(t_list **env, char **line_ptr)
 	return (word_object);
 }
 
-int				init_fr(char **line_ptr, char **command_line,
-		char **command_string, t_list **arg)
+int				init_fr(char **line_ptr, char **command_line, t_list **arg)
 {
 	*line_ptr = *command_line;
 	*arg = NULL;
-	if (!(*command_string = ft_strnew(0)))
-		return (0);
 	delete_remaining_char(*command_line, '|');
 	return (1);
 }
@@ -202,10 +199,9 @@ int				find_redirections(t_list **cmd, t_list **env,
 {
 	char		*line_ptr;
 	char		*word_object;
-	char		*command_string;
 	t_list		*arg;
 
-	if (!init_fr(&line_ptr, &command_line, &command_string, &arg))
+	if (!init_fr(&line_ptr, &command_line, &arg))
 		return (0);
 	while (*line_ptr)
 	{
