@@ -197,6 +197,7 @@ int				pipeline_n_link(t_list **head, char *execution_line)
 		if (!add_link(head, i_command))
 			return (0);
 	}
+	free(pipeline);
 	return (1);
 }
 	//ft_lstiter(*head, &print_tokk);

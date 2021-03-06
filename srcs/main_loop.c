@@ -245,7 +245,7 @@ int		main_loop(t_list **env)
 	{
 		cmd = tokenizer(line);
 		free(line);
-		ft_lstiter(cmd, &print_tok);
+		//ft_lstiter(cmd, &print_tok);
 		executer(env, cmd);
 		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
