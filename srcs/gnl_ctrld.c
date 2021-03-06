@@ -54,7 +54,6 @@
 
 void	eraser_checker(char *line)
 {
-	errno = 0;//later delete either errno or g_exit_status
 	g_exit_status = 0;
 	if (g_line_eraser == 1)
 	{
@@ -72,11 +71,11 @@ void	eraser_checker(char *line)
 	// first if statement here.
 int		check_ctrld(char **line)
 {
+
 	eraser_checker(*line);
 	//	signal(SIGINT, set_line_eraser);// dont need to use it anymore
 	if (**line && g_line_eraser == 0)
 	{
-		errno = 0;//later delete either errno or g_exit_status 
 		g_exit_status = 0;
 		return (1);
 	}

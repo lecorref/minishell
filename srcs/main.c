@@ -47,5 +47,6 @@ int		main(int ac, char **av, char **ep)
 	main_loop(&env);
 	//ft_freetab(env_tab);
 	//system("leaks minishell");
-	return (errno);
+	//return (errno);
+	return (g_exit_status);
 }

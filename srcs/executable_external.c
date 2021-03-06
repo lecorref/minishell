@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/06 17:21:26 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/06 23:01:01 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** waitpid will wait until child process exits.
 ** Here the child fork pid is returned to the parent.
 **
-** setting uo errno:
+** setting up error:
 ** WIFEXITED(wstatus) - macro that returns true if the child terminated normally
 ** WEXITSTATUS(wstatus) - macro that returns the exit status of the child
 ** WIFSIGNALED(wstatus) - macro that returns true if the child process was
@@ -36,11 +36,11 @@ int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 	wstatus = 0;
 	waitpid(pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
-		errno = WEXITSTATUS(wstatus);
+		g_exit_status = WEXITSTATUS(wstatus);
 	else if (WIFSIGNALED(wstatus))
-		errno = WTERMSIG(wstatus);
+		g_exit_status = WTERMSIG(wstatus);
 	signal(SIGQUIT, ctrl_back_slash_handler);
-	return (errno);
+	return (g_exit_status);
 }
 
 /*
@@ -65,7 +65,7 @@ int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 **
 ** On failure:
 **		-1 is returned in  the parent, no child process is created, and
-** errno is set appropriately inside the function parent_process().
+** error number is set appropriately inside the function parent_process().
 */
 
 int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
@@ -74,7 +74,11 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 
 	printf("path_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
 	if ((cpid = fork()) == -1)
-		exit(errno);// check if its 2?
+	{
+		g_exit_status = 2;
+		return (-2);
+	//	exit(errno);// check if its 2?
+	}
 	else if (cpid == 0)
 	{
 		dup_fd(cmd->fd);
@@ -84,11 +88,11 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 			ft_freetab(env_tab);
 			error_msg("bash", cmd, NULL, strerror(2));
 		}
-		//errno = 127;
-		//return (-2);
+		g_exit_status = 127;
+		return (-2);
 	//	ft_lstclear(cmd, &clear_commandlist); DELETE THINGS BEFORE EXIT
 	//	ft_lstclear(env, &clear_envlist); DELETE THINGS BEFORE EXIT
-		exit(127);//I think, as it's a child which would fail & not the main
+	//	exit(127);//I think, as it's a child which would fail & not the main
 	}//pgm (parent), that it would be better to exit() it ?
 	else
 		return (cpid);
