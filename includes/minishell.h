@@ -17,13 +17,15 @@
 # ifdef LINUX
 #  include <linux/errno.h>
 # endif
+
 /* ------------------------------------------------------------------------- */
 
 /*
 ** Just for printf debug
 */
-# define LINE(NAME) "\n======================-"#NAME"-========================\n"
+# define LINE(NAME) "\n=====================-"#NAME"-=======================\n"
 # define LINE2 "-----------------\n"
+
 /*
 ** Macros
 */
@@ -36,7 +38,6 @@
 /*
 ** builtin code magic numbers
 */
-
 # define BT_ECHO 1
 # define BT_PWD 2
 # define BT_EXIT 3
@@ -45,7 +46,7 @@
 # define BT_UNSET 6
 # define BT_ENV 7
 
-/* 
+/*
 ** Environment control
 ** These defines shorten literals to make the code more understandable.
 ** NAME is of type t_list.
@@ -57,10 +58,14 @@
 # define CMD_FD(NAME) ((t_command *)((NAME)->content))->fd
 
 # define COMMAND(NAME) (t_command *)((NAME)->content)
-/* ------------------------------------------------------------------------- */
 
+/*
+** Global variables
+*/
 int	g_line_eraser;
 int	g_exit_status;
+
+/* ------------------------------------------------------------------------- */
 
 /*
 ** These functions will create/add/find/delete/free a list of the t_env struct,
@@ -189,7 +194,7 @@ void		error_msg(char *bash, t_command *cmd, char *arg, char *err_msg);
 int			error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg);
 void		ctrl_back_slash_handler(int signal);
 void		ctrl_back_slash_handler_quit(int signal);
-void		display_prompt(int sign);
+void		ctrl_c_handler(int sign);
 //void		set_line_eraser(int sign);
 
 /* ------------------------------------------------------------------------- */
