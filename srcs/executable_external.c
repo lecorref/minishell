@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/06 17:21:26 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/06 23:00:44 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 	wstatus = 0;
 	waitpid(pid, &wstatus, 0);
 	if (WIFEXITED(wstatus))
-		errno = WEXITSTATUS(wstatus);
+		g_exit_status = WEXITSTATUS(wstatus);
 	else if (WIFSIGNALED(wstatus))
-		errno = WTERMSIG(wstatus);
+		g_exit_status = WTERMSIG(wstatus);
 	signal(SIGQUIT, ctrl_back_slash_handler);
-	return (errno);
+	return (SUCCESS);
 }
 
 /*

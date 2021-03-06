@@ -47,6 +47,12 @@
 # define BT_ENV 7
 
 /*
+** Return code
+*/
+# define SUCCESS 0
+# define EXIT 1
+
+/*
 ** Environment control
 ** These defines shorten literals to make the code more understandable.
 ** NAME is of type t_list.

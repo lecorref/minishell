@@ -43,5 +43,7 @@ int		execute_builtin(t_list **env, t_command *cmd, int builtin_code)
 		update_underscore(env, "env");
 		ret = env_builtin(env, cmd);
 	}
-	return (ret);
+	if (ret == EXIT)
+		return (EXIT);
+	return (SUCCESS);
 }
