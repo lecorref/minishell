@@ -91,9 +91,8 @@ int			main_loop(t_list **env);
 ** Lexer/parser function that will buid t_command structure
 ** These functions will create a list of t_command from the input line.
 */
-t_list		*tokenize_line_jb(char *line, t_list **env);
-int			find_redirections(t_list **cmd, t_list **env, char *command_line,
-				t_command *i_command);
+t_list		*tokenizer(char *line);
+int			expander(t_list **env, t_command *i_command);
 char		*skip_char(char *str, char c);
 
 /*
@@ -125,7 +124,7 @@ int			is_symbol_v2(int c);
 int			authorized_char(int c);
 int			is_special_char(int c);
 char		*skip_char(char *str, char c);
-t_command	*init_command();
+t_command	*init_command(char *pipeline);
 
 void	print_cmd(t_command *cmd);/////////delete
 void	print_array(char **arr);/////////delete
