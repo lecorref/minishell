@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:34:20 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/02/27 23:00:46 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/06 19:19:42 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@
 
 void	error_msg(char *bash, t_command *cmd, char *arg, char *err_msg)
 {
-//	printf("ENTERED ERROR_MSG\n");
 	if (bash)
 		ft_putstr_fd("bash: ", cmd->fd[2]);
 	ft_putstr_fd(cmd->command[0], cmd->fd[2]);
@@ -46,7 +45,6 @@ void	error_msg(char *bash, t_command *cmd, char *arg, char *err_msg)
 		ft_putstr_fd(err_msg, cmd->fd[2]);
 		ft_putchar_fd('\n', cmd->fd[2]);
 	}
-//	ft_free(cmd);  or free_command_list(t_list *cmd);//<- ??why
 }
 
 int		error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg)
@@ -64,15 +62,4 @@ int		error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg)
 		ft_putchar_fd('\n', cmd->fd[2]);
 	}
 	return (-1);
-}
-
-void	exit_manager(char **cmd, int execve_ret)
-{
-	(void)execve_ret;
-	(void)cmd;
-//	if (!cmd[0][0])
-//	{
-//		free(cmd);
-//		exit(0);
-//	}
 }

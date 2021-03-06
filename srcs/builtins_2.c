@@ -70,15 +70,14 @@ int		exit_arg(t_command *cmd, size_t i)
 	{
 		if (!cmd->command[2])
 		{
-			errno = ft_atoi(cmd->command[1]);
-			errno += 256;
-			errno %= 256;
+			g_exit_status = ft_atoi(cmd->command[1]);
+			g_exit_status += 256;
+			g_exit_status %= 256;
 			return (-2);//means to exit the shell
 		}
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			errno = 1;
 			g_exit_status = 1;
 			return (0);//means to NOT exit the shell
 		}
@@ -118,7 +117,7 @@ int		exit_builtin(t_command *cmd)
 	ft_putstr_fd("exit\n", 2);
 	if (cmd->command[1] == NULL)
 	{
-		errno = 0;
+		g_exit_status = 0;
 		return (-2);//means to exit the shell
 	}
 	else if (cmd->command[1])
@@ -130,7 +129,7 @@ int		exit_builtin(t_command *cmd)
 		if (i != ft_strlen(cmd->command[1]))
 		{
 			error_msg("bas", cmd, cmd->command[1], "numeric argument required");
-			errno = 2;
+			g_exit_status = 2;
 			return (-2);//means to exit the shell
 		}
 		if (exit_arg(cmd, i) == 0)
