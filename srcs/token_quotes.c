@@ -1,18 +1,5 @@
 #include "minishell.h"
 
-int				expand_doll_quote(t_list **env, char **str,
-		char **final_str, char quote)
-{
-	char		*expanded;
-
-	if (!(expanded = doll_expand(env, str, quote)))
-		return (0);
-	if (!(join_newstr(final_str, expanded)))
-		return (0);
-	free(expanded);
-	return (1);
-}
-
 int				join_str_before(char **str, char **line_ptr, char **final_str)
 {
 	char		*tmp;
@@ -126,19 +113,15 @@ char			*simple_quotes(char **line_ptr)
 	return (word_object);
 }
 
-/*
-	printf(LINE(DOUBLE_QUOTES));
-	printf("line RX : |%s|\n", *line_ptr);
-	printf(LINE2);
-	printf("line TX : |%s|\n", final_str);
+char			*quotes(t_list **env, char **line_ptr)
+{
+	char		*word_object;
 
-	printf(LINE(NO_QUOTES));
-	printf("line RX : |%s|\n", *line_ptr);
-	printf(LINE2);
-	printf("line TX : |%s|\n", final_str);
-
-	printf(LINE(SIMPLE_QUOTES));
-	printf("line RX : |%s|\n", *line_ptr);
-	printf(LINE2);
-	printf("line TX : |%s|\n", word_object);
-*/
+	if (**line_ptr == '\'')
+		word_object = simple_quotes(line_ptr);
+	else
+		word_object = double_quotes(env, line_ptr);
+	if (!word_object)
+		return (NULL);
+	return (word_object);
+}

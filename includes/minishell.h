@@ -86,12 +86,14 @@ char		*last_arg(t_command *cmd);
 ** Loop functions
 */
 int			main_loop(t_list **env);
+int			gnl_ctrld(int fd, char **line);
 
 /*
 ** Lexer/parser function that will buid t_command structure
 ** These functions will create a list of t_command from the input line.
 */
 t_list		*tokenizer(char *line);
+int			pipeline_n_link(t_list **head, char *execution_line);
 int			expander(t_list **env, t_command *i_command);
 char		*skip_char(char *str, char c);
 
@@ -99,18 +101,19 @@ char		*skip_char(char *str, char c);
 ** tokenize split
 */
 char		**split_with_exception(char *str, char c, char *exception_set);
-char		**split_with_exception_v2(char *str, char c, char *exception_set);
 char		*ghosting(char *str, char c, char *exception_set, int *error);
 
 /*
 ** tokenize quotes
 */
 char		*expand_filename(t_list **env, char **line_ptr);
+char		*quotes(t_list **env, char **line_ptr);
 char		*double_quotes(t_list **env, char **line_ptr);
 char		*simple_quotes(char **line_ptr);
 char		*no_quotes(t_list **env, char **line_ptr);
-char		*quotes(t_list **env, char **line_ptr);
 int			redirections(t_list **env, char **line_ptr, t_command *i_command);
+int			expand_doll_quote(t_list **env, char **str,
+								char **final_str, char quote);
 char		*doll_expand(t_list **env, char **line_ptr, char quote);
 
 /*

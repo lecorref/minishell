@@ -1,25 +1,5 @@
 #include "minishell.h"
 
-void			print_list(void *content)
-{
-	printf("###print_list###\n");
-	printf("|%s|\n", (char*)content);
-	fflush(stdout);
-}
-
-char			*quotes(t_list **env, char **line_ptr)
-{
-	char		*word_object;
-
-	if (**line_ptr == '\'')
-		word_object = simple_quotes(line_ptr);
-	else
-		word_object = double_quotes(env, line_ptr);
-	if (!word_object)
-		return (NULL);
-	return (word_object);
-}
-
 int				init_fr(char **line_ptr, t_command *cmd, t_list **arg)
 {
 	*line_ptr = cmd->unexpanded;
@@ -47,7 +27,7 @@ int				init_fr(char **line_ptr, t_command *cmd, t_list **arg)
 **
 ** -----------------------------------------------------------------------------
 **
-** find_redirections is the last fonction which is called to finish the tokenize
+** expander() is the last fonction which is called to finish the tokenize
 ** process. In fact, this is where the content of links from linked list ends up
 ** being created.
 ** This function handles file descriptors from redirections, then shaping of
@@ -139,10 +119,6 @@ char			**convert_str_linkedlist_to_str_array(t_list *arg)
 	return (str_arr);
 }
 
-//convertir list chainée de chaine de caractere en tableau de string
-//delete la LL de str
-//Rajouter arr_str dans le contenu i_command
-//créer un nouveau maillon avec i_command en contenu
 int				add_arglist_to_cmd(t_command *i_command, t_list **arg)
 {
 	char		**str_arr;
@@ -152,7 +128,6 @@ int				add_arglist_to_cmd(t_command *i_command, t_list **arg)
 	i_command->command = str_arr;
 	return (1);
 }
-	//print_array(str_arr);
 
 int				expander(t_list **env, t_command *i_command)
 {
@@ -178,13 +153,3 @@ int				expander(t_list **env, t_command *i_command)
 	add_arglist_to_cmd(i_command, &arg);
 	return (1);
 }
-
-	//ft_lstiter(arg, &print_list);
-/*
-	printf(LINE(FIND_REDIRECTIONS));
-	printf("command_line RX : |%s|\n", command_line);
-**
-	printf(LINE(FIND_REDIRECTIONS));
-	printf("command_string TX to split: |%s|\n", command_string);
-	print_array(command_array);
-*/
