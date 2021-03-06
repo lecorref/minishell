@@ -68,3 +68,16 @@ char			*doll_expand(t_list **env, char **line_ptr, char quote)
 	free(doll);
 	return (value);
 }
+
+int				expand_doll_quote(t_list **env, char **str,
+		char **final_str, char quote)
+{
+	char		*expanded;
+
+	if (!(expanded = doll_expand(env, str, quote)))
+		return (0);
+	if (!(join_newstr(final_str, expanded)))
+		return (0);
+	free(expanded);
+	return (1);
+}

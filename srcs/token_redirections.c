@@ -115,11 +115,3 @@ int				redirections(t_list **env, char **line_ptr, t_command *i_cmd)
 	i_cmd->file = file;
 	return (1);
 }
-
-/*
-	printf(LINE(SYMBOLIC));
-	printf("line RX : |%s|\n", *line_ptr);
-	printf(LINE2);
-	printf("filename : |%s|\n", file);
-	printf("fd[0] :%d\tfd[1] :%d\n",fd_command[0], fd_command[1]);
-*/

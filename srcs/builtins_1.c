@@ -62,17 +62,6 @@ char	*expand_tilde_and_exceptions(t_list **env, char *arg, t_command *cmd)
 	return (expanded);
 }
 
-/*void	print_cd_error(char *cmd, char *arg, char *strerror, int fd)
-{
-	write(fd, "bash: ", 7);
-	write(fd, cmd, ft_strlen(cmd));
-	write(fd, ": ", 3);
-	write(fd, arg, ft_strlen(arg));
-	write(fd, ": ", 3);
-	write(fd, strerror, ft_strlen(strerror));
-	write(fd, "\n", 2);
-}*/
-
 int		update_pwd(t_list **env)
 {
 	char    *tmp;
