@@ -118,6 +118,8 @@ int		prompt(t_list *env)
 
 void	eraser_checker(char *line)
 {
+	errno = 0;//later delete either errno or g_exit_status
+	g_exit_status = 0;
 	if (g_line_eraser == 1)
 	{
 		ft_memset(line, 0, ft_strlen(line));
@@ -138,7 +140,8 @@ int		check_ctrld(char **line)
 	//	signal(SIGINT, set_line_eraser);// dont need to use it anymore
 	if (**line && g_line_eraser == 0)
 	{
-		errno = 130;
+		errno = 0;//later delete either errno or g_exit_status 
+		g_exit_status = 0;
 		return (1);
 	}
 	else if (!**line)
@@ -198,7 +201,7 @@ int		gnl_ctrld(int fd, char **line)
 		return (-1);
 	if (!(*line = ft_strnew(0)))
 		return (0);
-	signal(SIGINT, display_prompt);
+	signal(SIGINT, ctrl_c_handler);
 	while (!(adr = ft_strchr(buf[fd], '\n')))
 	{
 		if (!(join_newstr(line, buf[fd])))
@@ -289,7 +292,8 @@ int		main_loop(t_list **env)
 		cmd_cp = cmd;
 		while (cmd_cp)
 		{
-			if ((g_exit_status = execute_command(env, COMMAND(cmd_cp))) == -2)
+		//	if ((g_exit_status = execute_command(env, COMMAND(cmd_cp))) == -2)
+			if (execute_command(env, COMMAND(cmd_cp)) == -2)
 			{
 				ft_lstclear(&cmd, &clear_commandlist);
 				ft_lstclear(env, &clear_envlist);
