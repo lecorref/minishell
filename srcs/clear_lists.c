@@ -18,10 +18,13 @@ void		clear_commandlist(void *content)
 	int		*fdcp;
 	char	*file;
 	char	**args;
+	char	*unexpanded;
 
 	fdcp = ((t_command*)content)->fd;
 	args = ((t_command*)content)->command;
 	file = ((t_command*)content)->file;
+	unexpanded = ((t_command*)content)->unexpanded;
+	free(unexpanded);
 	free(fdcp);
 	i = -1;
 	while (args[++i])

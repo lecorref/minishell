@@ -20,50 +20,14 @@ char			*quotes(t_list **env, char **line_ptr)
 	return (word_object);
 }
 
-int				init_fr(char **line_ptr, char **command_line, t_list **arg)
+int				init_fr(char **line_ptr, t_command *cmd, t_list **arg)
 {
-	*line_ptr = *command_line;
+	*line_ptr = cmd->unexpanded;
 	*arg = NULL;
-	delete_remaining_char(*command_line, '|');
-	return (1);
-}
-/*
-int				join_word_object(char **command_string, char **word_object)
-{
-	if (!*word_object)
-		return (0);
-	if (!**word_object)
-	{
-		free(*word_object);
-		return (1);
-	}
-	if (!(join_newstr(command_string, *word_object)))
-		return (0);
-	free(*word_object);
-	*word_object = NULL;
-	if (!(join_newstr(command_string, " ")))
-		return (0);
+	delete_remaining_char(*line_ptr, '|');
 	return (1);
 }
 
-int				create_array_n_link(t_list **cmd, t_command *i_command,
-		char **command_string)
-{
-	char		**cmd_array;
-	t_list		*new;	
-
-	if (!(cmd_array = split_with_exception_v2(*command_string, ' ', "\'\"")))
-		return (0);
-	free(*command_string);
-	i_command->command = cmd_array;
-	if (!(new = ft_lstnew(i_command)))
-		return (0);
-	ft_lstadd_back(cmd, new);
-	return (1);
-}*/
-
-//printf(LINE(ARRAY SPACES));
-//print_array(command_array);
 /*
 ** -----------------------------------------------------------------------------
 **
@@ -179,29 +143,24 @@ char			**convert_str_linkedlist_to_str_array(t_list *arg)
 //delete la LL de str
 //Rajouter arr_str dans le contenu i_command
 //créer un nouveau maillon avec i_command en contenu
-int				add_arglist_to_cmd(t_list **cmd, t_command *i_command, t_list **arg)
+int				add_arglist_to_cmd(t_command *i_command, t_list **arg)
 {
-	t_list		*new;
 	char		**str_arr;
 
 	str_arr = convert_str_linkedlist_to_str_array(*arg);
 	ft_lstclear(arg, &clear_arglist);
 	i_command->command = str_arr;
-	if (!(new = ft_lstnew(i_command)))
-		return (0);
-	ft_lstadd_back(cmd, new);
 	return (1);
 }
 	//print_array(str_arr);
 
-int				find_redirections(t_list **cmd, t_list **env,
-		char *command_line, t_command *i_command)
+int				expander(t_list **env, t_command *i_command)
 {
 	char		*line_ptr;
 	char		*word_object;
 	t_list		*arg;
 
-	if (!init_fr(&line_ptr, &command_line, &arg))
+	if (!init_fr(&line_ptr, i_command, &arg))
 		return (0);
 	while (*line_ptr)
 	{
@@ -216,7 +175,7 @@ int				find_redirections(t_list **cmd, t_list **env,
 			return (0);
 		add_arg_to_list(&arg, word_object);
 	}
-	add_arglist_to_cmd(cmd, i_command, &arg);
+	add_arglist_to_cmd(i_command, &arg);
 	return (1);
 }
 

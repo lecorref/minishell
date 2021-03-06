@@ -6,7 +6,7 @@
 /*   By: jfreitas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/15 17:33:27 by jfreitas          #+#    #+#             */
-/*   Updated: 2019/11/21 09:52:28 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/06 01:10:46 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,12 @@
 
 void	ft_lstadd_back(t_list **alst, t_list *new)
 {
-	t_list	*lst;
+	t_list	*last;
 
-	lst = *alst;
-	if (lst == NULL)
-		*alst = new;
+	if (!new)
+		return ;
+	if (!(last = ft_lstlast(*alst)))
+		ft_lstadd_front(alst, new);
 	else
-	{
-		while (lst->next)
-			lst = lst->next;
-		lst->next = new;
-	}
+		last->next = new;
 }

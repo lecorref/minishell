@@ -55,12 +55,12 @@ int			parse_token_error(char **str, int i)
 ** means a pipe had been opened before to write into, so the current one must
 ** read into the read end pipe created before, which had been saved in fd_tmp.
 */
-int				pipe_it(char **piped_exec_line, int i,
+int				pipe_it(char **pipeline, int i,
 		int *fd_command, int *fd_tmp)
 {
 	int			piped_fd[2];
 
-	if (piped_exec_line[i + 1])
+	if (pipeline[i + 1])
 	{
 		if (pipe(piped_fd) == -1)
 			return (0);
@@ -92,53 +92,6 @@ int				pipe_it(char **piped_exec_line, int i,
 ** It handle distribution of piped file descriptors to commands & call
 ** the find_redirections function which handles distribution of opened-file
 ** file descriptor and $ expand.
-*/
-void		print_array3(char **array)
-{
-        int                     i;
-
-        i = -1;
-        while (array[++i])
-                printf("array[%d] :|%s|\n", i, array[i]);
-        printf(LINE2);
-}
-
-int				find_pipe_n_redirections(t_list **cmd, t_list **env,
-		char *execution_line)
-{
-	char		**piped_exec_line;
-	t_command	*i_command;	
-	int			fd_tmp;
-	int			i;
-
-	delete_remaining_char(execution_line, ';');
-	if (!(piped_exec_line = split_with_exception(execution_line, '|', "\'\"")))
-		return (0);
-	i = -1;
-	while (piped_exec_line[++i])
-	{
-		if (!parse_token_error(piped_exec_line, i))
-			return (0);//token error
-		if (!(i_command = init_command()))
-			return (0);//malloc error
-		if (!pipe_it(piped_exec_line, i, i_command->fd, &fd_tmp))
-			return (0);
-		if (!(find_redirections(cmd, env, piped_exec_line[i], i_command)))
-			return (0);
-		free(piped_exec_line[i]);
-	}
-	free(piped_exec_line);
-	return (1);
-}
-
-/*
-	printf(LINE(FIND_PIPE_N_REDIRECTIONS));
-	printf("execution_line RX: |%s|\n", execution_line);
-	printf(LINE(ARRAY PIPE));
-	print_array3(piped_exec_line);
-		printf(LINE2);
-		printf("command of string %d\tfd READ= %d\n", i, fd_command[0]);
-		printf("command of string %d\tfd WRITE= %d\n\n", i, fd_command[1]);
 */
 
 /*
@@ -203,35 +156,90 @@ int				find_pipe_n_redirections(t_list **cmd, t_list **env,
 **     standard fd must be redirected with the technique described above
 ** 3 - Fork a child which will execute the exec with execve();
 */
-t_list			*tokenize_line_jb(char *line, t_list **env)
+
+void	print_tokk(void *content)
+{
+	printf("unexpanded : |%s|\t\tfd0: %d\tfd1: %d\n",
+			((t_command*)content)->unexpanded,
+			((t_command*)content)->fd[0],
+			((t_command*)content)->fd[1]);
+}
+
+int				add_link(t_list **head, t_command *i_command)
+{
+	t_list		*cmd;
+
+	if (!(cmd = ft_lstnew(i_command)))
+		return (0);
+	ft_lstadd_back(head, cmd);
+	return (1);
+}
+
+int				pipeline_n_link(t_list **head, char *execution_line)
+{
+	char		**pipeline;
+	t_command	*i_command;	
+	int			fd_tmp;
+	int			i;
+
+	delete_remaining_char(execution_line, ';');
+	if (!(pipeline = split_with_exception(execution_line, '|', "\'\"")))
+		return (0);
+	i = -1;
+	while (pipeline[++i])
+	{
+		if (!parse_token_error(pipeline, i))
+			return (0);//token error
+		if (!(i_command = init_command(pipeline[i])))
+			return (0);//malloc error
+		if (!pipe_it(pipeline, i, i_command->fd, &fd_tmp))
+			return (0);
+		if (!add_link(head, i_command))
+			return (0);
+	}
+	return (1);
+}
+	//ft_lstiter(*head, &print_tokk);
+	//printf(LINE2);
+
+void			link_lists(t_list **head, t_list *new)
+{
+	t_list		*tmp;
+
+	if (!*head)
+	{
+		*head = new;
+		return ;
+	}
+	tmp = *head;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
+}
+
+t_list			*tokenizer(char *line)
 {
 	int			i;
-	t_list		*cmd;
+	t_list		*head;
+	t_list		*tmp;
 	char		**execution_lines;
 	char		*skiped;
 
-	cmd = NULL;
+	head = NULL;
 	if (!(execution_lines = split_with_exception(line, ';', "\'\"")))
 		return (NULL);
 	i = -1;
 	while (execution_lines[++i])
 	{
+		tmp = NULL;
 		skiped = skip_char(execution_lines[i], ' ');
 		if (*skiped == ';')
 			printf("unexpected token ';'\n");
-		if (!(find_pipe_n_redirections(&cmd, env, execution_lines[i])))
+		if (!(pipeline_n_link(&tmp, execution_lines[i])))
 			return (NULL);
+		link_lists(&head, tmp);
 		free(execution_lines[i]);
 	}
 	free(execution_lines);
-	return (cmd);
+	return (head);
 }
-
-/*
-	printf(LINE(TOKENIZE_LINE_JB));
-    printf(LINE(ARRAY SEMICOLON));
-	print_array3(execution_lines);
-	printf("execution_line TX: |%s|\n", execution_lines[i]);
-	printf("line RX: |%s|\n", line);
-		printf(LINE2);
-*/

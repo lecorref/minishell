@@ -1,68 +1,4 @@
 #include "minishell.h"
-/*
-int		execute_command(t_list **env, t_command *cmd)
-{
-	int		ret;
-	
-	if (ft_strcmp(cmd->command[0], "echo") == 0)
-		ret = echo_builtin(cmd);
-	else if (ft_strcmp(cmd->command[0], "pwd") == 0)
-		ret = pwd_builtin(env, cmd);
-	else if (ft_strcmp(cmd->command[0], "exit") == 0)
-	{
-		ret = exit_builtin(cmd);
-		printf("\nexit ret = %d\n", ret);// testing
-		if (ret == -2)// means to exit shell
-			return (-2);
-	}
-	else if (ft_strcmp(cmd->command[0], "cd") == 0)
-		ret = cd_builtin(env, cmd);
-	else if (ft_strcmp(cmd->command[0], "export") == 0)
-		ret = export_builtin(env, cmd);
-	else if (ft_strcmp(cmd->command[0], "unset") == 0)
-		ret = unset_builtin(env, cmd);
-	else if (ft_strcmp(cmd->command[0], "env") == 0)
-	{
-		update_underscore(env, "env");
-		ret = env_builtin(env, cmd);
-		printf("env return = %d", ret);
-	}
-	else
-		ret = execute_extern(env, cmd);
-	return (ret);
-}*/
-
-/*
-** Printing the propt by searching for the SESSION_MANAGER environmetal
-** variable that is inside of the char **ep argument of the main.
-** Then spliting the line by / and : just to get the exact name to then print
-** it on the stdout (fd1).
-int		prompt(t_list *env)
-{
-	char	*find_env;
-	char	**line;
-	char	**session_manager;
-
-	if ((find_env = find_env_value(&env, "SESSION_MANAGER")) == NULL)
-	{
-		ft_putstr_fd("minishell$ ", 1);
-		return (0);
-	}
-	else
-	{
-		find_env = ft_strchr(find_env, '/');
-		line = ft_split(find_env, '/');
-		session_manager = ft_split(line[0], ':');
-		ft_putstr_fd("\033[1;32m", 1);
-		ft_putstr_fd(session_manager[0], 1);
-		ft_putstr_fd("% ", 1);
-		ft_putstr_fd("\033[0m", 1);
-		free(line);
-		free(session_manager);
-		return (0);
-	}
-	return (0);
-}*/
 
 /*
 ** If the char is 'n' instead of '\n':
@@ -115,6 +51,7 @@ int		prompt(t_list *env)
 ** takes advantage and will act when ctrl^C will be hited, until we go out of
 ** gnl which would have returned 1, then the more general signal() goes back.
 */
+
 int		check_ctrld(char **line)
 {
 	signal(SIGINT, set_line_eraser);
@@ -249,10 +186,30 @@ int		execute_command(t_list **env, t_command *cmd)
 ** 0 = EOF
 ** -1 = error
 */
+
+void	print_tok(void *content)
+{
+	printf("unexpanded : |%s|\t\tfd0: %d\tfd1: %d\n",
+			((t_command*)content)->unexpanded,
+			((t_command*)content)->fd[0],
+			((t_command*)content)->fd[1]);
+}
+
+int		executer(t_list **env, t_list *cmd)
+{
+	while (cmd)
+	{
+		expander(env, COMMAND(cmd));
+		if ((g_exit_status = execute_command(env, COMMAND(cmd))) == -2)
+			return (g_exit_status);
+		cmd = cmd->next;
+	}
+	return (g_exit_status);
+}
+
 int		main_loop(t_list **env)
 {
 	t_list	*cmd;
-	t_list	*cmd_cp;
 	char	*line;
 	int		ret_gnl;
 
@@ -260,43 +217,16 @@ int		main_loop(t_list **env)
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
-		cmd = tokenize_line_jb(line, env);
+		cmd = tokenizer(line);
 		free(line);
-		cmd_cp = cmd;
-		while (cmd_cp)
-		{
-			if ((g_exit_status = execute_command(env, COMMAND(cmd_cp))) == -2)
-			{
-				ft_lstclear(&cmd, &clear_commandlist);
-				ft_lstclear(env, &clear_envlist);
-				return (g_exit_status);
-			}
-			cmd_cp = cmd_cp->next;
-			printf("ex_stat : %d\n", g_exit_status);//TEST.DLT LATER
-		}
+		ft_lstiter(cmd, &print_tok);
+		executer(env, cmd);
 		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
 	}
 	free(line);
 	ft_lstclear(env, &clear_envlist);
-	if (ret_gnl == -1)//??do that? all errors should have been already handled
-					  //before it gets to this part?
+	if (ret_gnl == -1)
 		return (-1);
 	return (0);
 }
-
-// inside this tokenize_line function -> to do:
-// 1.split it by | or ; or > or < or >>  and save it to the
-// t_cmd cmd->command (multiples of the same redirection has to fail) -
-// try to mix pipes and redirections
-// 2.0. handle single quotes - try single quotes at arguments of
-// functions (also quoted empty args '', or whitespace, or ';' or and
-// also environment variables)
-// 2.1. and double quotes (and weird use of \ for double quotes, and
-// enrironment variabes - NO need to try multilines)
-// 3. handle $ENV_VAR (also with double quotes ex: echo "$USER")
-// 4. handle $? and send it to a function
-//
-// same as void free_command_list(t_list **command)???
-// ft_lstdel(&env, free_env); -> at the very end of everything???
-// or here insede this loop????
