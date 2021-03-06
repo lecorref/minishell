@@ -19,7 +19,6 @@ void	ctrl_back_slash_handler_quit(int signal)
 	if (signal == SIGQUIT)
 	{
 		ft_putstr_fd("Quit (core dumped)\n", 2);
-		errno = 131;//later delete either errno or g_exit_status
 		g_exit_status = 131;
 	}
 }
@@ -28,11 +27,9 @@ void	ctrl_c_handler(int sign)
 {
 	if (sign == SIGINT)
 	{
-		errno = 130;//later delete either errno or g_exit_status
 		g_exit_status = 130;
 		g_line_eraser = 1;
 		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
-		printf("\nerrno 130 = %s\n", strerror(130));
 	}
 }
 
