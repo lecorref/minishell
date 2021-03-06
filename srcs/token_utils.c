@@ -9,7 +9,7 @@ void		delete_remaining_char(char *str, char c)
 		str[end_index] = 0;
 }
 
-t_command		*init_command()
+t_command		*init_command(char *pipeline)
 {
 	int			*fd;
 	t_command	*command;	
@@ -25,6 +25,7 @@ t_command		*init_command()
 		return (0);
 	command->fd = fd;
 	command->file = NULL;
+	command->unexpanded = pipeline;
 	return (command);
 }
 
