@@ -124,6 +124,13 @@ int			expand_doll_quote(t_list **env, char **str,
 char		*doll_expand(t_list **env, char **line_ptr, char quote);
 
 /*
+** tokenize quotes utils
+*/
+int			join_str_before(char **str, char **line_ptr, char **final_str);
+int			join_char_to_str(char **final_str, char c);
+int			escape_it(char **final_str, char **str, char **line_ptr);
+
+/*
 ** tokenize utils
 */
 void		delete_remaining_char(char *str, char c);

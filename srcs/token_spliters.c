@@ -23,6 +23,9 @@ char		*ghosting(char *str, char c, char *exception_set, int *error)
 	{
 		if ((ghoster = ft_strchr(exception_set, str[i])))
 		{
+			if (i > 0)
+				if (str[i - 1] == '\\')
+					continue;
 			if (ghost == 0)
 				ghost = *ghoster;
 			else if (*ghoster == ghost)
@@ -61,7 +64,7 @@ char		**split_count_n_array_make(char *str, char c, char *exception_set)
 ** split_with_exception will see >; >; >'\0' >null
 ** So the two first strings created  will contain ';' & the third '\0' & the
 ** last will be null.
- *
+**
 ** Behavior with no semi-colon :	>hello
 ** 									-splited =>hello'\0' >null
 **
