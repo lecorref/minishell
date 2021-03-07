@@ -28,7 +28,7 @@ int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 	else if (WIFSIGNALED(wstatus))
 		g_exit_status = WTERMSIG(wstatus);
 	signal(SIGQUIT, ctrl_back_slash_handler);
-	return (SUCCESS);
+	return (RT_SUCCESS);
 }
 
 /*
@@ -64,8 +64,7 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 	if ((cpid = fork()) == -1)
 	{
 		g_exit_status = 2;
-		return (-2);
-	//	exit(errno);// check if its 2?
+		return (RT_SUCCESS);
 	}
 	else if (cpid == 0)
 	{
@@ -77,7 +76,7 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 			error_msg("bash", cmd, NULL, strerror(2));
 		}
 		g_exit_status = 127;
-		return (-2);
+		return (RT_FAIL);
 	//	ft_lstclear(cmd, &clear_commandlist); DELETE THINGS BEFORE EXIT
 	//	ft_lstclear(env, &clear_envlist); DELETE THINGS BEFORE EXIT
 	//	exit(127);//I think, as it's a child which would fail & not the main
@@ -93,13 +92,21 @@ int		execute_extern(t_list **env, t_command *cmd)
 	pid_t	fork_pid;
 
 	if (cmd->fd[3] != 0)
+	{
+		g_exit_status = 1;
 		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
+	}
 	if (!(path_to_cmd = path_to_executable(env, cmd)))
-		return (127);
+		return (RT_FAIL);
+	if (!*path_to_cmd)
+	{
+		g_exit_status = 127;
+		return (RT_SUCCESS);
+	}
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
 	env_tab = env_list_to_tab(*env);
 	update_underscore(env, last_arg(cmd));
-	fork_pid = fork_extern(cmd, path_to_cmd, env_tab);
+	if ((fork_pid = fork_extern(cmd, path_to_cmd, env_tab)) == RT_FAIL)
+		return (RT_FAIL);
 	return (parent_process(fork_pid, path_to_cmd, env_tab));
-	//return (0);
 }

@@ -2,6 +2,8 @@
 
 int			env_builtin(t_list **env, t_command *cmd)
 {
+	if ((*env)->next == NULL)
+		g_exit_status = 0;
 	if ((*env)->next != NULL)
 		env_builtin(&((*env)->next), cmd);
 	ft_putstr_fd(ENV_KEY(*env), cmd->fd[1]);
@@ -70,17 +72,17 @@ int		update_pwd(t_list **env)
 
 	old_pwd = find_env_value(env, "PWD");
 	if (!(tmp = ft_strjoin("OLDPWD=", old_pwd)))
-		return (-1);
+		return (RT_FAIL);
 	add_env_variable(env, tmp);
 	free(tmp);
 	if (!(pwd = getcwd(NULL, 0)))
-		return (-1);
+		return (RT_FAIL);
 	if (!(tmp = ft_strjoin("PWD=", pwd)))
-		return (-1);
+		return (RT_FAIL);
 	add_env_variable(env, tmp);
 	free(tmp);
 	free(pwd);
-	return (0);
+	return (RT_SUCCESS);
 }
 
 /*
@@ -94,10 +96,11 @@ int		cd_builtin(t_list **env, t_command *cmd)
 {
 	if (!(cmd->command[1]))
 		if (!(cmd->command[1] = ft_strjoin("~", "")))//!!! -> the array is not 
-			return (-1);//anymore NULL terminated ?! check this
-	if (!(cmd->command[1][0]))
-		return (0);
-	cmd->command[1] = expand_tilde_and_exceptions(env, cmd->command[1], cmd);
+			return (RT_FAIL);//anymore NULL terminated ?! check this
+	//if (!(cmd->command[1][0]))
+		//return (0);
+	if (!(cmd->command[1] = expand_tilde_and_exceptions(env, cmd->command[1], cmd)))
+		return (RT_FAIL);
 	update_underscore(env, last_arg(cmd));
 	if ((chdir(cmd->command[1])) == -1)
 	{
@@ -110,9 +113,10 @@ int		cd_builtin(t_list **env, t_command *cmd)
 		}
 		else if (!cmd->command[2])
 			error_msg("bash", cmd, cmd->command[1], strerror(errno));
-		return (1);
+		g_exit_status = 2;
+		return (RT_SUCCESS);
 	}
-	if (update_pwd(env) == -1)
-		return (1);
-	return (0);
+	if (update_pwd(env) != RT_SUCCESS)
+		return (RT_FAIL);
+	return (RT_SUCCESS);
 }

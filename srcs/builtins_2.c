@@ -24,10 +24,11 @@ int			echo_builtin(t_list **env, t_command *cmd)
 
 	i = 0;
 	update_underscore(env, last_arg(cmd));
+	g_exit_status = 0;
 	if (!cmd->command[i + 1])
 	{
 		ft_putchar_fd('\n', cmd->fd[1]);
-		return (0);
+		return (RT_SUCCESS);
 	}
 	flag = 0;
 	while (!echo_n_parser(cmd->command[++i]))
@@ -41,7 +42,7 @@ int			echo_builtin(t_list **env, t_command *cmd)
 	}
 	if (!flag)
 		ft_putchar_fd('\n', cmd->fd[1]);
-	return (0);
+	return (RT_SUCCESS);
 }
 
 int		pwd_builtin(t_list **env, t_command *cmd)
@@ -49,6 +50,7 @@ int		pwd_builtin(t_list **env, t_command *cmd)
 	char	*stored;
 
 	update_underscore(env, last_arg(cmd));
+	g_exit_status = 0;
 	stored = getcwd(NULL, 0);
 	ft_putstr_fd(stored, cmd->fd[1]);
 	ft_putchar_fd('\n', cmd->fd[1]);
@@ -73,16 +75,16 @@ int		exit_arg(t_command *cmd, size_t i)
 			g_exit_status = ft_atoi(cmd->command[1]);
 			g_exit_status += 256;
 			g_exit_status %= 256;
-			return (-2);//means to exit the shell
+			return (RT_EXIT);
 		}
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			g_exit_status = 1;
-			return (0);//means to NOT exit the shell
+			g_exit_status = 2;
+			return (RT_SUCCESS);
 		}
 	}
-	return (-2);
+	return (RT_EXIT);
 }
 
 /*
@@ -116,10 +118,7 @@ int		exit_builtin(t_command *cmd)
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
 	if (cmd->command[1] == NULL)
-	{
-		g_exit_status = 0;
-		return (-2);//means to exit the shell
-	}
+		return (RT_EXIT);
 	else if (cmd->command[1])
 	{
 		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
@@ -128,12 +127,12 @@ int		exit_builtin(t_command *cmd)
 			i++;
 		if (i != ft_strlen(cmd->command[1]))
 		{
-			error_msg("bas", cmd, cmd->command[1], "numeric argument required");
-			g_exit_status = 2;
-			return (-2);//means to exit the shell
+			error_msg("bash", cmd, cmd->command[1], "numeric argument required");
+			g_exit_status = 255;
+			return (RT_EXIT);
 		}
-		if (exit_arg(cmd, i) == 0)
-			return (0);//means to NOT exit the shell
+		if (exit_arg(cmd, i) == RT_SUCCESS)
+			return (RT_SUCCESS);//means to NOT exit the shell
 	}
-	return (-2);//means to exit the shell
+	return (RT_EXIT);
 }

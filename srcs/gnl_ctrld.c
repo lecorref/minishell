@@ -54,7 +54,6 @@
 
 void	eraser_checker(char *line)
 {
-	g_exit_status = 0;
 	if (g_line_eraser == 1)
 	{
 		ft_memset(line, 0, ft_strlen(line));
@@ -76,7 +75,6 @@ int		check_ctrld(char **line)
 	//	signal(SIGINT, set_line_eraser);// dont need to use it anymore
 	if (**line && g_line_eraser == 0)
 	{
-		g_exit_status = 0;
 		return (1);
 	}
 	else if (!**line)

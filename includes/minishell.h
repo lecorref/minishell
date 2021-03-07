@@ -49,8 +49,9 @@
 /*
 ** Return code
 */
-# define SUCCESS 0
-# define EXIT 1
+# define RT_FAIL -1
+# define RT_SUCCESS 0
+# define RT_EXIT 1
 
 /*
 ** Environment control
