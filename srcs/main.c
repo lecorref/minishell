@@ -29,13 +29,11 @@ int		increase_shlvl(t_list **env)
 int		main(int ac, char **av, char **ep)
 {
 	t_list	*env;
-//	char	**env_tab;
 
 	(void)av;
 	if (ac != 1)
 		return (-1);
 	env = create_env_list(ep);
-	//env_tab = env_list_to_tab(env);
 	increase_shlvl(&env);// CALL THIS FUNCTION TO INCRESE THE $SHLVL env???
 	//Because when ctrlD or exit builtinn is typed, they close the shell and
 	//decrease this $SHLVL environmental variable. Even though this $SHLVL env
@@ -45,8 +43,6 @@ int		main(int ac, char **av, char **ep)
 	g_exit_status = 0;
 	g_line_eraser = 0;
 	main_loop(&env);
-	//ft_freetab(env_tab);
-	//system("leaks minishell");
-	//return (errno);
+	system("leaks minishell");
 	return (g_exit_status);
 }

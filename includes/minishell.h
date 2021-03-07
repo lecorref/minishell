@@ -47,6 +47,13 @@
 # define BT_ENV 7
 
 /*
+** Return code
+*/
+# define RT_FAIL -1
+# define RT_SUCCESS 0
+# define RT_EXIT 1
+
+/*
 ** Environment control
 ** These defines shorten literals to make the code more understandable.
 ** NAME is of type t_list.

@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:34:20 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/06 19:19:42 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/07 01:38:23 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,5 @@ int		error_msg_2(char *bash, t_command *cmd, char *arg, char *err_msg)
 		ft_putstr_fd(err_msg, cmd->fd[2]);
 		ft_putchar_fd('\n', cmd->fd[2]);
 	}
-	return (-1);
+	return (RT_SUCCESS);
 }
