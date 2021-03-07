@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/07 01:25:28 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/07 02:52:12 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,9 @@ char	*relative_path(t_command *cmd, char **split_path, char *pwd_path)
 	ret_env_path = -1;
 	add_path = NULL;
 	if ((ret_pwd_path = test_cmd(pwd_path, cmd->command[0])) == 0)
+	//maybe delete this part since if a command was typedpe without . or / or ~
+	//than it means its a binary, so we dont look for it's path with pwd, we
+	//output "minishell: command not found"
 	{
 		add_path = add_path_to_cmd(pwd_path, cmd->command[0]);
 		return (add_path);
