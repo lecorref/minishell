@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/06 23:01:01 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/06 23:53:29 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-	printf("path_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
+//	printf("path_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		g_exit_status = 2;

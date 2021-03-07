@@ -1,5 +1,17 @@
+echo 00\\\'pp ; echo 00\\\\\'pp
+echo 00\\\\'pp' ; echo “./hello”. ; echo ./hello ; echo ello
+echo and" a lin"'e 'here'; with some slash and quotes   .'   '\'
+echo '\\' ; echo "\\"
+echo \n
+echo    "\""
+echo   \\
+echo   \'
+echo   \" "\\"    "\""   \\   \'   \"
 echo "\poep"
 echo \"test\"
+export a="\\" ; export
+export b='\\' ; export
+export c="\b" ; export
 echo hello 'cou\"cou' oi
 echo hello 'cou\'cou'' oi
 echo 'ma\'									Hi \ there, hi \
