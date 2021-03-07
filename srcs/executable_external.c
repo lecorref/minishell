@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/07 02:57:06 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/07 12:51:51 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,8 @@ int		execute_extern(t_list **env, t_command *cmd)
 		g_exit_status = 1;
 		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
 	}
+	if (!(cmd->command[0]))
+		return (RT_SUCCESS);
 	if (!(path_to_cmd = path_to_executable(env, cmd)))
 		return (RT_FAIL);
 	if (!*path_to_cmd)
