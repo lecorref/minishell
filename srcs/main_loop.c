@@ -71,11 +71,11 @@ int		executer(t_list **env, t_list *cmd)
 	while (cmd)
 	{
 		expander(env, COMMAND(cmd));
-		if (execute_command(env, COMMAND(cmd)) == -2)
-			return (-2);
+		if (execute_command(env, COMMAND(cmd)) != RT_SUCCESS)
+			return (RT_EXIT);
 		cmd = cmd->next;
 	}
-	return (g_exit_status);
+	return (RT_SUCCESS);
 }
 
 int		main_loop(t_list **env)
@@ -90,9 +90,12 @@ int		main_loop(t_list **env)
 	{
 		cmd = tokenizer(line);
 		free(line);
-		//ft_lstiter(cmd, &print_tok);
-		if (executer(env, cmd) == -2)
-			return (g_exit_status);
+		if (executer(env, cmd) != RT_SUCCESS)
+		{
+			ft_lstclear(&cmd, &clear_commandlist);
+			ft_lstclear(env, &clear_envlist);
+			return (RT_EXIT);
+		}
 		if (g_line_eraser == 0)
 			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
@@ -100,6 +103,7 @@ int		main_loop(t_list **env)
 	free(line);
 	ft_lstclear(env, &clear_envlist);
 	if (ret_gnl == -1)
-		return (-1);
-	return (g_exit_status);
+		return (RT_FAIL);
+	return (RT_EXIT);
 }
+		//ft_lstiter(cmd, &print_tok);

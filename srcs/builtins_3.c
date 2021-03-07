@@ -31,7 +31,7 @@ static char		**alpha_order_string(t_list **env)
 	return (env_tab);
 }
 
-void	update_export_underscore(t_list **env, t_command *cmd)
+void		update_export_underscore(t_list **env, t_command *cmd)
 {
 	char	*last;
 	char	*needle;
@@ -75,13 +75,14 @@ int			export_builtin(t_list **env, t_command *cmd)
 	else if (cmd->command[0] && !cmd->command[1])
 	{
 		if (!(envir = alpha_order_string(env)))
-			return (-1);
+			return (RT_FAIL);
 		i = -1;
 		while (envir[++i] && envir[i + 1])
 			print_envir(cmd, envir, i);
 		ft_freetab(envir);
 	}
-	return (0);
+	g_exit_status = 0;
+	return (RT_SUCCESS);
 }
 
 int			unset_builtin(t_list **env, t_command *cmd)
@@ -93,5 +94,6 @@ int			unset_builtin(t_list **env, t_command *cmd)
 	if (cmd->command[0] && cmd->command[1])
 		while (cmd->command[++i])
 			delete_env_variable(env, cmd->command[i]);
-	return (0);
+	g_exit_status = 0;
+	return (RT_SUCCESS);
 }
