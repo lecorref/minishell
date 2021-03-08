@@ -17,36 +17,35 @@ void		update_export_underscore(t_list **env, t_command *cmd)
 	free(needle);
 }
 
-int			print_export(t_list **export)
+void			print_export(char **export_tab)
 {
 	char	**alpha_order;
-	char	**export_tab;
+	char	*key;
 	int		i;
 	int		len;
 
 	i = 0;
 	len = 0;
-	export_tab = env_list_to_tab(*export);
 	if (!(alpha_order = alpha_order_array(export_tab)))
-		return (RT_FAIL);
+		return ;
 	while (alpha_order[i])
 	{
 		len = ft_strclen(&alpha_order[i][0], '=');
 		if (ft_strchr(&alpha_order[i][0], '='))
 		{
+			key = ft_substr(alpha_order[i], 0, sizeof(char) * (len + 1));
 			printf("declare -x ");
-			printf("%s", ft_substr(alpha_order[i], 0, sizeof(char) * (len+1)));
+			printf("%s", key);
 			printf("\"%s\"\n", &alpha_order[i][len + 1]);
+			free(key);
 		}
 		else if (ft_strchr(&alpha_order[i][0], '=') == NULL)
 			printf("declare -x %s\n", alpha_order[i]);
 		i++;
 	}
-	ft_freetab(export_tab);
-	return (0);
 }
 
-int			export_builtin_2(t_list **env, t_list **export, t_command *cmd)
+int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd)
 {
 	int		i;
 
@@ -69,22 +68,28 @@ int			export_builtin_2(t_list **env, t_list **export, t_command *cmd)
 
 int			export_builtin(t_list **env, t_command *cmd, t_list **export)
 {
+	char	**export_tab;
 	int		i;
 
-	update_export_underscore(env, cmd);
 	i = 0;
+	export_tab = env_list_to_tab(*export);
+	update_export_underscore(env, cmd);
 	while (ft_strcmp(cmd->command[0], "unset") == 0 && cmd->command[++i])
 		delete_env_variable(export, cmd->command[i]);
-	if (cmd->command[1])
+	if (cmd->command[0] && !cmd->command[1])
+		print_export(export_tab);
+	ft_freetab(export_tab);
+	if (cmd->command[0] && cmd->command[1])
 	{
 		if (ft_isdigit(cmd->command[1][0]) ||
 		(ft_strnstr(cmd->command[1], "-", ft_strclen(cmd->command[1], '='))))
+		{
 			error_msg("bash", cmd, cmd->command[1], "not a valid identifier");
+			return (RT_FAIL);
+		}
+		else
+			export_builtin_arg(env, export, cmd);
 	}
-	if (cmd->command[0] && cmd->command[1])
-		export_builtin_2(env, export, cmd);
-	if (cmd->command[0] && !cmd->command[1])
-		print_export(export);
 	g_exit_status = 0;
 	return (RT_SUCCESS);
 }
