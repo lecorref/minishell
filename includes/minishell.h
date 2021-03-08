@@ -144,7 +144,6 @@ char		*skip_char(char *str, char c);
 t_command	*init_command(char *pipeline);
 int			ft_count_tab(char **tab);
 char		**alpha_order_array(char **export_tab);
-t_list		*alpha_order_list(t_list **export);
 
 void	print_cmd(t_command *cmd);/////////delete
 void	print_array(char **arr);/////////delete
@@ -187,6 +186,9 @@ int			update_pwd(t_list **env);
 char		*expand_tilde_and_exceptions(t_list **env, char *a, t_command *cmd);
 
 int			export_builtin(t_list **env, t_command *cmd, t_list **export);
+int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd);
+void		print_export(char **export_tab);
+void		update_export_underscore(t_list **env, t_command *cmd);
 
 int			unset_builtin(t_list **env, t_command *cmd, t_list **export);
 int			env_builtin(t_list **env, t_command *cmd);
