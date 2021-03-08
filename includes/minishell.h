@@ -92,7 +92,7 @@ char		*last_arg(t_command *cmd);
 /*
 ** Loop functions
 */
-int			main_loop(t_list **env);
+int			main_loop(t_list **env, t_list **export);
 int			gnl_ctrld(int fd, char **line);
 
 /*
@@ -142,6 +142,9 @@ int			authorized_char(int c);
 int			is_special_char(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command(char *pipeline);
+int			ft_count_tab(char **tab);
+char		**alpha_order_array(char **export_tab);
+t_list		*alpha_order_list(t_list **export);
 
 void	print_cmd(t_command *cmd);/////////delete
 void	print_array(char **arr);/////////delete
@@ -161,7 +164,7 @@ void		ft_array_string_del(char **array);
 ** This function will find if the command is a builtin and execute it, or
 ** execute said command with execve.
 */
-int			execute_command(t_list **env, t_command *cmd);
+int			execute_command(t_list **env, t_command *cmd, t_list **export);
 void		close_fd(int *fd);
 void		dup_fd(int *fd);
 
@@ -183,9 +186,9 @@ int			cd_builtin(t_list **env, t_command *cmd);
 int			update_pwd(t_list **env);
 char		*expand_tilde_and_exceptions(t_list **env, char *a, t_command *cmd);
 
-int			export_builtin(t_list **env, t_command *cmd);
+int			export_builtin(t_list **env, t_command *cmd, t_list **export);
 
-int			unset_builtin(t_list **env, t_command *cmd);
+int			unset_builtin(t_list **env, t_command *cmd, t_list **export);
 int			env_builtin(t_list **env, t_command *cmd);
 
 /*
@@ -193,7 +196,8 @@ int			env_builtin(t_list **env, t_command *cmd);
 */
 int			execute_extern(t_list **env, t_command *cmd);
 int			is_builtin(t_command *cmd);
-int			execute_builtin(t_list **env, t_command *cmd, int builtin_code);
+int			execute_builtin(t_list **env, t_command *cmd, int builtin_code,
+							t_list **export);
 int			parent_process(pid_t pid, char *pathcmd, char **env_tab);
 char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(char *cmd, char *home_path);
