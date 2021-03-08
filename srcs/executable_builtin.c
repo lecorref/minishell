@@ -22,7 +22,8 @@ int		is_builtin(t_command *cmd)
 	return (0);
 }
 
-int		execute_builtin(t_list **env, t_command *cmd, int builtin_code)
+int		execute_builtin(t_list **env, t_command *cmd, int builtin_code,
+						t_list **export)
 {
 	int		ret;
 
@@ -35,9 +36,9 @@ int		execute_builtin(t_list **env, t_command *cmd, int builtin_code)
 	else if (builtin_code == BT_CD)
 		ret = cd_builtin(env, cmd);
 	else if (builtin_code == BT_EXPORT)
-		ret = export_builtin(env, cmd);
+		ret = export_builtin(env, cmd, export);
 	else if (builtin_code == BT_UNSET)
-		ret = unset_builtin(env, cmd);
+		ret = unset_builtin(env, cmd, export);
 	else
 	{
 		update_underscore(env, "env");

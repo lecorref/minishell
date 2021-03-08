@@ -127,8 +127,8 @@ int		exit_builtin(t_command *cmd)
 			i++;
 		if (i != ft_strlen(cmd->command[1]))
 		{
-			error_msg("bash", cmd, cmd->command[1], "numeric argument required");
-			g_exit_status = 255;
+			error_msg("b", cmd, cmd->command[1], "numeric argument required");
+			g_exit_status = 2;
 			return (RT_EXIT);
 		}
 		if (exit_arg(cmd, i) == RT_SUCCESS)

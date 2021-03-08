@@ -44,7 +44,6 @@
 ** 0 = EOF
 ** -1 = error
 */
-
 void	print_tok(void *content)
 {
 	printf("unexpanded : |%s|\t\tfd0: %d\tfd1: %d\n",
@@ -53,32 +52,32 @@ void	print_tok(void *content)
 			((t_command*)content)->fd[1]);
 }
 
-int		execute_command(t_list **env, t_command *cmd)
+int		execute_command(t_list **env, t_command *cmd, t_list **export)
 {
 	int	ret;
 
 //	print_cmd(cmd);//TEST - TO DELETE LATER
 	if ((ret = is_builtin(cmd)))
-		ret = execute_builtin(env, cmd, ret);
+		ret = execute_builtin(env, cmd, ret, export);
 	else
 		ret = execute_extern(env, cmd);
 	close_fd(cmd->fd);
 	return (ret);
 }
 
-int		executer(t_list **env, t_list *cmd)
+int		executer(t_list **env, t_list *cmd, t_list **export)
 {
 	while (cmd)
 	{
 		expander(env, COMMAND(cmd));
-		if (execute_command(env, COMMAND(cmd)) != RT_SUCCESS)
+		if (execute_command(env, COMMAND(cmd), export) != RT_SUCCESS)
 			return (RT_EXIT);
 		cmd = cmd->next;
 	}
 	return (RT_SUCCESS);
 }
 
-int		main_loop(t_list **env)
+int		main_loop(t_list **env, t_list **export)
 {
 	t_list	*cmd;
 	char	*line;
@@ -90,7 +89,7 @@ int		main_loop(t_list **env)
 	{
 		cmd = tokenizer(line);
 		free(line);
-		if (executer(env, cmd) != RT_SUCCESS)
+		if (executer(env, cmd, export) != RT_SUCCESS)
 		{
 			ft_lstclear(&cmd, &clear_commandlist);
 			ft_lstclear(env, &clear_envlist);

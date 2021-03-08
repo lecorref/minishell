@@ -3,11 +3,15 @@ export $USER
 export $USER=user
 export
 export $USER==user42
+export $USER==u-ser42-
+export U-SER==user42
 export a=hijdoehet ; export
 export test1
 export
 export test1=
 export
+expoer 1=42
+export 123$USER---
 export _TEST=DOethetwelmetunderscore
 export ZZZ
 export ZZZ=
@@ -15,7 +19,6 @@ export ZZZ=new_value
 export ZZZ======new
 export ZZZ=new YYY=new2 XXX===new3
 export TEST=$USER4857987345
-export 123$USER---
 export COUCOUCOU
 export COUCOUCOU=lief
 export TEST_$USER=hello$LOGNAME
