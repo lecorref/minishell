@@ -183,7 +183,8 @@ int			exit_arg(t_command *cmd, size_t i);
 
 int			cd_builtin(t_list **env, t_command *cmd);
 int			update_pwd(t_list **env);
-char		*expand_tilde_and_exceptions(t_list **env, char *a, t_command *cmd);
+char		*cd_args(t_list **env, char *arg, t_command *cmd);
+
 
 int			export_builtin(t_list **env, t_command *cmd, t_list **export);
 int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd);

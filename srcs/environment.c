@@ -74,7 +74,7 @@ char	**env_list_to_tab(t_list *env)
 	new_env[count] = NULL;
 	while (--count >= 0 && env != NULL)
 	{
-	//	tmp_str = ft_strjoin(ENV_KEY(env), "=");
+	//	tmp_str = ft_strjoin(ENV_KEY(env), "=");//Now the = is inside ENV_VALUE
 		tmp_str = ft_strdup(ENV_KEY(env));
 		new_env[count] = ft_strjoin(tmp_str, ENV_VALUE(env));
 		free(tmp_str);
@@ -98,10 +98,10 @@ void	add_env_variable(t_list **env, char *var)
 	t_env	*new;
 	t_list	*tmp_env;
 
-	if (!(new = (t_env*)malloc(sizeof(t_env))) || !create_env_struct(var, new))
+	if (!(new = (t_env*)malloc(sizeof(t_env))))
 		return ;
-//	if (!create_env_struct(var, new))
-//		return ;
+	if (!create_env_struct(var, new))
+		return ;
 	tmp_env = *env;
 	while (tmp_env)
 	{
@@ -140,7 +140,7 @@ char	*find_env_value(t_list **env, char *key)
 	while (tmp_env)
 	{
 		if (!ft_strcmp(key, ENV_KEY(tmp_env)))
-			return (ENV_VALUE(tmp_env));
+			return (&ENV_VALUE(tmp_env)[1]);
 		tmp_env = tmp_env->next;
 	}
 	return (NULL);

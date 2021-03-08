@@ -34,7 +34,7 @@ int			env_builtin(t_list **env, t_command *cmd)
 	free(arg);
 	return (expanded);
 }*/
-char	*expand_tilde_and_exceptions(t_list **env, char *arg, t_command *cmd)
+char	*cd_args(t_list **env, char *arg, t_command *cmd)
 {
 	char	*expanded;
 
@@ -94,14 +94,13 @@ int		update_pwd(t_list **env)
 int		cd_builtin(t_list **env, t_command *cmd)
 {
 	if (!(cmd->command[1]))
-		if (!(cmd->command[1] = ft_strjoin("~", "")))//!!! -> the array is not 
-			return (RT_FAIL);//anymore NULL terminated ?! check this
-	//if (!(cmd->command[1][0]))
-		//return (0);
-	if (!(cmd->command[1] = expand_tilde_and_exceptions(env, cmd->command[1], cmd)))
-		return (RT_FAIL);
+		if (chdir(find_env_value(env, "HOME")) == -1)
+			return (RT_FAIL);
+	if (cmd->command[1])
+		if (!(cmd->command[1] = cd_args(env, cmd->command[1], cmd)))
+			return (RT_FAIL);
 	update_underscore(env, last_arg(cmd));
-	if ((chdir(cmd->command[1])) == -1)
+	if (cmd->command[1] && chdir(cmd->command[1]) == -1)
 	{
 		if (cmd->command[2])
 		{
