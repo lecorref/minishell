@@ -24,8 +24,9 @@ t_command		*init_command(char *pipeline)
 	if (!(command = (t_command*)malloc(sizeof(t_command) * 1)))
 		return (0);
 	command->fd = fd;
-	command->file = NULL;
 	command->unexpanded = pipeline;
+	command->file = NULL;
+	command->command = NULL;
 	return (command);
 }
 

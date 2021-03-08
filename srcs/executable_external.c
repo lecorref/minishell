@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/07 03:12:23 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/08 01:29:47 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-//	printf("path_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
+	printf("path_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		g_exit_status = 2;
@@ -108,6 +108,8 @@ int		execute_extern(t_list **env, t_command *cmd)
 		g_exit_status = 1;
 		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
 	}
+	if (!(cmd->command[0]))
+		return (RT_SUCCESS);
 	if (!(path_to_cmd = path_to_executable(env, cmd)))
 		return (RT_FAIL);
 	if (!*path_to_cmd)

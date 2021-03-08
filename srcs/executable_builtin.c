@@ -6,6 +6,8 @@ int		is_builtin(t_command *cmd)
 	int		builtin_code;
 	int		i;
 
+	if (!(cmd->command[0]))
+		return (0);
 	name[0] = "echo";
 	name[1] = "pwd";
 	name[2] = "exit";

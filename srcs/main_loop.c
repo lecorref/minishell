@@ -56,7 +56,7 @@ int		execute_command(t_list **env, t_command *cmd, t_list **export)
 {
 	int	ret;
 
-//	print_cmd(cmd);//TEST - TO DELETE LATER
+	print_cmd(cmd);//TEST - TO DELETE LATER
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
 	else
@@ -89,6 +89,7 @@ int		main_loop(t_list **env, t_list **export)
 	{
 		cmd = tokenizer(line);
 		free(line);
+		ft_lstiter(cmd, &print_tok);
 		if (executer(env, cmd, export) != RT_SUCCESS)
 		{
 			ft_lstclear(&cmd, &clear_commandlist);
@@ -105,4 +106,3 @@ int		main_loop(t_list **env, t_list **export)
 		return (RT_FAIL);
 	return (RT_EXIT);
 }
-		//ft_lstiter(cmd, &print_tok);
