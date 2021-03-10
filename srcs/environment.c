@@ -1,13 +1,21 @@
 #include "minishell.h"
 
-static int	create_env_struct(char *keyvalue, t_env *env)
+static int	create_env_struct(char *keyvalue, t_env *new)
 {
 	char	*needle;
 
-	if (!(needle = ft_strchr(keyvalue, '=')))
-		return (0);
-	env->key = ft_substr(keyvalue, 0, ft_strlen(keyvalue) - ft_strlen(needle));
-	env->value = ft_strdup(needle + 1);
+	needle = ft_strchr(keyvalue, '=');
+	if (!needle)
+	{
+		new->key = ft_strdup(keyvalue);
+		new->value = ft_strdup("");
+	}
+	else
+	{
+		new->key = ft_substr(keyvalue, 0, ft_strlen(keyvalue) -
+															ft_strlen(needle));
+		new->value = ft_strdup(needle);
+	}
 	return (1);
 }
 
@@ -63,10 +71,11 @@ char	**env_list_to_tab(t_list *env)
 		count++;
 	if (!(new_env = (char **)malloc(sizeof(char *) * (count + 1))))
 		return (NULL);
-	new_env[count] = NULL;//setting last string of the array to NULL
+	new_env[count] = NULL;
 	while (--count >= 0 && env != NULL)
 	{
-		tmp_str = ft_strjoin(ENV_KEY(env), "=");
+	//	tmp_str = ft_strjoin(ENV_KEY(env), "=");//Now the = is inside ENV_VALUE
+		tmp_str = ft_strdup(ENV_KEY(env));
 		new_env[count] = ft_strjoin(tmp_str, ENV_VALUE(env));
 		free(tmp_str);
 		env = env->next;
@@ -92,7 +101,7 @@ void	add_env_variable(t_list **env, char *var)
 	if (!(new = (t_env*)malloc(sizeof(t_env))))
 		return ;
 	if (!create_env_struct(var, new))
-			return ;
+		return ;
 	tmp_env = *env;
 	while (tmp_env)
 	{
@@ -131,7 +140,7 @@ char	*find_env_value(t_list **env, char *key)
 	while (tmp_env)
 	{
 		if (!ft_strcmp(key, ENV_KEY(tmp_env)))
-			return (ENV_VALUE(tmp_env));
+			return (&ENV_VALUE(tmp_env)[1]);
 		tmp_env = tmp_env->next;
 	}
 	return (NULL);

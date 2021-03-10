@@ -56,6 +56,7 @@ void	eraser_checker(char *line)
 {
 	if (g_line_eraser == 1)
 	{
+		g_exit_status = 130;
 		ft_memset(line, 0, ft_strlen(line));
 		g_line_eraser = 0;
 	}

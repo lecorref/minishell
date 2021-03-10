@@ -6,38 +6,11 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/07 02:52:12 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/10 01:45:40 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*
-** It opens the directories passed as absolute paths to the argum env_path.
-** Then it reads this directory and returns a pointer to a structure called
-** dirent. One of the variables inside this struc is d_name which contains
-** the filename.
-** The filename(s) inside the directory is compared with the executable input
-** by the user, and if the comparison is equal to 0, then this executable
-** indeed exists inside this directory (return 0). Otherwise, there is not
-** executable with the given name inside this directoy (return -1).
-*/
-int			test_cmd(char *env_path, char *executable)
-{
-	int				cmp;
-	DIR				*dp;
-	struct dirent	*dirp;
-
-	if (!(dp = opendir(env_path)))
-		return (-1);
-	while ((dirp = readdir(dp)))
-		if (!(cmp = ft_strcmp(executable, dirp->d_name)))
-			break;
-	closedir(dp);
-	if (cmp == 0)
-		return (0);
-	return (-1);
-}
 
 /*
 ** Joining a / to the end of the absolute path (this being one of the paths
@@ -57,6 +30,39 @@ char	*add_path_to_cmd(char *abs_path, char *executable)
 	ft_strdel(&add_slash);
 	return (add_path);
 }
+
+/*
+** It opens the directories passed as absolute paths to the argum env_path.
+** Then it reads this directory and returns a pointer to a structure called
+** dirent. One of the variables inside this struc is d_name which contains
+** the filename.
+** The filename(s) inside the directory is compared with the executable input
+** by the user, and if the comparison is equal to 0, then this executable
+** indeed exists inside this directory (return 0). Otherwise, there is not
+** executable with the given name inside this directoy (return -1).
+**
+** st_mode: This field contains the file type and mode.
+**				 > See inode(7) for further information.
+** mode_t        st_mode;     File type and mode
+** S_IXUSR       00100        owner has execute permission
+*/
+int			test_cmd(char *env_path, char *executable)
+{
+	int				cmp;
+	DIR				*dp;
+	struct dirent	*dirp;
+
+	if (!(dp = opendir(env_path)))
+		return (-1);
+	while ((dirp = readdir(dp)))
+		if (!(cmp = ft_strcmp(executable, dirp->d_name)))
+			break;
+	closedir(dp);
+	if (cmp == 0)
+		return (0);
+	return (-1);
+}
+
 /*
 ** Command typed is not an absulute path, so in this function, a path from the
 ** $PATH or the $PWD env line will be added to the command.
@@ -73,30 +79,21 @@ char	*add_path_to_cmd(char *abs_path, char *executable)
 ** 4. if both $PATH and $PWD tests returned -1, it means that the executable
 ** input was not found in any directory, then,  display the error message.
 */
-char	*relative_path(t_command *cmd, char **split_path, char *pwd_path)
+char	*relative_path(t_command *cmd, char **split_path)
 {
 	char	*add_path;
-	int		ret_pwd_path;
 	int		ret_env_path;
 	int		i;
 
 	i = -1;
 	ret_env_path = -1;
 	add_path = NULL;
-	if ((ret_pwd_path = test_cmd(pwd_path, cmd->command[0])) == 0)
-	//maybe delete this part since if a command was typedpe without . or / or ~
-	//than it means its a binary, so we dont look for it's path with pwd, we
-	//output "minishell: command not found"
-	{
-		add_path = add_path_to_cmd(pwd_path, cmd->command[0]);
-		return (add_path);
-	}
 	while (split_path[++i])
 		if ((ret_env_path = test_cmd(split_path[i], cmd->command[0])) == 0)
 			break ;
 	if (ret_env_path == 0)
 		add_path = add_path_to_cmd(split_path[i], cmd->command[0]);
-	else if (ret_env_path == -1 && ret_pwd_path  == -1)
+	else if (ret_env_path == -1)
 	{
 		error_msg(NULL, cmd, NULL, "command not found");
 		return ("");
@@ -118,21 +115,27 @@ char	*relative_path(t_command *cmd, char **split_path, char *pwd_path)
 **
 ** Obs.: execve will handle if the absolute path executable given does't exist)
 */
-char	*absolute_path(char *cmd, char *home_path)
+char	*absolute_path(t_command *cmd, char *home_path)
 {
-	char	*add_path_to_cmd;
-	int		i;
+	char		*add_path_to_cmd;
+	struct stat	statbuf;
+	int			i;
 
 	i = -1;
 	add_path_to_cmd = NULL;
-	if (ft_strncmp(cmd, "~/", 2) == 0)
+	if (stat(cmd->command[0], &statbuf) == 0 && S_ISDIR(statbuf.st_mode))
 	{
-		if (!(add_path_to_cmd = ft_strjoin(home_path, (cmd + 1))))
+		error_msg("bash", cmd, NULL, strerror(21));
+		return ("");
+	}
+	if (ft_strncmp(cmd->command[0], "~/", 2) == 0)
+	{
+		if (!(add_path_to_cmd = ft_strjoin(home_path, (cmd->command[0] + 1))))
 			return (NULL);
 	}
 	else
 	{
-		if (!(add_path_to_cmd = ft_strdup(cmd)))
+		if (!(add_path_to_cmd = ft_strdup(cmd->command[0])))
 			return (NULL);
 	}
 	return (add_path_to_cmd);
@@ -153,7 +156,7 @@ char	*absolute_path(char *cmd, char *home_path)
 char	*path_to_executable(t_list **env, t_command *cmd)
 {
 	char	*abs_path;
-	char	*pwd_path;
+//	char	*pwd_path;
 	char	*home_path;
 	char	*path;
 	char	**split_path;
@@ -161,16 +164,16 @@ char	*path_to_executable(t_list **env, t_command *cmd)
 	if (!cmd->command)
 		return (NULL);
 	abs_path = NULL;
-	pwd_path = find_env_value(env, "PWD");
+//	pwd_path = find_env_value(env, "PWD");
 	home_path = find_env_value(env, "HOME");
 	path = find_env_value(env, "PATH");
 	if (!(split_path = ft_split_jb(path, ':')))
 		return (NULL);
-	if (cmd->command[0][0] != '/' && cmd->command[0][0] != '.'
+	if (!ft_strchr(&cmd->command[0][0], '/') && cmd->command[0][0] != '.'
 		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
-		abs_path = relative_path(cmd, split_path, pwd_path);
+		abs_path = relative_path(cmd, split_path);
 	else
-		abs_path = absolute_path(cmd->command[0], home_path);
+		abs_path = absolute_path(cmd, home_path);
 	ft_freetab(split_path);
 	if (!abs_path)
 		return (NULL);

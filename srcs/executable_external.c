@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/07 12:51:51 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/10 01:53:17 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-//	printf("path_to_cmd (to execve) : |%s|\n", path_to_cmd);//TEST-TO DEL LATER
+//	printf("path_to_cmd (to execve) : |%s|\n\n", path_to_cmd);//TEST-TO DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		g_exit_status = 2;
@@ -83,16 +83,13 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 		dup_fd(cmd->fd);
 		if (execve(path_to_cmd, cmd->command, env_tab) == -1)
 		{
+			error_msg("bash", cmd, NULL, strerror(errno));
 			free(path_to_cmd);
 			ft_freetab(env_tab);
-			error_msg("bash", cmd, NULL, strerror(2));
 		}
 		g_exit_status = 127;
 		return (RT_FAIL);
-	//	ft_lstclear(cmd, &clear_commandlist); DELETE THINGS BEFORE EXIT
-	//	ft_lstclear(env, &clear_envlist); DELETE THINGS BEFORE EXIT
-	//	exit(127);//I think, as it's a child which would fail & not the main
-	}//pgm (parent), that it would be better to exit() it ?
+	}
 	else
 		return (cpid);
 }

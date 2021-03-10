@@ -18,8 +18,8 @@ void	ctrl_back_slash_handler_quit(int signal)
 {
 	if (signal == SIGQUIT)
 	{
-		ft_putstr_fd("Quit (core dumped)\n", 2);
 		g_exit_status = 131;
+		ft_putstr_fd("Quit (core dumped)\n", 2);
 	}
 }
 

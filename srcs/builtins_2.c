@@ -127,7 +127,8 @@ int		exit_builtin(t_command *cmd)
 			i++;
 		if (i != ft_strlen(cmd->command[1]))
 		{
-			error_msg("bash", cmd, cmd->command[1], "numeric argument required");
+			error_msg("b", cmd, cmd->command[1], "numeric argument required");
+			//leave it as "b" just cause as "bash" the line will be too big
 			g_exit_status = 2;
 			return (RT_EXIT);
 		}
