@@ -78,7 +78,7 @@ int		executer(t_list **env, t_list *cmd)
 	return (RT_SUCCESS);
 }
 
-int		main_loop(t_list **env)
+int		main_loop(t_list **env, int *err)
 {
 	t_list	*cmd;
 	char	*line;
@@ -88,22 +88,20 @@ int		main_loop(t_list **env)
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
-		cmd = tokenizer(line);
+		if (empty_line(line))
+			continue;
+		*err = 0;
+		if (!(cmd = tokenizer(line, err)) && !*err)
+			return (RT_FAIL);
 		free(line);
-		ft_lstiter(cmd, &print_tok);
+		if (!(token_error_manager(*err)))
+			continue;
+		ft_lstiter(cmd, &print_tok);//TO DEL LATER
 		if (executer(env, cmd) != RT_SUCCESS)
-		{
-			ft_lstclear(&cmd, &clear_commandlist);
-			ft_lstclear(env, &clear_envlist);
-			return (RT_EXIT);
-		}
+			return (clear_lists_exit(&cmd, env));
 		if (g_line_eraser == 0)
 			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
 	}
-	free(line);
-	ft_lstclear(env, &clear_envlist);
-	if (ret_gnl == -1)
-		return (RT_FAIL);
-	return (RT_EXIT);
+	return (return_to_main(env, line, ret_gnl));
 }

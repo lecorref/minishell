@@ -1,12 +1,12 @@
 #include "minishell.h"
 
 /*
-** parse_token_error() handle some error cases for pipe like thoses lines :
-** 	1-	|ls|rev			>| >ls| >rev
-** 	2-	ls|rev| |wc		>ls| >rev| > | >wc
-** 	3-	ls|||rev		>ls| >| >| >rev
-** 	4-	ls||			>ls| >|					-> multiline not handled.
-** 	5-	ls|rev| 		>ls| >rev|				-> multiline not handled.
+** parse_token_error() handle some error cases for pipe like these lines :
+** 	1-	 |ls| rev			>| >ls| >rev
+** 	2-	ls|  rev| | wc		>ls| >rev| > | >wc
+** 	3-	ls |||rev			>ls| >| >| >rev
+** 	4-	ls  ||				>ls| >|					-> multiline not handled.
+** 	5-	ls| rev | 			>ls| >rev|				-> multiline not handled.
 ** 	These error cases give "bash: syntax error near unexpected token `|'" 
 **
 ** 	6-	ls|rev||wc		>ls| >rev| >| >wc		-> 'or' not handled.
@@ -15,30 +15,6 @@
 ** 	replaces the first character of all following splited lines by '\0' to make
 ** 	them invisible & by this way not usable.
 */
-int			parse_token_error(char **str, int i)
-{
-	char	*skiped;
-
-	skiped = skip_char(str[i], ' ');
-	if ((*skiped == '|' && i == 0) ||
-			(*skiped == '|' && skiped != str[i] && i > 0))//1 & 2
-		printf("1&2 unexpected token '|'\n");
-	else if (i > 0 && *str[i] == '|')
-	{
-		skiped = skip_char(str[i + 1], ' ');
-		if (*skiped == '|' || *skiped == 0)//3 & 4
-			printf("3&4 unexpected token '|'\n");
-		else//6 (logical 'or' -> 0th the 1st char of this string & folowings)
-		{
-			while (str[i])
-				*str[i++] = 0;
-			printf("6 processed\n");
-		}
-	}
-	else if (!(*str[i]) && !str[i + 1] && i > 0)//5
-		printf("5 unexpected token '|'\n");
-	return (1);
-}
 
 /*
 ** pipe_it()
@@ -63,7 +39,7 @@ int				pipe_it(char **pipeline, int i,
 	if (pipeline[i + 1])
 	{
 		if (pipe(piped_fd) == -1)
-			return (0);
+			fd_command[3] = errno;
 		fd_command[1] = piped_fd[1];
 	}
 	if (i > 0)
@@ -162,12 +138,12 @@ int				add_link(t_list **head, t_command *i_command)
 	t_list		*cmd;
 
 	if (!(cmd = ft_lstnew(i_command)))
-		return (0);
+		return (RT_FAIL);
 	ft_lstadd_back(head, cmd);
-	return (1);
+	return (RT_SUCCESS);
 }
 
-int				pipeline_n_link(t_list **head, char *execution_line)
+int				pipeline_n_link(t_list **head, char *execution_line, int *err)
 {
 	char		**pipeline;
 	t_command	*i_command;	
@@ -176,19 +152,19 @@ int				pipeline_n_link(t_list **head, char *execution_line)
 
 	delete_remaining_char(execution_line, ';');
 	if (!(pipeline = split_with_exception(execution_line, '|', "\'\"")))
-		return (0);
+		return (RT_FAIL);
+	fd_tmp = -1;
 	i = -1;
 	while (pipeline[++i])
 	{
-		if (!parse_token_error(pipeline, i))
-			return (0);//token error
+		if ((parse_token_error(pipeline, i, err)))
+			return (tokenize_error_pipe(head, pipeline, i, fd_tmp));
 		if (!(i_command = init_command(pipeline[i])))
-			return (0);//malloc error
-		if (!pipe_it(pipeline, i, i_command->fd, &fd_tmp))
-			return (0);
-		if (!add_link(head, i_command))
-			return (0);
+			return (RT_FAIL);
+		pipe_it(pipeline, i, i_command->fd, &fd_tmp);
+		if (add_link(head, i_command) == RT_FAIL)
+			return (RT_FAIL);
 	}
 	free(pipeline);
-	return (1);
+	return (RT_SUCCESS);
 }

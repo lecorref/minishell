@@ -14,7 +14,6 @@ t_command		*init_command(char *pipeline)
 	int			*fd;
 	t_command	*command;	
 
-	errno = 0;
 	if (!(fd = (int*)malloc(sizeof(int) * 4)))
 		return (NULL);
 	fd[0] = 0;

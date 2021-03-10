@@ -47,6 +47,22 @@
 # define BT_ENV 7
 
 /*
+** tokenizer error magic numbers
+*/
+# define UTOKEN_OR 1
+# define UTOKEN_P 2
+# define UTOKEN_SC 3
+# define UTOKEN_ML 4
+
+/*
+** tokenizer error message
+*/
+# define E_UTOKEN_OR "OR not handled"
+# define E_UTOKEN_P "|"
+# define E_UTOKEN_SC ";;"
+# define E_UTOKEN_ML "multiline not handled"
+
+/*
 ** Return code
 */
 # define RT_FAIL -1
@@ -92,15 +108,23 @@ char		*last_arg(t_command *cmd);
 /*
 ** Loop functions
 */
-int			main_loop(t_list **env);
+int			main_loop(t_list **env, int *err);
 int			gnl_ctrld(int fd, char **line);
+
+/*
+** Loop error
+*/
+int			empty_line(char *line);
+int			token_error_manager(int err);
+void		print_token_error(char *str);
+int			return_to_main(t_list **env, char *line, int ret_gnl);
 
 /*
 ** Lexer/parser function that will buid t_command structure
 ** These functions will create a list of t_command from the input line.
 */
-t_list		*tokenizer(char *line);
-int			pipeline_n_link(t_list **head, char *execution_line);
+t_list		*tokenizer(char *line, int *err);
+int			pipeline_n_link(t_list **head, char *execution_line, int *err);
 int			expander(t_list **env, t_command *i_command);
 char		*skip_char(char *str, char c);
 
@@ -122,6 +146,14 @@ int			redirections(t_list **env, char **line_ptr, t_command *i_command);
 int			expand_doll_quote(t_list **env, char **str,
 								char **final_str, char quote);
 char		*doll_expand(t_list **env, char **line_ptr, char quote);
+
+/*
+** tokenize error handling
+*/
+void		*tokenize_error_sc(t_list **head, char **array);
+int			tokenize_error_pipe(t_list **head, char **pipeline,
+								int i, int fd_tmp);
+int			parse_token_error(char **str, int i, int *err);
 
 /*
 ** tokenize quotes utils
@@ -152,6 +184,7 @@ void	print_array(char **arr);/////////delete
 void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
 void		clear_arglist(void *content);
+int			clear_lists_exit(t_list **cmd, t_list **env);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 

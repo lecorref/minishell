@@ -29,6 +29,7 @@ int		increase_shlvl(t_list **env)
 int		main(int ac, char **av, char **ep)
 {
 	t_list	*env;
+	int		err;
 
 	(void)av;
 	if (ac != 1)
@@ -42,7 +43,7 @@ int		main(int ac, char **av, char **ep)
 	//are currenclty in the current tab/window.
 	g_exit_status = 0;
 	g_line_eraser = 0;
-	main_loop(&env);
-	system("leaks minishell");
+	main_loop(&env, &err);
+	//system("leaks minishell");//TO DEL LATER
 	return (g_exit_status);
 }
