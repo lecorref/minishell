@@ -197,16 +197,18 @@ int			env_builtin(t_list **env, t_command *cmd);
 /*
 ** Executable external functions
 */
-int			execute_extern(t_list **env, t_command *cmd);
-int			is_builtin(t_command *cmd);
+
 int			execute_builtin(t_list **env, t_command *cmd, int builtin_code,
 							t_list **export);
+int			is_builtin(t_command *cmd);
+int			execute_extern(t_list **env, t_command *cmd);
+int			fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab);
 int			parent_process(pid_t pid, char *pathcmd, char **env_tab);
 char		*path_to_executable(t_list **env, t_command *cmd);
-char		*absolute_path(char *cmd, char *home_path);
-char		*relative_path(t_command *cmd, char **split_path, char *pwd_path);
-char		*add_path_to_cmd(char *abs_path, char *executable);
+char		*absolute_path(t_command *cmd, char *home_path);
+char		*relative_path(t_command *cmd, char **split_path);
 int			test_cmd(char *env_path, char *executable);
+char		*add_path_to_cmd(char *abs_path, char *executable);
 
 /* ------------------------------------------------------------------------- */
 

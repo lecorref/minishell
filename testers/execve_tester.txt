@@ -5,10 +5,7 @@ ls -la
 /bin/ls -la
 /bin/ls
 /bin/ls doesnotexist
-ls
-wc
 /bin/chmod
 /bin/pwd
 /sbin/ip address
-hello$
 test

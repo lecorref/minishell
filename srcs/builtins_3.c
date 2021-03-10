@@ -99,11 +99,13 @@ int			unset_builtin(t_list **env, t_command *cmd, t_list **export)
 	i = 0;
 	update_underscore(env, last_arg(cmd));
 	if (cmd->command[0] && cmd->command[1])
+	{
 		while (cmd->command[++i])
 		{
 			delete_env_variable(env, cmd->command[i]);
 			delete_env_variable(export, cmd->command[i]);
 		}
+	}
 	g_exit_status = 0;
 	return (RT_SUCCESS);
 }
