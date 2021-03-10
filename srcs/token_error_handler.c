@@ -39,7 +39,7 @@ int			p_t_e(char **str, int i, int *err)
 	return (*err);
 }
 
-int			parse_token_error(char **str, int i, int *err)
+int			pipe_token_error(char **str, int i, int *err)
 {
 	char	*skiped;
 	int		index;

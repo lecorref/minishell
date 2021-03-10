@@ -153,7 +153,7 @@ char		*doll_expand(t_list **env, char **line_ptr, char quote);
 void		*tokenize_error_sc(t_list **head, char **array);
 int			tokenize_error_pipe(t_list **head, char **pipeline,
 								int i, int fd_tmp);
-int			parse_token_error(char **str, int i, int *err);
+int			pipe_token_error(char **str, int i, int *err);
 
 /*
 ** tokenize quotes utils

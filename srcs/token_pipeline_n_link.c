@@ -157,7 +157,7 @@ int				pipeline_n_link(t_list **head, char *execution_line, int *err)
 	i = -1;
 	while (pipeline[++i])
 	{
-		if ((parse_token_error(pipeline, i, err)))
+		if ((pipe_token_error(pipeline, i, err)))
 			return (tokenize_error_pipe(head, pipeline, i, fd_tmp));
 		if (!(i_command = init_command(pipeline[i])))
 			return (RT_FAIL);
