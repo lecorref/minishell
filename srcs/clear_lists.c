@@ -24,12 +24,12 @@ void		clear_commandlist(void *content)
 	args = ((t_command*)content)->command;
 	file = ((t_command*)content)->file;
 	unexpanded = ((t_command*)content)->unexpanded;
+	close_fd(fdcp);
 	free(unexpanded);
 	free(fdcp);
 	i = -1;
-	while (args[++i])
-		free(args[i]);
-	free(args);
+	if (args)
+		ft_freetab(args);
 	if (file)
 		free(file);
 	free((t_command*)content);
@@ -38,6 +38,13 @@ void		clear_commandlist(void *content)
 void			clear_arglist(void *content)
 {
 	(void)content;
+}
+
+int			clear_lists_exit(t_list **cmd, t_list **env)
+{
+	ft_lstclear(cmd, &clear_commandlist);
+	ft_lstclear(env, &clear_envlist);
+	return (RT_EXIT);
 }
 
 // or a function to free_env that Francois did (but to free a command typed that
@@ -56,4 +63,3 @@ void	ft_array_string_del(char **array)
 	}
 	free(array);
 }
-

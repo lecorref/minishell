@@ -15,7 +15,7 @@ void			link_lists(t_list **head, t_list *new)
 	tmp->next = new;
 }
 
-t_list			*tokenizer(char *line)
+t_list			*tokenizer(char *line, int *err)
 {
 	int			i;
 	t_list		*head;
@@ -31,13 +31,12 @@ t_list			*tokenizer(char *line)
 	{
 		tmp = NULL;
 		skiped = skip_char(execution_lines[i], ' ');
-		if (*skiped == ';')
-			printf("unexpected token ';'\n");
-		if (!(pipeline_n_link(&tmp, execution_lines[i])))
-			return (NULL);
+		if (*skiped == ';' && (*err = UTOKEN_SC))
+			return (tokenize_error_sc(&head, execution_lines));
+		if ((pipeline_n_link(&tmp, execution_lines[i], err)) == RT_FAIL)
+			return (tokenize_error_sc(&head, execution_lines));
 		link_lists(&head, tmp);
-		free(execution_lines[i]);
 	}
-	free(execution_lines);
+	ft_freetab(execution_lines);
 	return (head);
 }

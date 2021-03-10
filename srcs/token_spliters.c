@@ -32,10 +32,10 @@ char		*ghosting(char *str, char c, char *exception_set, int *error)
 				ghost = 0;
 		}
 		if (str[i] == c && !ghost)
-			return (&(str[i]));
+			if ((i > 0 && str[i - 1] != '\\') || i == 0)
+				return (&(str[i]));
 	}
-	if (ghost)
-		if (error)
+	if (ghost && error)
 			*error = -1;
 	return (NULL);
 }
