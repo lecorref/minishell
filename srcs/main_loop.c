@@ -63,8 +63,7 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 	int		ret;
 
 	print_cmd(cmd);//TEST - TO DELETE LATER
-	printf("\nSAVED_PATH = %s\n", s_path);
-
+	printf("\nSAVED_PATH = %s\n", s_path);//TEST - TO DELETE LATER
 
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
@@ -104,7 +103,7 @@ char	*save_path_env(t_list **env)
 		return (saved_path);
 }
 
-int		main_loop(t_list **env, t_list **export, int *err)
+int		main_loop(t_list **env, t_list **export)
 {
 	t_list	*cmd;
 	char	*line;
@@ -116,15 +115,12 @@ int		main_loop(t_list **env, t_list **export, int *err)
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
-		if (empty_line(line))
+		if (verify_line(line))
 			continue;
-		*err = 0;
-		if (!(cmd = tokenizer(line, err)) && !*err)
+		if (!(cmd = tokenizer(line)))
 			return (RT_FAIL);
+		ft_lstiter(cmd, &print_tok);//TO DEL LATER
 		free(line);
-		if (!(token_error_manager(*err)))
-			continue;
-		//ft_lstiter(cmd, &print_tok);//TO DEL LATER
 		if (executer(env, cmd, export, saved_path) != RT_SUCCESS)
 			return (clear_lists_exit(&cmd, env, saved_path));
 		if (g_line_eraser == 0)
