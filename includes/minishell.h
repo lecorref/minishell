@@ -117,7 +117,7 @@ int			gnl_ctrld(int fd, char **line);
 int			empty_line(char *line);
 int			token_error_manager(int err);
 void		print_token_error(char *str);
-int			return_to_main(t_list **env, char *line, int ret_gnl);
+int			return_to_main(t_list **env, char *line, int ret_gnl, char *saved_path);
 
 /*
 ** Lexer/parser function that will buid t_command structure
@@ -186,7 +186,7 @@ void	print_array(char **arr);/////////delete
 void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
 void		clear_arglist(void *content);
-int			clear_lists_exit(t_list **cmd, t_list **env);
+int			clear_lists_exit(t_list **cmd, t_list **env, char *saved_path);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
@@ -234,12 +234,12 @@ int			env_builtin(t_list **env, t_command *cmd);
 int			execute_builtin(t_list **env, t_command *cmd, int builtin_code,
 							t_list **export);
 int			is_builtin(t_command *cmd);
-int			execute_extern(t_list **env, t_command *cmd);
+int			execute_extern(t_list **env, t_command *cmd, char *saved_path);
 int			fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab);
 int			parent_process(pid_t pid, char *pathcmd, char **env_tab);
-char		*path_to_executable(t_list **env, t_command *cmd);
+char		*path_to_executable(t_list **env, t_command *cmd, char *saved_path);
 char		*absolute_path(t_command *cmd, char *home_path);
-char		*relative_path(t_command *cmd, char **split_path);
+char		*relative_path(t_command *cmd, char **split_path, char *path, char *saved_path);
 int			test_cmd(char *env_path, char *executable);
 char		*add_path_to_cmd(char *abs_path, char *executable);
 

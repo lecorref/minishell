@@ -40,8 +40,9 @@ void			clear_arglist(void *content)
 	(void)content;
 }
 
-int			clear_lists_exit(t_list **cmd, t_list **env)
+int			clear_lists_exit(t_list **cmd, t_list **env, char *saved_path)
 {
+	free(saved_path);
 	ft_lstclear(cmd, &clear_commandlist);
 	ft_lstclear(env, &clear_envlist);
 	return (RT_EXIT);

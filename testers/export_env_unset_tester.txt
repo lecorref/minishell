@@ -1,16 +1,12 @@
-export
-export $USER
-export $USER=user
-export
+export $USER ; export
+export $USER=user ; env
 export $USER==user42
 export $USER==u-ser42-
 export U-SER==user42
 export a=hijdoehet ; export
-export test1
-export
-export test1=
-export
-expoer 1=42
+export test1 ; export
+export test1= ; export
+export 1=42
 export 123$USER---
 export _TEST=DOethetwelmetunderscore
 export ZZZ
@@ -26,16 +22,13 @@ export TEST=/Users/coucou/Desktop/minishell
 export TEST="evencheck"
 export coucou=oi=sim===oui
 export PATH="test:working:multiplepath:directory1:directory2"
-export
 ls
 /bin/pwd
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-export
 export LS="ls -la"
-unset a test1 _TEST ZZZ TEST COUCOUCOU TEST_ coucou
+unset a test1 _TEST ZZZ TEST COUCOUCOU TEST_ coucou XXX YYY coucou TEST_user42 $USER LS
 unset env
 unset PATH
 ls
-wc
 cat Makefile
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin

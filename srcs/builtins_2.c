@@ -80,7 +80,7 @@ int		exit_arg(t_command *cmd, size_t i)
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			g_exit_status = 2;
+			g_exit_status = 1;// or 2?
 			return (RT_SUCCESS);
 		}
 	}

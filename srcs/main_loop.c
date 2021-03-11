@@ -52,38 +52,67 @@ void	print_tok(void *content)
 			((t_command*)content)->fd[1]);
 }
 
-int		execute_command(t_list **env, t_command *cmd, t_list **export)
+/*
+** Saving the $PATH var before any function is called, so if it's unset or
+** exported as something else, we will have a copy of it to manage the error
+** message for when the user types a command but $PATH is unset or not with it's
+** correct paths.
+*/
+int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 {
-	int	ret;
+	int		ret;
 
-	//print_cmd(cmd);//TEST - TO DELETE LATER
+	print_cmd(cmd);//TEST - TO DELETE LATER
+	printf("\nSAVED_PATH = %s\n", s_path);
+
+
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
 	else
-		ret = execute_extern(env, cmd);
+		ret = execute_extern(env, cmd, s_path);
 	close_fd(cmd->fd);
 	return (ret);
 }
 
-int		executer(t_list **env, t_list *cmd, t_list **export)
+int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 {
+	if (!saved_path)
+		return(RT_EXIT);
 	while (cmd)
 	{
 		expander(env, COMMAND(cmd));
-		if (execute_command(env, COMMAND(cmd), export) != RT_SUCCESS)
+		if (execute_cmd(env, COMMAND(cmd), export, saved_path) != RT_SUCCESS)
 			return (RT_EXIT);
 		cmd = cmd->next;
 	}
 	return (RT_SUCCESS);
 }
 
+char	*save_path_env(t_list **env)
+{
+	char	*saved_path;
+
+	if (!(saved_path = ft_strdup(find_env_value(env, "PATH"))))
+	{
+		printf("$PATH environment variable was not found, please export");
+		printf(" PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin");
+		printf(":/bin:/usr/games:/usr/local/games:/snap/bin and relauch ");
+		printf("./minishell\n");
+		return (NULL);
+	}
+	else
+		return (saved_path);
+}
+
 int		main_loop(t_list **env, t_list **export, int *err)
 {
 	t_list	*cmd;
 	char	*line;
+	char	*saved_path;
 	int		ret_gnl;
 
 	signal(SIGQUIT, ctrl_back_slash_handler);
+	saved_path = save_path_env(env);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
@@ -96,11 +125,11 @@ int		main_loop(t_list **env, t_list **export, int *err)
 		if (!(token_error_manager(*err)))
 			continue;
 		//ft_lstiter(cmd, &print_tok);//TO DEL LATER
-		if (executer(env, cmd, export) != RT_SUCCESS)
-			return (clear_lists_exit(&cmd, env));
+		if (executer(env, cmd, export, saved_path) != RT_SUCCESS)
+			return (clear_lists_exit(&cmd, env, saved_path));
 		if (g_line_eraser == 0)
 			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
 	}
-	return (return_to_main(env, line, ret_gnl));
+	return (return_to_main(env, line, ret_gnl, saved_path));
 }
