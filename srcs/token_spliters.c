@@ -11,6 +11,24 @@
 ** It returns an error if a character from the set is met only 1 time before
 ** the end of the string.
 */
+
+int			handle_this_ghost(char *str, int i, char *ghoster, char *ghost)
+{
+	if (*ghost == 0)
+	{
+		if (i > 0 && str[i - 1] == '\\')
+			return (0);
+		*ghost = *ghoster;
+	}
+	else if (*ghoster == *ghost)
+	{
+		if (i > 0 && str[i - 1] == '\\' && str[i] == '\"')
+			return (0);
+		*ghost = 0;
+	}
+	return (1);
+}
+
 char		*ghosting(char *str, char c, char *exception_set, int *error)
 {
 	char	*ghoster;
@@ -22,15 +40,8 @@ char		*ghosting(char *str, char c, char *exception_set, int *error)
 	while (str && str[++i])
 	{
 		if ((ghoster = ft_strchr(exception_set, str[i])))
-		{
-			if (i > 0)
-				if (str[i - 1] == '\\')
-					continue;
-			if (ghost == 0)
-				ghost = *ghoster;
-			else if (*ghoster == ghost)
-				ghost = 0;
-		}
+			if (!(handle_this_ghost(str, i, ghoster, &ghost)))
+				continue;
 		if (str[i] == c && !ghost)
 			if ((i > 0 && str[i - 1] != '\\') || i == 0)
 				return (&(str[i]));
@@ -108,7 +119,7 @@ char		**split_with_exception(char *str, char c, char *exception_set)
 	i = -1;
 	while ((c_position = ghosting(c_position, c, exception_set, NULL)))
 	{
-		if (!(split_array[++i] = ft_substr(str, 0, (c_position - str + 1))))
+		if (!(split_array[++i] = ft_substr(str, 0, (c_position - str))))
 			return (NULL);
 		str = ++c_position;
 	}

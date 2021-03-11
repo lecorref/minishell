@@ -31,7 +31,7 @@
 ** means a pipe had been opened before to write into, so the current one must
 ** read into the read end pipe created before, which had been saved in fd_tmp.
 */
-int				pipe_it(char **pipeline, int i,
+static int		pipe_it(char **pipeline, int i,
 		int *fd_command, int *fd_tmp)
 {
 	int			piped_fd[2];
@@ -133,7 +133,7 @@ int				pipe_it(char **pipeline, int i,
 ** 3 - Fork a child which will execute the exec with execve();
 */
 
-int				add_link(t_list **head, t_command *i_command)
+static int		add_link(t_list **head, t_command *i_command)
 {
 	t_list		*cmd;
 
@@ -143,24 +143,21 @@ int				add_link(t_list **head, t_command *i_command)
 	return (RT_SUCCESS);
 }
 
-int				pipeline_n_link(t_list **head, char *execution_line, int *err)
+int				pipeline_n_link(t_list **head, char *execution_line)
 {
 	char		**pipeline;
 	t_command	*i_command;	
 	int			fd_tmp;
 	int			i;
 
-	delete_remaining_char(execution_line, ';');
 	if (!(pipeline = split_with_exception(execution_line, '|', "\'\"")))
 		return (RT_FAIL);
 	fd_tmp = -1;
 	i = -1;
 	while (pipeline[++i])
 	{
-		if ((pipe_token_error(pipeline, i, err)))
-			return (tokenize_error_pipe(head, pipeline, i, fd_tmp));
 		if (!(i_command = init_command(pipeline[i])))
-			return (RT_FAIL);
+			return (tokenize_error_pipe(head, pipeline, i, fd_tmp));
 		pipe_it(pipeline, i, i_command->fd, &fd_tmp);
 		if (add_link(head, i_command) == RT_FAIL)
 			return (RT_FAIL);

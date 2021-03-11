@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/10 01:53:17 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/11 19:46:26 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 ** waiting for a SIGQUIT (ctrl\) signal if any, while child does not quit (if
 ** it gets to quit).
 */
-int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
+static int	parent_process(pid_t pid, char *pathcmd, char **env_tab)
 {
 	int		wstatus;
 
@@ -68,13 +68,15 @@ int		parent_process(pid_t pid, char *pathcmd, char **env_tab)
 ** error number is set appropriately inside the function parent_process().
 */
 
-int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
+static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
 //	printf("path_to_cmd (to execve) : |%s|\n\n", path_to_cmd);//TEST-TO DEL LATER
 	if ((cpid = fork()) == -1)
 	{
+		free(path_to_cmd);
+		ft_freetab(env_tab);
 		g_exit_status = 2;
 		return (RT_SUCCESS);
 	}
@@ -94,18 +96,28 @@ int		fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 		return (cpid);
 }
 
-int		execute_extern(t_list **env, t_command *cmd)
+static int	check_special_case(t_command *cmd)
 {
-	char	**env_tab;
-	char	*path_to_cmd;
-	pid_t	fork_pid;
-
 	if (cmd->fd[3] != 0)
 	{
 		g_exit_status = 1;
 		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
 	}
-	if (!(cmd->command[0]))
+	if (!(cmd->command[0]) || !(cmd->command[0][0]))
+	{
+		g_exit_status = 0;
+		return (RT_SUCCESS);
+	}
+	return (1);
+}
+
+int			execute_extern(t_list **env, t_command *cmd)
+{
+	char	**env_tab;
+	char	*path_to_cmd;
+	pid_t	fork_pid;
+
+	if (check_special_case(cmd) == RT_SUCCESS)
 		return (RT_SUCCESS);
 	if (!(path_to_cmd = path_to_executable(env, cmd)))
 		return (RT_FAIL);

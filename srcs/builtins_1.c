@@ -116,5 +116,6 @@ int		cd_builtin(t_list **env, t_command *cmd)
 	}
 	if (update_pwd(env) != RT_SUCCESS)
 		return (RT_FAIL);
+	g_exit_status = 0;
 	return (RT_SUCCESS);
 }

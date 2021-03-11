@@ -1,10 +1,10 @@
 #include "minishell.h"
 
-int				init_fr(char **line_ptr, t_command *cmd, t_list **arg)
+static int		init_fr(char **line_ptr, t_command *cmd, t_list **arg)
 {
 	*line_ptr = cmd->unexpanded;
+	*line_ptr = skip_char(*line_ptr, ' ');
 	*arg = NULL;
-	delete_remaining_char(*line_ptr, '|');
 	return (1);
 }
 
@@ -90,20 +90,15 @@ int				init_fr(char **line_ptr, t_command *cmd, t_list **arg)
 **						which will be malloc in the function which creates links
 */
 
-void			add_arg_to_list(t_list **arg, char *wobj)
+static void		add_arg_to_list(t_list **arg, char *wobj)
 {
 	t_list		*new;
 
-	if (!*wobj)
-	{
-		free(wobj);
-		return ;
-	}
 	new = ft_lstnew(wobj);
 	ft_lstadd_front(arg, new);
 }
 
-char			**convert_str_linkedlist_to_str_array(t_list *arg)
+static char		**convert_str_linkedlist_to_str_array(t_list *arg)
 {
 	int			size_list;
 	char		**str_arr;
@@ -119,7 +114,7 @@ char			**convert_str_linkedlist_to_str_array(t_list *arg)
 	return (str_arr);
 }
 
-int				add_arglist_to_cmd(t_command *i_command, t_list **arg)
+static int		add_arglist_to_cmd(t_command *i_command, t_list **arg)
 {
 	char		**str_arr;
 
@@ -139,16 +134,18 @@ int				expander(t_list **env, t_command *i_command)
 		return (0);
 	while (*line_ptr)
 	{
-		line_ptr = skip_char(line_ptr, ' ');
 		if (*line_ptr && (*line_ptr == '>' || *line_ptr == '<'))
+		{
 			if (!(redirections(env, &line_ptr, i_command)))
 				return (0);
+		}
+		else
+		{
+			if (!(word_object = expand_filename(env, &line_ptr)))
+				return (0);
+			add_arg_to_list(&arg, word_object);
+		}
 		line_ptr = skip_char(line_ptr, ' ');
-		if (*line_ptr && (*line_ptr == '>' || *line_ptr == '<'))
-			continue;
-		if (!(word_object = expand_filename(env, &line_ptr)))
-			return (0);
-		add_arg_to_list(&arg, word_object);
 	}
 	add_arglist_to_cmd(i_command, &arg);
 	return (1);

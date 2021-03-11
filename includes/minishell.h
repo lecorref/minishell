@@ -53,14 +53,26 @@
 # define UTOKEN_P 2
 # define UTOKEN_SC 3
 # define UTOKEN_ML 4
+# define UTOKEN_RM 5
+# define UTOKEN_RL 6
+# define UTOKEN_RMM 7
+# define UTOKEN_NL 8
+# define UTOKEN_DSC 9
+# define UTOKEN_HD 10
 
 /*
 ** tokenizer error message
 */
 # define E_UTOKEN_OR "OR not handled"
 # define E_UTOKEN_P "|"
-# define E_UTOKEN_SC ";;"
+# define E_UTOKEN_SC ";"
 # define E_UTOKEN_ML "multiline not handled"
+# define E_UTOKEN_RM ">"
+# define E_UTOKEN_RL "<"
+# define E_UTOKEN_RMM ">>"
+# define E_UTOKEN_NL "newline"
+# define E_UTOKEN_DSC ";;"
+# define E_UTOKEN_HD "here document not handled"
 
 /*
 ** Return code
@@ -108,25 +120,23 @@ char		*last_arg(t_command *cmd);
 /*
 ** Loop functions
 */
-int			main_loop(t_list **env, t_list **export, int *err);
+int			main_loop(t_list **env, t_list **export);
 int			gnl_ctrld(int fd, char **line);
 
 /*
 ** Loop error
 */
-int			empty_line(char *line);
-int			token_error_manager(int err);
-void		print_token_error(char *str);
+int			verify_line(char *line);
+int			check_unexpected_token(char *line, int *err);
 int			return_to_main(t_list **env, char *line, int ret_gnl);
 
 /*
 ** Lexer/parser function that will buid t_command structure
 ** These functions will create a list of t_command from the input line.
 */
-t_list		*tokenizer(char *line, int *err);
-int			pipeline_n_link(t_list **head, char *execution_line, int *err);
+t_list		*tokenizer(char *line);
+int			pipeline_n_link(t_list **head, char *execution_line);
 int			expander(t_list **env, t_command *i_command);
-char		*skip_char(char *str, char c);
 
 /*
 ** tokenize split
@@ -150,10 +160,16 @@ char		*doll_expand(t_list **env, char **line_ptr, char quote);
 /*
 ** tokenize error handling
 */
-void		*tokenize_error_sc(t_list **head, char **array);
+void		*tokenize_error_sc(t_list **head, char **array, char *line);
 int			tokenize_error_pipe(t_list **head, char **pipeline,
 								int i, int fd_tmp);
 int			pipe_token_error(char **str, int i, int *err);
+int			token_pipe(char *line, int i, int space);
+int			token_sc(char *line, int i, int space);
+int			token_rl(char *line, int i);
+int			token_rll(char *line, int i);
+int			token_rm(char *line, int i);
+int			token_rmm(char *line, int i);
 
 /*
 ** tokenize quotes utils
@@ -174,11 +190,11 @@ int			authorized_char(int c);
 int			is_special_char(int c);
 char		*skip_char(char *str, char c);
 t_command	*init_command(char *pipeline);
+
+
+
 int			ft_count_tab(char **tab);
 char		**alpha_order_array(char **export_tab);
-
-void	print_cmd(t_command *cmd);/////////delete
-void	print_array(char **arr);/////////delete
 
 /*
 ** clear lists
@@ -192,6 +208,13 @@ void		ft_array_string_del(char **array);
 
 /* ------------------------------------------------------------------------- */
 
+//TESTS
+int			exec_t(t_list **env, t_command *cmd, char **arr_env);
+void		clean_fd_n_wait(int *fd, int cpid);
+void		dup_it(int *fd);
+void	print_cmd(t_command *cmd);/////////delete
+void	print_array(char **arr);/////////delete
+
 /*
 ** This function will find if the command is a builtin and execute it, or
 ** execute said command with execve.
@@ -199,11 +222,6 @@ void		ft_array_string_del(char **array);
 int			execute_command(t_list **env, t_command *cmd, t_list **export);
 void		close_fd(int *fd);
 void		dup_fd(int *fd);
-
-//tests
-int			exec_t(t_list **env, t_command *cmd, char **arr_env);
-void		clean_fd_n_wait(int *fd, int cpid);
-void		dup_it(int *fd);
 
 /*
 ** Builtins
@@ -235,8 +253,6 @@ int			execute_builtin(t_list **env, t_command *cmd, int builtin_code,
 							t_list **export);
 int			is_builtin(t_command *cmd);
 int			execute_extern(t_list **env, t_command *cmd);
-int			fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab);
-int			parent_process(pid_t pid, char *pathcmd, char **env_tab);
 char		*path_to_executable(t_list **env, t_command *cmd);
 char		*absolute_path(t_command *cmd, char *home_path);
 char		*relative_path(t_command *cmd, char **split_path);
