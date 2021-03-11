@@ -55,7 +55,6 @@ char	**export_env(char **ep)
 int		main(int ac, char **av, char **ep)
 {
 	t_list	*env;
-	int		err;
 	t_list	*export;
 	char	**export_env_tab_alpha_order;
 
@@ -68,9 +67,9 @@ int		main(int ac, char **av, char **ep)
 	increase_shlvl(&env);
 	g_exit_status = 0;
 	g_line_eraser = 0;
-	main_loop(&env, &export, &err);
+	main_loop(&env, &export);
 	ft_freetab(export_env_tab_alpha_order);
 	ft_lstclear(&export, &clear_envlist);
-	//system("leaks minishell");
+	system("leaks minishell");
 	return (g_exit_status);
 }
