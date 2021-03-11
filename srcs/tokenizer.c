@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void			link_lists(t_list **head, t_list *new)
+static void		link_lists(t_list **head, t_list *new)
 {
 	t_list		*tmp;
 
@@ -15,7 +15,7 @@ void			link_lists(t_list **head, t_list *new)
 	tmp->next = new;
 }
 
-t_list			*tokenizer(char *line, int *err)
+t_list			*tokenizer(char *line)
 {
 	int			i;
 	t_list		*head;
@@ -31,10 +31,8 @@ t_list			*tokenizer(char *line, int *err)
 	{
 		tmp = NULL;
 		skiped = skip_char(execution_lines[i], ' ');
-		if (*skiped == ';' && (*err = UTOKEN_SC))
-			return (tokenize_error_sc(&head, execution_lines));
-		if ((pipeline_n_link(&tmp, execution_lines[i], err)) == RT_FAIL)
-			return (tokenize_error_sc(&head, execution_lines));
+		if ((pipeline_n_link(&tmp, execution_lines[i])) == RT_FAIL)
+			return (tokenize_error_sc(&head, execution_lines, line));
 		link_lists(&head, tmp);
 	}
 	ft_freetab(execution_lines);

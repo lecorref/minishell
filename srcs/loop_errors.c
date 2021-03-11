@@ -9,14 +9,14 @@ int		return_to_main(t_list **env, char *line, int ret_gnl)
 	return (RT_EXIT);
 }
 
-void	print_token_error(char *str)
+static void	print_token_error(char *str)
 {
 	ft_putstr_fd("bash: syntax error near unexpected token `", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd("'\n", 2);
 }
 
-int		token_error_manager(int err)
+static int	token_error_printer_hub(int err)
 {
 	if (!err)
 		return (1);
@@ -28,19 +28,39 @@ int		token_error_manager(int err)
 		print_token_error(E_UTOKEN_ML);
 	else if (err == UTOKEN_OR)
 		print_token_error(E_UTOKEN_OR);
-	if (g_line_eraser == 0)
-		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
-	g_exit_status = 2;
+	else if (err == UTOKEN_RM)
+		print_token_error(E_UTOKEN_RM);
+	else if (err == UTOKEN_RL)
+		print_token_error(E_UTOKEN_RL);
+	else if (err == UTOKEN_RMM)
+		print_token_error(E_UTOKEN_RMM);
+	else if (err == UTOKEN_NL)
+		print_token_error(E_UTOKEN_NL);
+	else if (err == UTOKEN_DSC)
+		print_token_error(E_UTOKEN_DSC);
+	else if (err == UTOKEN_HD)
+		print_token_error(E_UTOKEN_HD);
 	return (0);
 }
 
-int		empty_line(char *line)
+int			verify_line(char *line)
 {
 	char	*skiped;
+	int		err;
 
 	skiped = skip_char(line, ' ');
 	if (!*skiped)
 	{
+		free(line);
+		if (g_line_eraser == 0)
+			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
+		return (1);
+	}
+	err = 0;
+	check_unexpected_token(line, &err);
+	if (!(token_error_printer_hub(err)))
+	{
+		g_exit_status = 2;
 		free(line);
 		if (g_line_eraser == 0)
 			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);

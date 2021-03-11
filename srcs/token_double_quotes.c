@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int				check_symbol_dq(char *str, int i)
+static int		check_symbol_dq(char *str, int i)
 {
 	if (i == 0)
 		if (*str ==  '\"')
@@ -11,7 +11,7 @@ int				check_symbol_dq(char *str, int i)
 	return (1);
 }
 
-int				expand_env_dq(t_list **env, char **final_str,
+static int		expand_env_dq(t_list **env, char **final_str,
 							char **str, char **line_ptr)
 {
 	if (!(join_str_before(str, line_ptr, final_str)))
@@ -22,7 +22,7 @@ int				expand_env_dq(t_list **env, char **final_str,
 	return (1);
 }
 
-int				format_special_dq(t_list **env, char **final_str,
+static int		format_special_dq(t_list **env, char **final_str,
 								char **str, char **line_ptr)
 {
 	if (**str == '\\' && (*(*str + 1) == '\"' ||
@@ -52,6 +52,15 @@ int				format_special_dq(t_list **env, char **final_str,
 ** It returns a malloc() address to a null-terminated string.
 */
 
+static int		init_dq(char **final_str, char **str, char **line_ptr, int *i)
+{
+	if (!(*final_str = ft_strnew(0)))
+		return (0);
+	*str = *line_ptr + 1;
+	*i = 0;
+	return (1);
+}
+
 char			*double_quotes(t_list **env, char **line_ptr)
 {
 	char		*str;
@@ -59,9 +68,8 @@ char			*double_quotes(t_list **env, char **line_ptr)
 	int			i;
 	int			ret;
 
-	if (!(final_str = ft_strnew(0)))
+	if (!(init_dq(&final_str, &str, line_ptr, &i)))
 		return (NULL);
-	str = *line_ptr + 1;
 	while (*str)
 	{
 		if (!check_symbol_dq(str, i))
