@@ -24,7 +24,7 @@
 ** Just for printf debug
 */
 # define LINE(NAME) "\n=====================-"#NAME"-=======================\n"
-# define LINE2 "-----------------\n"
+# define LINE2 "-----------------\n\n"
 
 /*
 ** Macros
@@ -113,7 +113,6 @@ char		**env_list_to_tab(t_list *head);
 void		add_env_variable(t_list **head, char *var);
 char		*find_env_value(t_list **head, char *key);
 void		delete_env_variable(t_list **head, char *key);
-void		free_env(void *env, size_t size);
 int			update_underscore(t_list **env, char *path_cmd);
 char		*last_arg(t_command *cmd);
 
@@ -130,7 +129,8 @@ int			gnl_ctrld(int fd, char **line);
 */
 int			verify_line(char *line);
 int			check_unexpected_token(char *line, int *err);
-int			return_to_main(t_list **env, char *line, int ret_gnl);
+int			return_to_main(t_list **env, char *line, int ret_gnl,
+															 char *saved_path);
 
 /*
 ** Lexer/parser function that will buid t_command structure
@@ -155,8 +155,8 @@ char		*double_quotes(t_list **env, char **line_ptr);
 char		*simple_quotes(char **line_ptr);
 char		*no_quotes(t_list **env, char **line_ptr);
 int			redirections(t_list **env, char **line_ptr, t_command *i_command);
-int			expand_doll_quote(t_list **env, char **str,
-								char **final_str, char quote);
+int			expand_doll_quote(t_list **env, char **str, char **final_str,
+																 char quote);
 char		*doll_expand(t_list **env, char **line_ptr, char quote);
 
 /*
@@ -183,7 +183,7 @@ int			token_rmm(char *line, int i);
 int			return_expander(t_list **arg, int ret, t_command *cmd);
 void		*tokenize_error_sc(t_list **head, char **array, char *line);
 int			tokenize_error_pipe(t_list **head, char **pipeline,
-								int i, int fd_tmp);
+														 int i, int fd_tmp);
 
 /*
 ** tokenize utils
@@ -210,7 +210,7 @@ void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
 void		clear_arglist(void *content);
 void		clear_arglist_2(void *content);
-int			clear_lists_exit(t_list **cmd, t_list **env);
+int			clear_lists_exit(t_list **cmd, t_list **env, char *saved_path);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
@@ -236,20 +236,9 @@ void		dup_fd(int *fd);
 */
 int			echo_builtin(t_list **env, t_command *cmd);
 int			pwd_builtin(t_list **env, t_command *cmd);
-
 int			exit_builtin(t_command *cmd);
-int			exit_arg(t_command *cmd, size_t i);
-
 int			cd_builtin(t_list **env, t_command *cmd);
-int			update_pwd(t_list **env);
-char		*cd_args(t_list **env, char *arg, t_command *cmd);
-
-
 int			export_builtin(t_list **env, t_command *cmd, t_list **export);
-int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd);
-void		print_export(char **export_tab);
-void		update_export_underscore(t_list **env, t_command *cmd);
-
 int			unset_builtin(t_list **env, t_command *cmd, t_list **export);
 int			env_builtin(t_list **env, t_command *cmd);
 
@@ -258,14 +247,14 @@ int			env_builtin(t_list **env, t_command *cmd);
 */
 
 int			execute_builtin(t_list **env, t_command *cmd, int builtin_code,
-							t_list **export);
+															 t_list **export);
 int			is_builtin(t_command *cmd);
-int			execute_extern(t_list **env, t_command *cmd);
-char		*path_to_executable(t_list **env, t_command *cmd);
+int			execute_extern(t_list **env, t_command *cmd, char *saved_path);
 char		*absolute_path(t_command *cmd, char *home_path);
-char		*relative_path(t_command *cmd, char **split_path);
+char		*relative_path(t_command *cmd, char **split_path, char *path,
+															 char *saved_path);
+void		*test_path_left_right_2(t_command *cmd, char **split, int r, int j);
 int			test_cmd(char *env_path, char *executable);
-char		*add_path_to_cmd(char *abs_path, char *executable);
 
 /* ------------------------------------------------------------------------- */
 

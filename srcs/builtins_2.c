@@ -66,7 +66,7 @@ int		pwd_builtin(t_list **env, t_command *cmd)
 ** divides the errno so we can have a correct exit status (and exit minishell).
 ** 2. Otherwise, if there is a 2nd parameter, output the correct error message.
 */
-int		exit_arg(t_command *cmd, size_t i)
+static int		exit_arg(t_command *cmd, size_t i)
 {
 	if (i == ft_strlen(cmd->command[1]))
 	{
@@ -80,7 +80,7 @@ int		exit_arg(t_command *cmd, size_t i)
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			g_exit_status = 2;
+			g_exit_status = 1;// or 2?
 			return (RT_SUCCESS);
 		}
 	}

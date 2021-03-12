@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 00:28:26 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/12 17:08:59 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-//	printf("path_to_cmd (to execve) : |%s|\n\n", path_to_cmd);//TEST-TO DEL LATER
+	printf("path_to_cmd execve: |%s|\n%s", path_to_cmd, LINE2);//TEST DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		free(path_to_cmd);
@@ -89,11 +89,54 @@ static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 			free(path_to_cmd);
 			ft_freetab(env_tab);
 		}
-		g_exit_status = 127;
+		if (errno == EACCES)
+			g_exit_status = 126;
+		else if (errno == ENOENT)
+			g_exit_status = 127;
 		return (RT_FAIL);
 	}
 	else
 		return (cpid);
+}
+
+/*
+** Ex of command that is not an absolute or relative path: ls lo minishell
+**		for those, a path needs to be joined to it.
+** Ex of command that is an absolute or relative path: ~/ /bin/ls ./minishell
+**		for ~/ a path needs to be joined to it.
+**		for the rest, just duplicate it.
+**
+** Returns the absolute path command/executable (abs_path). either because it
+** was already typed like that, or because it was turned into an absolute path
+** by the funtion relative_path() or absolute_path().
+** Returns a malloc string, so it needs to be freed later on.
+*/
+static char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
+{
+	char	*abs_path;
+	char	*home_path;
+	char	*path;
+	char	**split_path;
+
+	abs_path = NULL;
+	home_path = find_env_value(env, "HOME");
+	path = find_env_value(env, "PATH");
+	if (!ft_strchr(&cmd->command[0][0], '/') && cmd->command[0][0] != '.'
+		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
+	{
+		if (!path || !saved_path)
+		{
+			error_msg("bash", cmd, NULL, strerror(2));
+			return ("");
+		}
+		if (!(split_path = ft_split_jb(path, ':')))
+			return (NULL);
+		abs_path = relative_path(cmd, split_path, path, saved_path);
+		ft_freetab(split_path);
+	}
+	else
+		abs_path = absolute_path(cmd, home_path);
+	return (abs_path);
 }
 
 static int	check_special_case(t_command *cmd)
@@ -106,7 +149,7 @@ static int	check_special_case(t_command *cmd)
 	return (1);
 }
 
-int			execute_extern(t_list **env, t_command *cmd)
+int			execute_extern(t_list **env, t_command *cmd, char *saved_path)
 {
 	char	**env_tab;
 	char	*path_to_cmd;
@@ -114,7 +157,7 @@ int			execute_extern(t_list **env, t_command *cmd)
 
 	if (check_special_case(cmd) == RT_SUCCESS)
 		return (RT_SUCCESS);
-	if (!(path_to_cmd = path_to_executable(env, cmd)))
+	if (!(path_to_cmd = path_to_executable(env, cmd, saved_path)))
 		return (RT_FAIL);
 	if (!*path_to_cmd)
 	{

@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/10 01:45:40 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:56:51 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 ** Then joining the executable typed by the user to it and returning the
 ** complete absolute path.
 */
-char	*add_path_to_cmd(char *abs_path, char *executable)
+static char	*add_path_to_cmd(char *abs_path, char *executable)
 {
 	char	*add_slash;
 	char	*add_path;
@@ -64,6 +64,41 @@ int			test_cmd(char *env_path, char *executable)
 }
 
 /*
+** The reading of $PATH is done from the index last found to right.
+** To make it work starting from the next index after the last one found, we
+** would have to user a global variable. I don't think we have to go that deep
+** since the correction sheet asks only to check if we are checking the $PATH
+** from left to right (not from where it stopped on the last command, to right).
+*/
+static char		*test_path_left_right(t_command *cmd, char *saved_path)
+{
+	char	**split_path;
+	int		ret_test;
+	int		i;
+	int		j;
+
+	i = -1;
+	j = 0;
+	ret_test = 1;
+	if (ft_strchr(saved_path, ':'))
+	{
+		if (!(split_path = ft_split_jb(&saved_path[0], ':')))
+		{
+			ft_freetab(split_path);
+			return (NULL);
+		}
+	}
+	else
+		split_path = ft_split_jb(&saved_path[0], '\0');
+	while (split_path[++i])
+		if ((ret_test = test_cmd(split_path[i], cmd->command[0])) == 0)
+			j++;
+	if (!(test_path_left_right_2(cmd, split_path, ret_test, j)))
+		return (NULL);
+	return ("");
+}
+
+/*
 ** Command typed is not an absulute path, so in this function, a path from the
 ** $PATH or the $PWD env line will be added to the command.
 ** The $PATH will be splitted by : to get an array of strings, with a path per
@@ -79,7 +114,8 @@ int			test_cmd(char *env_path, char *executable)
 ** 4. if both $PATH and $PWD tests returned -1, it means that the executable
 ** input was not found in any directory, then,  display the error message.
 */
-char	*relative_path(t_command *cmd, char **split_path)
+char	*relative_path(t_command *cmd, char **split_path, char *path,
+															char *saved_path)
 {
 	char	*add_path;
 	int		ret_env_path;
@@ -89,12 +125,18 @@ char	*relative_path(t_command *cmd, char **split_path)
 	ret_env_path = -1;
 	add_path = NULL;
 	while (split_path[++i])
-		if ((ret_env_path = test_cmd(split_path[i], cmd->command[0])) == 0)
-			break ;
-	if (ret_env_path == 0)
-		add_path = add_path_to_cmd(split_path[i], cmd->command[0]);
-	else if (ret_env_path == -1)
 	{
+		if ((ret_env_path = test_cmd(split_path[i], cmd->command[0])) == 0)
+		{
+			add_path = add_path_to_cmd(split_path[i], cmd->command[0]);
+			break ;
+		}
+	}
+	if (ret_env_path == -1)
+	{
+		if (path && saved_path/* && ft_strcmp(path, saved_path) != 0*/)
+			if (!(test_path_left_right(cmd, saved_path)))
+				return ("");
 		error_msg(NULL, cmd, NULL, "command not found");
 		return ("");
 	}
@@ -139,43 +181,4 @@ char	*absolute_path(t_command *cmd, char *home_path)
 			return (NULL);
 	}
 	return (add_path_to_cmd);
-}
-
-/*
-** Ex of command that is not an absolute or relative path: ls lo minishell
-**		for those, a path needs to be joined to it.
-** Ex of command that is an absolute or relative path: ~/ /bin/ls ./minishell
-**		for ~/ a path needs to be joined to it.
-**		for the rest, just duplicate it.
-**
-** Returns the absolute path command/executable (abs_path). either because it
-** was already typed like that, or because it was turned into an absolute path
-** by the funtion relative_path() or absolute_path().
-** Returns a malloc string, so it needs to be freed later on.
-*/
-char	*path_to_executable(t_list **env, t_command *cmd)
-{
-	char	*abs_path;
-//	char	*pwd_path;
-	char	*home_path;
-	char	*path;
-	char	**split_path;
-
-	if (!cmd->command)
-		return (NULL);
-	abs_path = NULL;
-//	pwd_path = find_env_value(env, "PWD");
-	home_path = find_env_value(env, "HOME");
-	path = find_env_value(env, "PATH");
-	if (!(split_path = ft_split_jb(path, ':')))
-		return (NULL);
-	if (!ft_strchr(&cmd->command[0][0], '/') && cmd->command[0][0] != '.'
-		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
-		abs_path = relative_path(cmd, split_path);
-	else
-		abs_path = absolute_path(cmd, home_path);
-	ft_freetab(split_path);
-	if (!abs_path)
-		return (NULL);
-	return (abs_path);
 }

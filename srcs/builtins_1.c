@@ -34,7 +34,7 @@ int			env_builtin(t_list **env, t_command *cmd)
 	free(arg);
 	return (expanded);
 }*/
-char	*cd_args(t_list **env, char *arg, t_command *cmd)
+static char	*cd_args(t_list **env, char *arg, t_command *cmd)
 {
 	char	*expanded;
 
@@ -63,7 +63,7 @@ char	*cd_args(t_list **env, char *arg, t_command *cmd)
 	return (expanded);
 }
 
-int		update_pwd(t_list **env)
+static int		update_pwd(t_list **env)
 {
 	char    *tmp;
 	char    *pwd;

@@ -52,20 +52,27 @@ void	print_tok(void *content)
 			((t_command*)content)->fd[1]);
 }
 
-int		execute_command(t_list **env, t_command *cmd, t_list **export)
+/*
+** Saving the $PATH var before any function is called, so if it's unset or
+** exported as something else, we will have a copy of it to manage the error
+** message for when the user types a command but $PATH is unset or not with it's
+** correct paths.
+*/
+int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 {
-	int	ret;
+	int		ret;
 
 	print_cmd(cmd);//TEST - TO DELETE LATER
+
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
 	else
-		ret = execute_extern(env, cmd);
+		ret = execute_extern(env, cmd, s_path);
 	close_fd(cmd->fd);
 	return (ret);
 }
 
-int		executer(t_list **env, t_list *cmd, t_list **export)
+int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 {
 	int	ret;
 
@@ -77,20 +84,49 @@ int		executer(t_list **env, t_list *cmd, t_list **export)
 				return (RT_FAIL);
 			return (RT_SUCCESS);
 		}
-		if (execute_command(env, COMMAND(cmd), export) != RT_SUCCESS)
+		if (execute_cmd(env, COMMAND(cmd), export, saved_path) != RT_SUCCESS)
 			return (RT_EXIT);
 		cmd = cmd->next;
 	}
 	return (RT_SUCCESS);
 }
 
+/*
+** Savinf $PATH env to be used later on in case the user does an "unset PATH"
+** if the $PATH does not exist (because minishell was run as env -i ./minishell)
+** then the saved_path will just be NULL, and the functions that need it will
+** have to handle it as NULL;
+** if $PATH does not exist at all (besides the env -i case), even the
+** command "make" or "ld" won't be found, so in that case the user would not
+** even be able to compile the program using the Makefile.
+**
+** Here I'm outputing a message showing the current $PATH just so the user
+** knows that the $PATH is not set as t should be.
+*/
+char	*save_path_env(t_list **env)
+{
+	char	*saved_path;
+
+	if (!(saved_path = find_env_value(env, "PATH")))
+		return (NULL);
+	if (ft_strstr(saved_path, "/bin") == NULL ||
+		ft_strstr(saved_path, "/sbin") == NULL)
+	{
+		printf("\nCurrent PATH environment variable:\nPATH=%s\n\n", saved_path);
+		return (saved_path);
+	}
+	return (ft_strdup(saved_path));
+}
+
 int		main_loop(t_list **env, t_list **export)
 {
 	t_list	*cmd;
 	char	*line;
+	char	*saved_path;
 	int		ret_gnl;
 
 	signal(SIGQUIT, ctrl_back_slash_handler);
+	saved_path = save_path_env(env);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
@@ -100,11 +136,11 @@ int		main_loop(t_list **env, t_list **export)
 			return (RT_FAIL);
 		ft_lstiter(cmd, &print_tok);//TO DEL LATER
 		free(line);
-		if (executer(env, cmd, export) != RT_SUCCESS)
-			return (clear_lists_exit(&cmd, env));
+		if (executer(env, cmd, export, saved_path) != RT_SUCCESS)
+			return (clear_lists_exit(&cmd, env, saved_path));
 		if (g_line_eraser == 0)
 			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
 	}
-	return (return_to_main(env, line, ret_gnl));
+	return (return_to_main(env, line, ret_gnl, saved_path));
 }

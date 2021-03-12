@@ -8,7 +8,7 @@
 **		void *env: a pointer to the t_env struct to delete
 **		size_t size: necessary for pointer to function.
 */
-void	free_env(void *env, size_t size)
+static void	free_env(void *env, size_t size)
 {
 	(void)size;
 	free(((t_env *)env)->key);

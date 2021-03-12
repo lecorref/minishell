@@ -1,7 +1,8 @@
 #include "minishell.h"
 
-int		return_to_main(t_list **env, char *line, int ret_gnl)
+int		return_to_main(t_list **env, char *line, int ret_gnl, char *saved_path)
 {
+	free(saved_path);
 	free(line);
 	ft_lstclear(env, &clear_envlist);
 	if (ret_gnl == -1)
