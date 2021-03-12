@@ -73,7 +73,7 @@ static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-	printf("\npath_to_cmd (to execve) : |%s|\n\n", path_to_cmd);//TEST-TO DEL LATER
+	printf("path_to_cmd execve: |%s|\n%s", path_to_cmd, LINE2);//TEST DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		free(path_to_cmd);
@@ -112,15 +112,13 @@ static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 ** by the funtion relative_path() or absolute_path().
 ** Returns a malloc string, so it needs to be freed later on.
 */
-char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
+static char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
 {
 	char	*abs_path;
 	char	*home_path;
 	char	*path;
 	char	**split_path;
 
-//	if (!cmd->command)
-//		return (NULL);
 	abs_path = NULL;
 	home_path = find_env_value(env, "HOME");
 	path = find_env_value(env, "PATH");
@@ -130,21 +128,15 @@ char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
 		if (!path)
 		{
 			error_msg("bash", cmd, NULL, strerror(2));
-			return (NULL);// or return ("");
+			return ("");
 		}
 		if (!(split_path = ft_split_jb(path, ':')))
 			return (NULL);
-
-		printf("\nsaved_path = %s\n", saved_path);
-		printf("\ncurrent path = %s\n", path);
-
 		abs_path = relative_path(cmd, split_path, path, saved_path);
 		ft_freetab(split_path);
 	}
 	else
 		abs_path = absolute_path(cmd, home_path);
-	//if (!abs_path)
-	//	return (NULL);
 	return (abs_path);
 }
 

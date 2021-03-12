@@ -70,6 +70,6 @@ int		main(int ac, char **av, char **ep)
 	main_loop(&env, &export);
 	ft_freetab(export_env_tab_alpha_order);
 	ft_lstclear(&export, &clear_envlist);
-	system("leaks minishell");
+//	system("leaks minishell");
 	return (g_exit_status);
 }

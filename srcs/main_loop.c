@@ -63,7 +63,6 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 	int		ret;
 
 	print_cmd(cmd);//TEST - TO DELETE LATER
-	printf("\nSAVED_PATH = %s\n", s_path);//TEST - TO DELETE LATER
 
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
@@ -75,8 +74,6 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 
 int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 {
-	if (!saved_path)
-		return(RT_EXIT);
 	while (cmd)
 	{
 		expander(env, COMMAND(cmd));
@@ -87,16 +84,26 @@ int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 	return (RT_SUCCESS);
 }
 
+/*
+** saved_path won't be NULL, since if $PATH does not exist at all, even the
+** command "make" or "ld" won't be found, so in that case the user would not
+** even be able to compile the program using the Makefile.
+*/
 char	*save_path_env(t_list **env)
 {
 	char	*saved_path;
 
-	if (!(saved_path = ft_strdup(find_env_value(env, "PATH"))))
+	saved_path = ft_strdup(find_env_value(env, "PATH"));
+	if (ft_strstr(saved_path, "/bin") == NULL ||
+		ft_strstr(saved_path, "/sbin") == NULL ||
+		ft_strstr(saved_path, "/games") == NULL)
 	{
-		printf("$PATH environment variable was not found, please export");
-		printf(" PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin");
-		printf(":/bin:/usr/games:/usr/local/games:/snap/bin and relauch ");
-		printf("./minishell\n");
+		printf("\nPATH environment variable may be wrong. Please run command:");
+		printf("\nexport PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:");
+		printf("/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin\n");
+		printf("and relauch ./minishell\n\n");
+		free(saved_path);
+		ft_lstclear(env, &clear_envlist);
 		return (NULL);
 	}
 	else
@@ -111,7 +118,8 @@ int		main_loop(t_list **env, t_list **export)
 	int		ret_gnl;
 
 	signal(SIGQUIT, ctrl_back_slash_handler);
-	saved_path = save_path_env(env);
+	if ((saved_path = save_path_env(env)) == NULL)
+		return (RT_EXIT);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{

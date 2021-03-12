@@ -66,7 +66,7 @@ int		pwd_builtin(t_list **env, t_command *cmd)
 ** divides the errno so we can have a correct exit status (and exit minishell).
 ** 2. Otherwise, if there is a 2nd parameter, output the correct error message.
 */
-int		exit_arg(t_command *cmd, size_t i)
+static int		exit_arg(t_command *cmd, size_t i)
 {
 	if (i == ft_strlen(cmd->command[1]))
 	{
