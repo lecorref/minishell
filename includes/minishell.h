@@ -60,6 +60,8 @@
 # define UTOKEN_DSC 9
 # define UTOKEN_HD 10
 
+# define RT_BAD_FD -2
+
 /*
 ** tokenizer error message
 */
@@ -158,11 +160,15 @@ int			expand_doll_quote(t_list **env, char **str,
 char		*doll_expand(t_list **env, char **line_ptr, char quote);
 
 /*
+** tokenize quotes utils
+*/
+int			join_str_before(char **str, char **line_ptr, char **final_str);
+int			join_char_to_str(char **final_str, char c);
+int			escape_it(char **final_str, char **str, char **line_ptr);
+
+/*
 ** tokenize error handling
 */
-void		*tokenize_error_sc(t_list **head, char **array, char *line);
-int			tokenize_error_pipe(t_list **head, char **pipeline,
-								int i, int fd_tmp);
 int			pipe_token_error(char **str, int i, int *err);
 int			token_pipe(char *line, int i, int space);
 int			token_sc(char *line, int i, int space);
@@ -172,11 +178,12 @@ int			token_rm(char *line, int i);
 int			token_rmm(char *line, int i);
 
 /*
-** tokenize quotes utils
+** return error
 */
-int			join_str_before(char **str, char **line_ptr, char **final_str);
-int			join_char_to_str(char **final_str, char c);
-int			escape_it(char **final_str, char **str, char **line_ptr);
+int			return_expander(t_list **arg, int ret, t_command *cmd);
+void		*tokenize_error_sc(t_list **head, char **array, char *line);
+int			tokenize_error_pipe(t_list **head, char **pipeline,
+								int i, int fd_tmp);
 
 /*
 ** tokenize utils
@@ -202,6 +209,7 @@ char		**alpha_order_array(char **export_tab);
 void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
 void		clear_arglist(void *content);
+void		clear_arglist_2(void *content);
 int			clear_lists_exit(t_list **cmd, t_list **env);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?

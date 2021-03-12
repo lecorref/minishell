@@ -59,7 +59,7 @@ char			*expand_filename(t_list **env, char **line_ptr)
 ** processing continues, error just will be displayed after.
 */
 
-int				open_file(int open_code, int *fd_command, char *file)
+static int		open_file(int open_code, int *fd_command, char *file)
 {
 	if (open_code == 3)
 	{
@@ -107,11 +107,12 @@ int				redirections(t_list **env, char **line_ptr, t_command *i_cmd)
 		*line_ptr += 1;
 	*line_ptr = skip_char((*line_ptr + 1), ' ');
 	if (!(file = expand_filename(env, line_ptr)))
-		return (0);
-	if (!open_file(open_code, i_cmd->fd, file))
-		return (0);
+		return (RT_FAIL);
+	open_file(open_code, i_cmd->fd, file);
 	if (i_cmd->file)
 		free(i_cmd->file);
 	i_cmd->file = file;
+	if (i_cmd->fd[3] != 0)
+		return (RT_BAD_FD);
 	return (1);
 }

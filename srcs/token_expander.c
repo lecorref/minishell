@@ -1,11 +1,11 @@
 #include "minishell.h"
 
-static int		init_fr(char **line_ptr, t_command *cmd, t_list **arg)
+static void		init_fr(char **line_ptr, t_command *cmd, t_list **arg, int *ret)
 {
 	*line_ptr = cmd->unexpanded;
 	*line_ptr = skip_char(*line_ptr, ' ');
 	*arg = NULL;
-	return (1);
+	*ret = 1;
 }
 
 /*
@@ -126,23 +126,23 @@ static int		add_arglist_to_cmd(t_command *i_command, t_list **arg)
 
 int				expander(t_list **env, t_command *i_command)
 {
+	int			ret;
 	char		*line_ptr;
 	char		*word_object;
 	t_list		*arg;
 
-	if (!init_fr(&line_ptr, i_command, &arg))
-		return (0);
+	init_fr(&line_ptr, i_command, &arg, &ret);
 	while (*line_ptr)
 	{
 		if (*line_ptr && (*line_ptr == '>' || *line_ptr == '<'))
 		{
-			if (!(redirections(env, &line_ptr, i_command)))
-				return (0);
+			if ((ret = redirections(env, &line_ptr, i_command)) < 0)
+				return (return_expander(&arg, ret, i_command));
 		}
 		else
 		{
 			if (!(word_object = expand_filename(env, &line_ptr)))
-				return (0);
+				return (RT_FAIL);
 			add_arg_to_list(&arg, word_object);
 		}
 		line_ptr = skip_char(line_ptr, ' ');
