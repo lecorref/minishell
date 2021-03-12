@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 17:08:59 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 23:05:21 by jle-corr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-	printf("path_to_cmd execve: |%s|\n%s", path_to_cmd, LINE2);//TEST DEL LATER
+	//printf("path_to_cmd execve: |%s|\n%s", path_to_cmd, LINE2);//TEST DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		free(path_to_cmd);
