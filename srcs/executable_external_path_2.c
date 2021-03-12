@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 16:57:54 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 17:24:32 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ void	*test_path_left_right_2(t_command *cmd, char **split, int ret, int j)
 	if (ret == -1 && j == 0)
 	{
 		error_msg("bash", cmd, NULL, strerror(2));
+		ft_freetab(split);
 		return (NULL);
 	}
 	if (j == 1)
