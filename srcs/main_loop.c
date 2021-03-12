@@ -67,9 +67,16 @@ int		execute_command(t_list **env, t_command *cmd, t_list **export)
 
 int		executer(t_list **env, t_list *cmd, t_list **export)
 {
+	int	ret;
+
 	while (cmd)
 	{
-		expander(env, COMMAND(cmd));
+		if ((ret = expander(env, COMMAND(cmd))) < 0)
+		{
+			if (ret == RT_FAIL)
+				return (RT_FAIL);
+			return (RT_SUCCESS);
+		}
 		if (execute_command(env, COMMAND(cmd), export) != RT_SUCCESS)
 			return (RT_EXIT);
 		cmd = cmd->next;
