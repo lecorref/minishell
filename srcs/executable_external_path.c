@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 16:56:51 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 23:06:38 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,7 @@ static char		*test_path_left_right(t_command *cmd, char *saved_path)
 ** 4. if both $PATH and $PWD tests returned -1, it means that the executable
 ** input was not found in any directory, then,  display the error message.
 */
-char	*relative_path(t_command *cmd, char **split_path, char *path,
-															char *saved_path)
+char	*relative_path(t_command *cmd, char **split_path, char *saved_path)
 {
 	char	*add_path;
 	int		ret_env_path;
@@ -134,7 +133,7 @@ char	*relative_path(t_command *cmd, char **split_path, char *path,
 	}
 	if (ret_env_path == -1)
 	{
-		if (path && saved_path/* && ft_strcmp(path, saved_path) != 0*/)
+		if (saved_path/* && ft_strcmp(path, saved_path) != 0*/)
 			if (!(test_path_left_right(cmd, saved_path)))
 				return ("");
 		error_msg(NULL, cmd, NULL, "command not found");

@@ -267,8 +267,7 @@ int			execute_builtin(t_list **env, t_command *cmd, int builtin_code,
 int			is_builtin(t_command *cmd);
 int			execute_extern(t_list **env, t_command *cmd, char *saved_path);
 char		*absolute_path(t_command *cmd, char *home_path);
-char		*relative_path(t_command *cmd, char **split_path, char *path,
-															 char *saved_path);
+char		*relative_path(t_command *cmd, char **split_path, char *saved_path);
 void		*test_path_left_right_2(t_command *cmd, char **split, int r, int j);
 int			test_cmd(char *env_path, char *executable);
 

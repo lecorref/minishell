@@ -72,11 +72,14 @@ int			export_builtin(t_list **env, t_command *cmd, t_list **export)
 	int		i;
 
 	i = 0;
-	export_tab = env_list_to_tab(*export);
 	update_export_underscore(env, cmd);
 	if (cmd->command[0] && !cmd->command[1])
+	{
+		if (!(export_tab = env_list_to_tab(*export)))
+			return (RT_FAIL);
 		print_export(export_tab);
-	ft_freetab(export_tab);
+		ft_freetab(export_tab);
+	}
 	if (cmd->command[0] && cmd->command[1])
 	{
 		if (ft_isdigit(cmd->command[1][0]) ||

@@ -66,6 +66,11 @@ char	**env_list_to_tab(t_list *env)
 	char	*tmp_str;
 
 	count = 1;
+	if (!env)
+	{
+		printf("\nENV LIST TO TAB FAILED\n");
+		return (NULL);
+	}
 	tmp_env = env;
 	while ((tmp_env = tmp_env->next))
 		count++;

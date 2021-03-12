@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 17:08:59 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 23:07:34 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,14 +124,14 @@ static char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
 	if (!ft_strchr(&cmd->command[0][0], '/') && cmd->command[0][0] != '.'
 		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
 	{
-		if (!path || !saved_path)
+		if (!path || (!path && !saved_path))
 		{
 			error_msg("bash", cmd, NULL, strerror(2));
 			return ("");
 		}
 		if (!(split_path = ft_split_jb(path, ':')))
 			return (NULL);
-		abs_path = relative_path(cmd, split_path, path, saved_path);
+		abs_path = relative_path(cmd, split_path, saved_path);
 		ft_freetab(split_path);
 	}
 	else
@@ -165,7 +165,8 @@ int			execute_extern(t_list **env, t_command *cmd, char *saved_path)
 		return (RT_SUCCESS);
 	}
 	signal(SIGQUIT, ctrl_back_slash_handler_quit);
-	env_tab = env_list_to_tab(*env);
+	if (!(env_tab = env_list_to_tab(*env)))
+		return (RT_FAIL);
 	update_underscore(env, last_arg(cmd));
 	if ((fork_pid = fork_extern(cmd, path_to_cmd, env_tab)) == RT_FAIL)
 		return (RT_FAIL);
