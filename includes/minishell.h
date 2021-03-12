@@ -210,7 +210,7 @@ void		clear_commandlist(void *content);
 void		clear_envlist(void *content);
 void		clear_arglist(void *content);
 void		clear_arglist_2(void *content);
-int			clear_lists_exit(t_list **cmd, t_list **env);
+int			clear_lists_exit(t_list **cmd, t_list **env, char *saved_path);
 void		ft_array_string_del(char **array);
 //void		free_command_list(t_list **cmd); is that one the clear_commandlist?
 
