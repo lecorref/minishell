@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static void		update_export_underscore(t_list **env, t_command *cmd)
+static void	update_export_underscore(t_list **env, t_command *cmd)
 {
 	char	*last;
 	char	*needle;
@@ -17,7 +17,7 @@ static void		update_export_underscore(t_list **env, t_command *cmd)
 	free(needle);
 }
 
-static void			print_export(char **export_tab)
+static void	print_export(char **export_tab)
 {
 	char	**alpha_order;
 	char	*key;
@@ -64,7 +64,6 @@ static int	export_builtin_arg(t_list **env, t_list **export, t_command *cmd)
 	g_exit_status = 0;
 	return (RT_SUCCESS);
 }
-
 
 int			export_builtin(t_list **env, t_command *cmd, t_list **export)
 {
