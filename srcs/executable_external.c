@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   executable_external.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 23:07:34 by jfreitas         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 /*
@@ -72,7 +60,7 @@ static int	fork_extern(t_command *cmd, char *path_to_cmd, char **env_tab)
 {
 	int	cpid;
 
-	printf("path_to_cmd execve: |%s|\n%s", path_to_cmd, LINE2);//TEST DEL LATER
+	//printf("path_to_cmd execve: |%s|\n%s", path_to_cmd, LINE2);//TEST DEL LATER
 	if ((cpid = fork()) == -1)
 	{
 		free(path_to_cmd);

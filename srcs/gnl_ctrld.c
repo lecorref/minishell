@@ -52,7 +52,7 @@
 ** gnl which would have returned 1, then the more general signal() goes back.
 */
 
-void	eraser_checker(char *line)
+static void	eraser_checker(char *line)
 {
 	if (g_line_eraser == 1)
 	{
@@ -69,11 +69,9 @@ void	eraser_checker(char *line)
 	// have been called, therefore g_line_eraser would be 0, Therefore
 	// eraser_checker would not delete the line, and so we would enter on the
 	// first if statement here.
-int		check_ctrld(char **line)
+static int	check_ctrld(char **line)
 {
-
 	eraser_checker(*line);
-	//	signal(SIGINT, set_line_eraser);// dont need to use it anymore
 	if (**line && g_line_eraser == 0)
 	{
 		return (1);
@@ -125,6 +123,12 @@ int		check_ctrld(char **line)
 	// the signal inside the check_ctrld() function too, that is why we dont
 	// need to call signal() there again.
 
+static void	display_prompt()
+{
+	if (g_line_eraser == 0)
+		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
+}
+
 int		gnl_ctrld(int fd, char **line)
 {
 	static char		buf[MAX_FD][BUFFER_SIZE + 1];
@@ -133,9 +137,10 @@ int		gnl_ctrld(int fd, char **line)
 	if (BUFFER_SIZE < 1 || fd < 0 || !line ||
 			fd > MAX_FD || read(fd, buf[fd], 0) == -1)
 		return (-1);
+	signal(SIGINT, ctrl_c_handler);
+	display_prompt();
 	if (!(*line = ft_strnew(0)))
 		return (0);
-	signal(SIGINT, ctrl_c_handler);
 	while (!(adr = ft_strchr(buf[fd], '\n')))
 	{
 		if (!(join_newstr(line, buf[fd])))

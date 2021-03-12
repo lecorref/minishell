@@ -62,7 +62,7 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 {
 	int		ret;
 
-	print_cmd(cmd);//TEST - TO DELETE LATER
+	//print_cmd(cmd);//TEST - TO DELETE LATER
 
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
@@ -127,19 +127,16 @@ int		main_loop(t_list **env, t_list **export)
 
 	signal(SIGQUIT, ctrl_back_slash_handler);
 	saved_path = save_path_env(env);
-	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{
 		if (verify_line(line))
 			continue;
 		if (!(cmd = tokenizer(line)))
 			return (RT_FAIL);
-		ft_lstiter(cmd, &print_tok);//TO DEL LATER
+		//ft_lstiter(cmd, &print_tok);//TO DEL LATER
 		free(line);
 		if (executer(env, cmd, export, saved_path) != RT_SUCCESS)
 			return (clear_lists_exit(&cmd, env, saved_path));
-		if (g_line_eraser == 0)
-			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		ft_lstclear(&cmd, &clear_commandlist);
 	}
 	return (return_to_main(env, line, ret_gnl, saved_path));
