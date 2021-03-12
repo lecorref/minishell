@@ -34,7 +34,7 @@ int			env_builtin(t_list **env, t_command *cmd)
 	free(arg);
 	return (expanded);
 }*/
-static char	*cd_args(t_list **env, char *arg, t_command *cmd)
+/*static char	*cd_args(t_list **env, char *arg, t_command *cmd)
 {
 	char	*expanded;
 
@@ -61,28 +61,7 @@ static char	*cd_args(t_list **env, char *arg, t_command *cmd)
 		return (arg);
 	free(arg);
 	return (expanded);
-}
-
-static int		update_pwd(t_list **env)
-{
-	char    *tmp;
-	char    *pwd;
-	char    *old_pwd;
-
-	old_pwd = find_env_value(env, "PWD");
-	if (!(tmp = ft_strjoin("OLDPWD=", old_pwd)))
-		return (RT_FAIL);
-	add_env_variable(env, tmp);
-	free(tmp);
-	if (!(pwd = getcwd(NULL, 0)))
-		return (RT_FAIL);
-	if (!(tmp = ft_strjoin("PWD=", pwd)))
-		return (RT_FAIL);
-	add_env_variable(env, tmp);
-	free(tmp);
-	free(pwd);
-	return (RT_SUCCESS);
-}
+}*/
 
 /*
 ** cd uses the chdir func to sail into the filesystem & set errors.
@@ -91,7 +70,7 @@ static int		update_pwd(t_list **env)
 */
 //cmd->command[1] = expand_tilde(env, cmd->command[1]);
 
-int		cd_builtin(t_list **env, t_command *cmd)
+/*int		cd_builtin(t_list **env, t_command *cmd)
 {
 	if (!(cmd->command[1]))
 		if (chdir(find_env_value(env, "HOME")) == -1)
@@ -118,4 +97,4 @@ int		cd_builtin(t_list **env, t_command *cmd)
 		return (RT_FAIL);
 	g_exit_status = 0;
 	return (RT_SUCCESS);
-}
+}*/

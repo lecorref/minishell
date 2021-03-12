@@ -21,15 +21,34 @@ int		increase_shlvl(t_list **env)
 	shlvl_nb = ft_atoi(shlvl_str);
 	shlvl_nb++;
 	if (!(shlvl_str = ft_itoa(shlvl_nb)))
-		return (-1);
+		return (RT_FAIL);
 	if (!(keyvalue = ft_strjoin("SHLVL=", shlvl_str)))
 	{
 		ft_strdel(&shlvl_str);
-		return (-1);
+		return (RT_FAIL);
 	}
 	ft_strdel(&shlvl_str);
 	add_env_variable(env, keyvalue);
 	ft_strdel(&keyvalue);
+	return (0);
+}
+
+int		set_pwd(t_list **env)
+{
+	char	*cwd;
+	char	*pwd;
+
+	if ((cwd = find_env_value(env, "PWD")))
+		return (1);
+	cwd = getcwd(NULL, 0);
+	if (!(pwd = ft_strjoin("PWD=", cwd)))
+	{
+		ft_strdel(&cwd);
+		return (RT_FAIL);
+	}
+	ft_strdel(&cwd);
+	add_env_variable(env, pwd);
+	ft_strdel(&pwd);
 	return (0);
 }
 
@@ -64,10 +83,14 @@ int		main(int ac, char **av, char **ep)
 	env = create_env_list(ep);
 	export_env_tab_alpha_order = export_env(ep);
 	export = create_env_list(export_env_tab_alpha_order);
-	increase_shlvl(&env);
+	if (increase_shlvl(&env) == RT_FAIL)
+		return (RT_FAIL);
+	if (set_pwd(&env) == RT_FAIL)
+		return (RT_FAIL);
 	g_exit_status = 0;
 	g_line_eraser = 0;
-	main_loop(&env, &export);
+	if (main_loop(&env, &export) == RT_FAIL)
+		return (RT_FAIL);
 	ft_freetab(export_env_tab_alpha_order);
 	ft_lstclear(&export, &clear_envlist);
 //	system("leaks minishell");
