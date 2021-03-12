@@ -54,35 +54,36 @@ int		set_pwd(t_list **env)
 
 char	**export_env(char **ep)
 {
-	char	**export_env_tab;
+	char	**export_tab;
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	export_env_tab = (char**)malloc(sizeof(char*) * ft_count_tab(ep) + 1);
+	if (!(export_tab = (char**)malloc(sizeof(char*) * ft_count_tab(ep) + 1)))
+		return (NULL);
 	while (ep[i])
 	{
 		if (ep[i][0] != '_')
-			export_env_tab[j++] = ft_strdup(ep[i]);
+			export_tab[j++] = ft_strdup(ep[i]);
 		i++;
 	}
-	export_env_tab[j] = NULL;
-	return (export_env_tab);
+	export_tab[j] = NULL;
+	return (export_tab);
 }
 
 int		main(int ac, char **av, char **ep)
 {
 	t_list	*env;
 	t_list	*export;
-	char	**export_env_tab_alpha_order;
+	char	**export_env_tab;
 
 	(void)av;
 	if (ac != 1)
 		return (-1);
 	env = create_env_list(ep);
-	export_env_tab_alpha_order = export_env(ep);
-	export = create_env_list(export_env_tab_alpha_order);
+	export_env_tab = export_env(ep);
+	export = create_env_list(export_env_tab);
 	if (increase_shlvl(&env) == RT_FAIL)
 		return (RT_FAIL);
 	if (set_pwd(&env) == RT_FAIL)
@@ -91,7 +92,7 @@ int		main(int ac, char **av, char **ep)
 	g_line_eraser = 0;
 	if (main_loop(&env, &export) == RT_FAIL)
 		return (RT_FAIL);
-	ft_freetab(export_env_tab_alpha_order);
+	ft_freetab(export_env_tab);
 	ft_lstclear(&export, &clear_envlist);
 //	system("leaks minishell");
 	return (g_exit_status);

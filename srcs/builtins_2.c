@@ -25,7 +25,8 @@ int			echo_builtin(t_list **env, t_command *cmd)
 	i = 0;
 	update_underscore(env, last_arg(cmd));
 	g_exit_status = 0;
-	if (!cmd->command[i + 1])
+	if (!cmd->command[i + 1] || (!cmd->command[2] &&
+										ft_strstr(cmd->command[i + 1], "-n")))
 	{
 		ft_putchar_fd('\n', cmd->fd[1]);
 		return (RT_SUCCESS);
