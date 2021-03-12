@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 01:47:35 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:57:54 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,38 +99,21 @@ static void	cmd_found_more_times_3(t_command *cmd, char **split_path)
 	}
 }
 
-/*
-** The readin of $PATH is done from the index last found to right.
-** To make it work starting from the next index after the last one found, we
-** would have to user a global variable. I don't think we have to go that deep
-** since the correction sheet asks only to check if we are checking the $PATH
-** from left to right (not from where it stopped on the last command, to right).
-*/
-char		*test_path_left_right(t_command *cmd, char *saved_path)
+void	*test_path_left_right_2(t_command *cmd, char **split, int ret, int j)
 {
-	char	**split_path;
-	int		ret_test;
-	int		i;
-	int		j;
-
-	i = -1;
-	j = 0;
-	ret_test = 1;
-	if (!(split_path = ft_split_jb(saved_path, ':')))
-		return (NULL);
-	while (split_path[++i])
+	if (ret == -1 && j == 0)
 	{
-		if ((ret_test = test_cmd(split_path[i], cmd->command[0])) == 0)
-			j++;
+		error_msg("bash", cmd, NULL, strerror(2));
+		return (NULL);
 	}
 	if (j == 1)
-		cmd_found_once(cmd, split_path, j);
+		cmd_found_once(cmd, split, j);
 	else if (j > 1)
 	{
-		cmd_found_more_times(cmd, split_path);
-		cmd_found_more_times_2(cmd, split_path);
-		cmd_found_more_times_3(cmd, split_path);
+		cmd_found_more_times(cmd, split);
+		cmd_found_more_times_2(cmd, split);
+		cmd_found_more_times_3(cmd, split);
 	}
-	ft_freetab(split_path);
-	return (NULL);
+	ft_freetab(split);
+	return ("");
 }

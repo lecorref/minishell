@@ -6,7 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/02/08 19:16:50 by jfreitas          #+#    #+#             */
-/*   Updated: 2021/03/12 02:07:04 by jfreitas         ###   ########.fr       */
+/*   Updated: 2021/03/12 16:56:51 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,41 @@ int			test_cmd(char *env_path, char *executable)
 }
 
 /*
+** The reading of $PATH is done from the index last found to right.
+** To make it work starting from the next index after the last one found, we
+** would have to user a global variable. I don't think we have to go that deep
+** since the correction sheet asks only to check if we are checking the $PATH
+** from left to right (not from where it stopped on the last command, to right).
+*/
+static char		*test_path_left_right(t_command *cmd, char *saved_path)
+{
+	char	**split_path;
+	int		ret_test;
+	int		i;
+	int		j;
+
+	i = -1;
+	j = 0;
+	ret_test = 1;
+	if (ft_strchr(saved_path, ':'))
+	{
+		if (!(split_path = ft_split_jb(&saved_path[0], ':')))
+		{
+			ft_freetab(split_path);
+			return (NULL);
+		}
+	}
+	else
+		split_path = ft_split_jb(&saved_path[0], '\0');
+	while (split_path[++i])
+		if ((ret_test = test_cmd(split_path[i], cmd->command[0])) == 0)
+			j++;
+	if (!(test_path_left_right_2(cmd, split_path, ret_test, j)))
+		return (NULL);
+	return ("");
+}
+
+/*
 ** Command typed is not an absulute path, so in this function, a path from the
 ** $PATH or the $PWD env line will be added to the command.
 ** The $PATH will be splitted by : to get an array of strings, with a path per
@@ -99,8 +134,9 @@ char	*relative_path(t_command *cmd, char **split_path, char *path,
 	}
 	if (ret_env_path == -1)
 	{
-		if (path && saved_path && ft_strcmp(path, saved_path) != 0)
-			test_path_left_right(cmd, saved_path);
+		if (path && saved_path/* && ft_strcmp(path, saved_path) != 0*/)
+			if (!(test_path_left_right(cmd, saved_path)))
+				return ("");
 		error_msg(NULL, cmd, NULL, "command not found");
 		return ("");
 	}

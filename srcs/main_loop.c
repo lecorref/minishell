@@ -85,7 +85,11 @@ int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 }
 
 /*
-** saved_path won't be NULL, since if $PATH does not exist at all, even the
+** Savinf $PATH env to be used later on in case the user does an "unset PATH"
+** if the $PATH does not exist (because minishell was run as env -i ./minishell)
+** then the saved_path will just be NULL, and the functions that need it will
+** have to handle it as NULL;
+** if $PATH does not exist at all (besides the env -i case), even the
 ** command "make" or "ld" won't be found, so in that case the user would not
 ** even be able to compile the program using the Makefile.
 */
@@ -93,21 +97,15 @@ char	*save_path_env(t_list **env)
 {
 	char	*saved_path;
 
-	saved_path = ft_strdup(find_env_value(env, "PATH"));
-	if (ft_strstr(saved_path, "/bin") == NULL ||
-		ft_strstr(saved_path, "/sbin") == NULL ||
-		ft_strstr(saved_path, "/games") == NULL)
-	{
-		printf("\nPATH environment variable may be wrong. Please run command:");
-		printf("\nexport PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:");
-		printf("/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin\n");
-		printf("and relauch ./minishell\n\n");
-		free(saved_path);
-		ft_lstclear(env, &clear_envlist);
+	if (!(saved_path = find_env_value(env, "PATH")))
 		return (NULL);
-	}
-	else
+	if (ft_strstr(saved_path, "/bin") == NULL ||
+		ft_strstr(saved_path, "/sbin") == NULL)
+	{
+		printf("\nCurrent PATH environment variable:\nPATH=%s\n\n", saved_path);
 		return (saved_path);
+	}
+	return (ft_strdup(saved_path));
 }
 
 int		main_loop(t_list **env, t_list **export)
@@ -118,8 +116,7 @@ int		main_loop(t_list **env, t_list **export)
 	int		ret_gnl;
 
 	signal(SIGQUIT, ctrl_back_slash_handler);
-	if ((saved_path = save_path_env(env)) == NULL)
-		return (RT_EXIT);
+	saved_path = save_path_env(env);
 	ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 	while ((ret_gnl = gnl_ctrld(0, &line)) > 0)
 	{

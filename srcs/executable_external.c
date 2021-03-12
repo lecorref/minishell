@@ -125,7 +125,7 @@ static char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
 	if (!ft_strchr(&cmd->command[0][0], '/') && cmd->command[0][0] != '.'
 		&& ft_strncmp(cmd->command[0], "~/", 2) != 0)
 	{
-		if (!path)
+		if (!path || !saved_path)
 		{
 			error_msg("bash", cmd, NULL, strerror(2));
 			return ("");
