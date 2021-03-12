@@ -53,8 +53,6 @@ int			verify_line(char *line)
 	if (!*skiped)
 	{
 		free(line);
-		if (g_line_eraser == 0)
-			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		return (1);
 	}
 	err = 0;
@@ -63,8 +61,6 @@ int			verify_line(char *line)
 	{
 		g_exit_status = 2;
 		free(line);
-		if (g_line_eraser == 0)
-			ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 		return (1);
 	}
 	return (0);

@@ -29,16 +29,6 @@ void	ctrl_c_handler(int sign)
 	{
 		g_exit_status = 130;
 		g_line_eraser = 1;
-		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
+		ft_putstr_fd("\b\b\n\033[1;32mminishell$\033[0m ", 1);
 	}
 }
-
-/*void	set_line_eraser(int sign)
-{
-	if (sign == SIGINT)
-	{
-		g_exit_status = 1;
-		g_line_eraser = 1;
-		ft_putstr_fd("\n\033[1;32mminishell$\033[0m ", 1);
-	}
-}*/
