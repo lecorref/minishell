@@ -2,9 +2,9 @@
 
 static int	update_pwd(t_list **env)
 {
-	char    *tmp;
-	char    *pwd;
-	char    *old_pwd;
+	char	*tmp;
+	char	*pwd;
+	char	*old_pwd;
 
 	old_pwd = find_env_value(env, "PWD");
 	if (!(tmp = ft_strjoin("OLDPWD=", old_pwd)))
@@ -21,7 +21,7 @@ static int	update_pwd(t_list **env)
 	return (RT_SUCCESS);
 }
 
-int		cd_builtin(t_list **env, t_command *cmd)
+int			cd_builtin(t_list **env, t_command *cmd)
 {
 	char	*path;
 	int		err;
@@ -37,7 +37,7 @@ int		cd_builtin(t_list **env, t_command *cmd)
 		if ((err = ERRNO_CD))
 			return (cd_error(err, cmd->command));
 	if ((err = update_pwd(env)) == RT_FAIL)
-		return (RT_FAIL);;
+		return (RT_FAIL);
 	if (err)
 		return (cd_error(err, cmd->command));
 	g_exit_status = 0;

@@ -17,6 +17,7 @@ static int	echo_n_parser(char *str)
 ** space between strings but not ont he last one
 ** there is no space after string whith -n
 */
+
 int			echo_builtin(t_list **env, t_command *cmd)
 {
 	int		flag;
@@ -46,7 +47,7 @@ int			echo_builtin(t_list **env, t_command *cmd)
 	return (RT_SUCCESS);
 }
 
-int		pwd_builtin(t_list **env, t_command *cmd)
+int			pwd_builtin(t_list **env, t_command *cmd)
 {
 	char	*stored;
 
@@ -67,7 +68,8 @@ int		pwd_builtin(t_list **env, t_command *cmd)
 ** divides the errno so we can have a correct exit status (and exit minishell).
 ** 2. Otherwise, if there is a 2nd parameter, output the correct error message.
 */
-static int		exit_arg(t_command *cmd, size_t i)
+
+static int	exit_arg(t_command *cmd, size_t i)
 {
 	if (i == ft_strlen(cmd->command[1]))
 	{
@@ -112,7 +114,8 @@ static int		exit_arg(t_command *cmd, size_t i)
 **		it means that this argument does not contains only numberm an so, it's
 **		not a intire numeric argument. Then, output the correct error messsage.
 */
-int		exit_builtin(t_command *cmd)
+
+int			exit_builtin(t_command *cmd)
 {
 	size_t	i;
 

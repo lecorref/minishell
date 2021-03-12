@@ -8,6 +8,7 @@
 **		void *env: a pointer to the t_env struct to delete
 **		size_t size: necessary for pointer to function.
 */
+
 static void	free_env(void *env, size_t size)
 {
 	(void)size;
@@ -24,7 +25,8 @@ static void	free_env(void *env, size_t size)
 **		t_list **env: a pointer to the first link of the list
 **		char *key: a string that will be compared against t_env->key
 */
-void	delete_env_variable(t_list **env, char *key)
+
+void		delete_env_variable(t_list **env, char *key)
 {
 	t_list	*tmp_env;
 	t_list	*tmp;
@@ -38,7 +40,7 @@ void	delete_env_variable(t_list **env, char *key)
 			free_env(tmp_env->next->content, sizeof(env));
 			free(tmp_env->next);
 			tmp_env->next = tmp;
-			break;
+			break ;
 		}
 		tmp_env = tmp_env->next;
 	}
