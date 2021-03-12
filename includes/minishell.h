@@ -36,7 +36,7 @@
 # endif
 
 /*
-** builtin code magic numbers
+** builtin functions code magic numbers
 */
 # define BT_ECHO 1
 # define BT_PWD 2
@@ -45,6 +45,17 @@
 # define BT_EXPORT 5
 # define BT_UNSET 6
 # define BT_ENV 7
+
+/*
+** cd error magic numbers
+*/
+# define HOME_NOT_SET 1
+# define OLDPWD_NOT_SET 2
+# define INVAL_CD_OPTION 3
+# define TOO_MANY_ARGS 4
+# define ERRNO_CD 5
+# define GETCWD_ERR 6
+# define DOUBLE_CD -2
 
 /*
 ** tokenizer error magic numbers
@@ -238,6 +249,11 @@ int			echo_builtin(t_list **env, t_command *cmd);
 int			pwd_builtin(t_list **env, t_command *cmd);
 int			exit_builtin(t_command *cmd);
 int			cd_builtin(t_list **env, t_command *cmd);
+int			cd_error(int err, char **cmd);
+char		*check_options(t_list **env, char **cmd, int *fd, int *err);
+//char		*cd_args(t_list **env, char *arg, t_command *cmd);
+
+
 int			export_builtin(t_list **env, t_command *cmd, t_list **export);
 int			unset_builtin(t_list **env, t_command *cmd, t_list **export);
 int			env_builtin(t_list **env, t_command *cmd);
