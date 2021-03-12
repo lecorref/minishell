@@ -40,6 +40,11 @@ void			clear_arglist(void *content)
 	(void)content;
 }
 
+void			clear_arglist_2(void *content)
+{
+	free((char*)content);
+}
+
 int			clear_lists_exit(t_list **cmd, t_list **env, char *saved_path)
 {
 	free(saved_path);

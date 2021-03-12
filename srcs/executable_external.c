@@ -6,8 +6,7 @@
 /*   By: jfreitas <jfreitas@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/04 01:35:31 by jfreitas          #+#    #+#             */
-
-/*   Updated: 2021/03/11 19:46:26 by jle-corr         ###   ########.fr       */
+/*   Updated: 2021/03/12 17:08:59 by jfreitas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,11 +141,6 @@ static char	*path_to_executable(t_list **env, t_command *cmd, char *saved_path)
 
 static int	check_special_case(t_command *cmd)
 {
-	if (cmd->fd[3] != 0)
-	{
-		g_exit_status = 1;
-		return (error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3])));
-	}
 	if (!(cmd->command[0]) || !(cmd->command[0][0]))
 	{
 		g_exit_status = 0;

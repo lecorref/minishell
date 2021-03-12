@@ -74,9 +74,16 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 
 int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 {
+	int	ret;
+
 	while (cmd)
 	{
-		expander(env, COMMAND(cmd));
+		if ((ret = expander(env, COMMAND(cmd))) < 0)
+		{
+			if (ret == RT_FAIL)
+				return (RT_FAIL);
+			return (RT_SUCCESS);
+		}
 		if (execute_cmd(env, COMMAND(cmd), export, saved_path) != RT_SUCCESS)
 			return (RT_EXIT);
 		cmd = cmd->next;
@@ -92,6 +99,9 @@ int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 ** if $PATH does not exist at all (besides the env -i case), even the
 ** command "make" or "ld" won't be found, so in that case the user would not
 ** even be able to compile the program using the Makefile.
+**
+** Here I'm outputing a message showing the current $PATH just so the user
+** knows that the $PATH is not set as t should be.
 */
 char	*save_path_env(t_list **env)
 {

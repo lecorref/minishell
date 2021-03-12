@@ -21,3 +21,13 @@ void			*tokenize_error_sc(t_list **head, char **array, char *line)
 	free(line);
 	return (NULL);
 }
+
+int				return_expander(t_list **arg, int ret, t_command *cmd)
+{
+	if (ret == RT_FAIL)
+		return (RT_FAIL);
+	g_exit_status = 1;
+	error_msg_2("y", cmd, cmd->file, strerror(cmd->fd[3]));
+	ft_lstclear(arg, &clear_arglist_2);
+	return (RT_BAD_FD);
+}
