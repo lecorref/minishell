@@ -17,7 +17,7 @@ static void	print_token_error(char *str)
 	ft_putstr_fd("'\n", 2);
 }
 
-static int	token_error_printer_hub(int err)
+int			token_error_printer_hub(int err)
 {
 	if (!err)
 		return (1);
