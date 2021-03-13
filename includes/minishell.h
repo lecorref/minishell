@@ -93,6 +93,7 @@
 # define RT_FAIL -1
 # define RT_SUCCESS 0
 # define RT_EXIT 1
+# define RT_NOEXIT 2
 
 /*
 ** Environment control
@@ -126,6 +127,8 @@ char		*find_env_value(t_list **head, char *key);
 void		delete_env_variable(t_list **head, char *key);
 int			update_underscore(t_list **env, char *path_cmd);
 char		*last_arg(t_command *cmd);
+long long int	ft_long_long_atoi(const char *str);
+
 
 /* ------------------------------------------------------------------------- */
 
