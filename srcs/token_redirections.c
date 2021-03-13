@@ -21,14 +21,33 @@ int				remove_quotes(char **str)
 **
 ** yep, the string above could be only one filename.
 */
+int		join_newstr_v2(char **str, const char *src)
+{
+	char	*tmp;
+	int		len;
+
+	if (!*str)
+		if (!(*str = ft_strnew(0)))
+			return (0);
+	len = ft_strlen(*str) + ft_strlen(src);
+	if (!(tmp = ft_strnew(len)))
+		return (0);
+	len = -1;
+	while ((*str)[++len])
+		tmp[len] = (*str)[len];
+	while (*src)
+		tmp[len++] = *src++;
+	free(*str);
+	*str = tmp;
+	return (1);
+}
 
 char			*expand_filename(t_list **env, char **line_ptr)
 {
 	char		*word_object;
 	char		*filename;
 
-	if (!(filename = ft_strnew(0)))
-		return (NULL);
+	filename = NULL;
 	while (**line_ptr && !is_symbol_v2(**line_ptr))
 	{
 		if (**line_ptr && (**line_ptr == '\'' || **line_ptr == '\"'))
@@ -40,11 +59,12 @@ char			*expand_filename(t_list **env, char **line_ptr)
 		}
 		else
 			word_object = no_quotes(env, line_ptr);
-		if (!word_object)
-			return (NULL);
-		if (!(join_newstr(&filename, word_object)))
-			return (NULL);
-		free(word_object);
+		if (word_object)
+		{
+			if (!(join_newstr_v2(&filename, word_object)))
+				return (NULL);
+			free(word_object);
+		}
 	}
 	return (filename);
 }

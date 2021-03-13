@@ -94,6 +94,8 @@ static void		add_arg_to_list(t_list **arg, char *wobj)
 {
 	t_list		*new;
 
+	if (!wobj)
+		return ;
 	new = ft_lstnew(wobj);
 	ft_lstadd_front(arg, new);
 }
@@ -141,8 +143,7 @@ int				expander(t_list **env, t_command *i_command)
 		}
 		else
 		{
-			if (!(word_object = expand_filename(env, &line_ptr)))
-				return (RT_FAIL);
+			word_object = expand_filename(env, &line_ptr);
 			add_arg_to_list(&arg, word_object);
 		}
 		line_ptr = skip_char(line_ptr, ' ');
