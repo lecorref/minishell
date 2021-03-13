@@ -78,9 +78,6 @@ int		main(int ac, char **av, char **ep)
 	t_list	*export;
 	char	**export_env_tab;
 
-	(void)av;
-	if (ac != 1)
-		return (-1);
 	env = create_env_list(ep);
 	export_env_tab = export_env(ep);
 	export = create_env_list(export_env_tab);
@@ -90,10 +87,12 @@ int		main(int ac, char **av, char **ep)
 		return (RT_FAIL);
 	g_exit_status = 0;
 	g_line_eraser = 0;
+	if (ac > 1)
+		return (arg_command(&env, &export, ac, av));
 	if (main_loop(&env, &export) == RT_FAIL)
 		return (RT_FAIL);
 	ft_freetab(export_env_tab);
 	ft_lstclear(&export, &clear_envlist);
-//	system("leaks minishell");
+	system("leaks minishell");
 	return (g_exit_status);
 }
