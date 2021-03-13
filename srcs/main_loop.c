@@ -75,6 +75,7 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 {
 	int	ret;
+	int	ret2;
 
 	while (cmd)
 	{
@@ -84,8 +85,16 @@ int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 				return (RT_FAIL);
 			return (RT_SUCCESS);
 		}
-		if (execute_cmd(env, COMMAND(cmd), export, saved_path) != RT_SUCCESS)
+		if ((ret2 = execute_cmd(env, COMMAND(cmd), export, saved_path))
+																!= RT_SUCCESS)
+		{
+			if (ret == RT_NOEXIT)
+			{
+				ft_lstclear(&cmd, &clear_commandlist);
+				return (RT_SUCCESS);
+			}
 			return (RT_EXIT);
+		}
 		cmd = cmd->next;
 	}
 	return (RT_SUCCESS);
@@ -133,7 +142,7 @@ int		main_loop(t_list **env, t_list **export)
 			continue;
 		if (!(cmd = tokenizer(line)))
 			return (RT_FAIL);
-		//ft_lstiter(cmd, &print_tok);//TO DEL LATER
+		//t_lstiter(cmd, &print_tok);//TO DEL LATER
 		free(line);
 		if (executer(env, cmd, export, saved_path) != RT_SUCCESS)
 			return (clear_lists_exit(&cmd, env, saved_path));
