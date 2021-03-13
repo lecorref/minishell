@@ -125,8 +125,8 @@ static int	check_ctrld(char **line)
 
 static void	display_prompt()
 {
-	if (g_line_eraser == 0)
-		ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
+	//if (g_line_eraser == 0)
+		//ft_putstr_fd("\033[1;32mminishell$\033[0m ", 1);
 }
 
 int		gnl_ctrld(int fd, char **line)

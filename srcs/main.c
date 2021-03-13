@@ -87,12 +87,12 @@ int		main(int ac, char **av, char **ep)
 		return (RT_FAIL);
 	g_exit_status = 0;
 	g_line_eraser = 0;
-	if (ac > 1)
-		return (arg_command(&env, &export, ac, av));
+	if (ac > 1)//TO DEL LATER
+		return (arg_command(&env, &export, ac, av));//TO DEL LATER
 	if (main_loop(&env, &export) == RT_FAIL)
 		return (RT_FAIL);
 	ft_freetab(export_env_tab);
 	ft_lstclear(&export, &clear_envlist);
-	system("leaks minishell");
+	//system("leaks minishell");
 	return (g_exit_status);
 }

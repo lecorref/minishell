@@ -149,6 +149,7 @@ int			return_to_main(t_list **env, char *line, int ret_gnl,
 ** These functions will create a list of t_command from the input line.
 */
 t_list		*tokenizer(char *line);
+int			token_error_printer_hub(int err);
 int			pipeline_n_link(t_list **head, char *execution_line);
 int			expander(t_list **env, t_command *i_command);
 
@@ -239,6 +240,11 @@ void	print_array(char **arr);/////////delete
 ** This function will find if the command is a builtin and execute it, or
 ** execute said command with execve.
 */
+char		*save_path_env(t_list **env);
+int			executer(t_list **env, t_list *cmd,
+					t_list **export, char *saved_path);
+int			execute_cmd(t_list **env, t_command *cmd,
+						t_list **export, char *s_path);
 int			execute_command(t_list **env, t_command *cmd, t_list **export);
 void		close_fd(int *fd);
 void		dup_fd(int *fd);
