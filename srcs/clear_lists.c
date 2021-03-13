@@ -35,12 +35,12 @@ void		clear_commandlist(void *content)
 	free((t_command*)content);
 }
 
-void			clear_arglist(void *content)
+void		clear_arglist(void *content)
 {
 	(void)content;
 }
 
-void			clear_arglist_2(void *content)
+void		clear_arglist_2(void *content)
 {
 	free((char*)content);
 }
@@ -55,9 +55,10 @@ int			clear_lists_exit(t_list **cmd, t_list **env, char *saved_path)
 
 // or a function to free_env that Francois did (but to free a command typed that
 // was passed to the struct (and then linked to the list).
-void	ft_array_string_del(char **array)
+
+void		ft_array_string_del(char **array)
 {
-	int i;
+	int		i;
 
 	if (!array)
 		return ;

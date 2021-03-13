@@ -29,7 +29,8 @@ static int	create_env_struct(char *keyvalue, t_env *new)
 ** @return:
 **		t_list *: a pointer to the head of a list.
 */
-t_list	*create_env_list(char **envp)
+
+t_list		*create_env_list(char **envp)
 {
 	t_env	*new;
 	t_list	*env;
@@ -58,7 +59,8 @@ t_list	*create_env_list(char **envp)
 ** @return:
 **		char **: a string table containing entries with the format KEY=VALUE
 */
-char	**env_list_to_tab(t_list *env)
+
+char		**env_list_to_tab(t_list *env)
 {
 	size_t	count;
 	t_list	*tmp_env;
@@ -67,10 +69,7 @@ char	**env_list_to_tab(t_list *env)
 
 	count = 1;
 	if (!env)
-	{
-		printf("\nENV LIST TO TAB FAILED\n");
 		return (NULL);
-	}
 	tmp_env = env;
 	while ((tmp_env = tmp_env->next))
 		count++;
@@ -98,7 +97,8 @@ char	**env_list_to_tab(t_list *env)
 **		t_list **env: a pointer to the first link of the list.
 **		char *var: a string with the format KEY=VALUE
 */
-void	add_env_variable(t_list **env, char *var)
+
+void		add_env_variable(t_list **env, char *var)
 {
 	t_env	*new;
 	t_list	*tmp_env;
@@ -116,7 +116,7 @@ void	add_env_variable(t_list **env, char *var)
 			free(ENV_VALUE(tmp_env));
 			ENV_VALUE(tmp_env) = new->value;
 			free(new);
-			break;
+			break ;
 		}
 		tmp_env = tmp_env->next;
 	}
@@ -137,7 +137,8 @@ void	add_env_variable(t_list **env, char *var)
 ** @return:
 **		char *: a string that correspond to the key that was sent.
 */
-char	*find_env_value(t_list **env, char *key)
+
+char		*find_env_value(t_list **env, char *key)
 {
 	t_list	*tmp_env;
 
