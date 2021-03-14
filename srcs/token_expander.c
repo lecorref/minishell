@@ -143,7 +143,7 @@ int				expander(t_list **env, t_command *i_command)
 		}
 		else
 		{
-			word_object = expand_filename(env, &line_ptr);
+			word_object = expand_token(env, &line_ptr);
 			add_arg_to_list(&arg, word_object);
 		}
 		line_ptr = skip_char(line_ptr, ' ');
