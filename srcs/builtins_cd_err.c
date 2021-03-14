@@ -9,7 +9,7 @@ static void	print_getcwd_err_message(void)
 
 int			cd_error(int err, char **cmd)
 {
-	g_exit_status = 2;
+	g_exit_status = 1;
 	if (err < GETCWD_ERR)
 		ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd("cd: ", 2);
