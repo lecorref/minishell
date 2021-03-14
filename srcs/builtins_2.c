@@ -50,11 +50,13 @@ int				echo_builtin(t_list **env, t_command *cmd)
 int				pwd_builtin(t_list **env, t_command *cmd)
 {
 	char		*stored;
+	char		*tmp;
 
 	update_underscore(env, last_arg(cmd));
 	g_exit_status = 0;
 	stored = getcwd(NULL, 0);
-	if (ft_strcmp(find_env_value(env, "PWD"), "//") == 0)
+	tmp = find_env_value(env, "PWD");
+	if (tmp && ft_strcmp(tmp, "//") == 0)
 		ft_putstr_fd("//", cmd->fd[1]);
 	else
 		ft_putstr_fd(stored, cmd->fd[1]);
