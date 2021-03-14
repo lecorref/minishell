@@ -125,11 +125,11 @@ int				exit_builtin(t_command *cmd)
 
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
-	ret_atoi = ft_long_long_atoi(cmd->command[1]);
 	if (cmd->command[1] == NULL)
 		return (RT_EXIT);
 	else if (cmd->command[1])
 	{
+		ret_atoi = ft_long_long_atoi(cmd->command[1]);
 		if (cmd->command[1][0] == '+' || cmd->command[1][0] == '-')
 			i++;
 		while (ft_isdigit((char)cmd->command[1][i]) == 1)
@@ -141,8 +141,8 @@ int				exit_builtin(t_command *cmd)
 			g_exit_status = 2;
 			return (RT_EXIT);
 		}
-		if (exit_arg(cmd, i) == RT_SUCCESS)
-			return (RT_SUCCESS);
+		if (exit_arg(cmd, i) == RT_NOEXIT)
+			return (RT_NOEXIT);
 	}
 	return (RT_EXIT);
 }
