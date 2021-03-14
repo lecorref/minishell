@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	echo_n_parser(char *str)
+static int		echo_n_parser(char *str)
 {
 	if (*str != '-')
 		return (1);
@@ -18,10 +18,10 @@ static int	echo_n_parser(char *str)
 ** there is no space after string whith -n
 */
 
-int			echo_builtin(t_list **env, t_command *cmd)
+int				echo_builtin(t_list **env, t_command *cmd)
 {
-	int		flag;
-	int		i;
+	int			flag;
+	int			i;
 
 	i = 0;
 	update_underscore(env, last_arg(cmd));
@@ -47,14 +47,17 @@ int			echo_builtin(t_list **env, t_command *cmd)
 	return (RT_SUCCESS);
 }
 
-int			pwd_builtin(t_list **env, t_command *cmd)
+int				pwd_builtin(t_list **env, t_command *cmd)
 {
-	char	*stored;
+	char		*stored;
 
 	update_underscore(env, last_arg(cmd));
 	g_exit_status = 0;
 	stored = getcwd(NULL, 0);
-	ft_putstr_fd(stored, cmd->fd[1]);
+	if (ft_strcmp(find_env_value(env, "PWD"), "//") == 0)
+		ft_putstr_fd("//", cmd->fd[1]);
+	else
+		ft_putstr_fd(stored, cmd->fd[1]);
 	ft_putchar_fd('\n', cmd->fd[1]);
 	free(stored);
 	return (0);
@@ -69,7 +72,7 @@ int			pwd_builtin(t_list **env, t_command *cmd)
 ** 2. Otherwise, if there is a 2nd parameter, output the correct error message.
 */
 
-static int	exit_arg(t_command *cmd, size_t i)
+static int		exit_arg(t_command *cmd, size_t i)
 {
 	if (i == ft_strlen(cmd->command[1]))
 	{
@@ -83,8 +86,8 @@ static int	exit_arg(t_command *cmd, size_t i)
 		else if (cmd->command[2])
 		{
 			error_msg("bash", cmd, NULL, "too many arguments");
-			g_exit_status = 1;// or 2?
-			return (RT_SUCCESS);
+			g_exit_status = 1;
+			return (RT_NOEXIT);
 		}
 	}
 	return (RT_EXIT);
@@ -115,12 +118,14 @@ static int	exit_arg(t_command *cmd, size_t i)
 **		not a intire numeric argument. Then, output the correct error messsage.
 */
 
-int			exit_builtin(t_command *cmd)
+int				exit_builtin(t_command *cmd)
 {
-	size_t	i;
+	size_t		i;
+	long long	ret_atoi;
 
 	i = 0;
 	ft_putstr_fd("exit\n", 2);
+	ret_atoi = ft_long_long_atoi(cmd->command[1]);
 	if (cmd->command[1] == NULL)
 		return (RT_EXIT);
 	else if (cmd->command[1])
@@ -129,15 +134,15 @@ int			exit_builtin(t_command *cmd)
 			i++;
 		while (ft_isdigit((char)cmd->command[1][i]) == 1)
 			i++;
-		if (i != ft_strlen(cmd->command[1]))
+		if (i != ft_strlen(cmd->command[1]) || (ret_atoi == -1 &&
+										ft_strcmp(cmd->command[1], "-1") != 0))
 		{
-			error_msg("b", cmd, cmd->command[1], "numeric argument required");
-			//leave it as "b" just cause as "bash" the line will be too big
+			error_msg("y", cmd, cmd->command[1], "numeric argument required");
 			g_exit_status = 2;
 			return (RT_EXIT);
 		}
 		if (exit_arg(cmd, i) == RT_SUCCESS)
-			return (RT_SUCCESS);//means to NOT exit the shell
+			return (RT_SUCCESS);
 	}
 	return (RT_EXIT);
 }
