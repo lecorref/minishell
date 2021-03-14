@@ -54,7 +54,10 @@ int				pwd_builtin(t_list **env, t_command *cmd)
 	update_underscore(env, last_arg(cmd));
 	g_exit_status = 0;
 	stored = getcwd(NULL, 0);
-	ft_putstr_fd(stored, cmd->fd[1]);
+	if (ft_strcmp(find_env_value(env, "PWD"), "//") == 0)
+		ft_putstr_fd("//", cmd->fd[1]);
+	else
+		ft_putstr_fd(stored, cmd->fd[1]);
 	ft_putchar_fd('\n', cmd->fd[1]);
 	free(stored);
 	return (0);

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	update_pwd(t_list **env)
+static int	update_pwd(t_list **env, char *cmd_arg)
 {
 	char	*tmp;
 	char	*pwd;
@@ -11,10 +11,16 @@ static int	update_pwd(t_list **env)
 		return (RT_FAIL);
 	add_env_variable(env, tmp);
 	free(tmp);
+	tmp = NULL;
 	if (!(pwd = getcwd(NULL, 0)))
 		return (GETCWD_ERR);
 	if (!(tmp = ft_strjoin("PWD=", pwd)))
 		return (RT_FAIL);
+	if (cmd_arg && ft_strcmp(cmd_arg, "//") == 0)
+	{
+		free(tmp);
+		tmp = ft_strdup("PWD=//");
+	}
 	add_env_variable(env, tmp);
 	free(tmp);
 	free(pwd);
@@ -36,7 +42,7 @@ int			cd_builtin(t_list **env, t_command *cmd)
 	if (chdir(path) == -1)
 		if ((err = ERRNO_CD))
 			return (cd_error(err, cmd->command));
-	if ((err = update_pwd(env)) == RT_FAIL)
+	if ((err = update_pwd(env, cmd->command[1])) == RT_FAIL)
 		return (RT_FAIL);
 	if (err)
 		return (cd_error(err, cmd->command));
