@@ -11,7 +11,6 @@ static int	update_pwd(t_list **env, char *cmd_arg)
 		return (RT_FAIL);
 	add_env_variable(env, tmp);
 	free(tmp);
-	tmp = NULL;
 	if (!(pwd = getcwd(NULL, 0)))
 		return (GETCWD_ERR);
 	if (!(tmp = ft_strjoin("PWD=", pwd)))
