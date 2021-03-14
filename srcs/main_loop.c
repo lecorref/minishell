@@ -88,9 +88,9 @@ int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 		if ((ret2 = execute_cmd(env, COMMAND(cmd), export, saved_path))
 																!= RT_SUCCESS)
 		{
-			if (ret == RT_NOEXIT)
+			if (ret2 == RT_NOEXIT)
 			{
-				ft_lstclear(&cmd, &clear_commandlist);
+			//	ft_lstclear(&cmd, &clear_commandlist);
 				return (RT_SUCCESS);
 			}
 			return (RT_EXIT);

@@ -48,5 +48,7 @@ int		execute_builtin(t_list **env, t_command *cmd, int builtin_code,
 	}
 	if (ret == RT_EXIT)
 		return (RT_EXIT);
+	if (ret == RT_NOEXIT)
+		return (RT_NOEXIT);
 	return (RT_SUCCESS);
 }
