@@ -62,7 +62,7 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 {
 	int		ret;
 
-	print_cmd(cmd);//TEST - TO DELETE LATER
+	//print_cmd(cmd);//TEST - TO DELETE LATER
 
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
