@@ -29,6 +29,7 @@ static int	update_pwd(t_list **env, char *cmd_arg)
 int			cd_builtin(t_list **env, t_command *cmd)
 {
 	char	*path;
+	char	cwd[300];
 	int		err;
 
 	err = 0;
@@ -38,6 +39,10 @@ int			cd_builtin(t_list **env, t_command *cmd)
 		return (cd_error(err, cmd->command));
 	if (!path)
 		path = cmd->command[1];
+	ft_memset(cwd, 0, sizeof(cwd));
+	if (!*path)
+		if (!(path = getcwd(cwd, 300)) && (err == GETCWD_ERR))
+			return (cd_error(err, cmd->command));
 	if (chdir(path) == -1)
 		if ((err = ERRNO_CD))
 			return (cd_error(err, cmd->command));

@@ -1,15 +1,5 @@
-eCho
-eChO
-eCHO
-ECHO
-echo ~
-echo ~/123
-echo ~/123/456
-echo $USER $123456789USER $USER123456789
-echo $USER $USER9999 $USER8888 $USER7777
-echo $USER $USER9999 $USER8888 $USER7777 "$USER"
-echo $PWD; echo $OLDPWD; cd ''; pwd; echo $PWD; echo $OLDPWD
-echo $PWD; echo $OLDPWD; cd '' ''; pwd; echo $PWD; echo $OLDPWD
-echo $PWD; echo $OLDPWD; cd '' '' ''; pwd; echo $PWD; echo $OLDPWD
-echo $PWD; echo $OLDPWD; cd //; pwd; echo $PWD; echo $OLDPWD
-echo $PWD; echo $OLDPWD; cd //home; pwd; echo $PWD; echo $OLDPWD
+env | grep "_="
+pwd ; cd .. | echo "something" ; pwd
+pwd ; cd / | echo "something" ; pwd
+cd .. | pwd
+export TEST=123 | cat -e | cat -e ; echo $TEST
