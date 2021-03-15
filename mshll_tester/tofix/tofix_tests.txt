@@ -1,5 +1,7 @@
 env | grep "_="
-pwd ; cd .. | echo "something" ; pwd
-pwd ; cd / | echo "something" ; pwd
-cd .. | pwd
-export TEST=123 | cat -e | cat -e ; echo $TEST
+export | grep "SHLVL"
+export | grep "OLDPWD"
+export | grep "PWD"
+export | grep "SHLVL"
+export TEST+=100 ; echo $TEST ; export TEST+=200 ; echo $TEST
+export TEST=LOL ; export TEST+=LOL ; env | grep "TEST" ; unset TEST

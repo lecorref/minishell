@@ -44,7 +44,7 @@
 ** 0 = EOF
 ** -1 = error
 */
-void	print_tok(void *content)
+void		print_tok(void *content)
 {
 	printf("unexpanded : |%s|\t\tfd0: %d\tfd1: %d\n",
 			((t_command*)content)->unexpanded,
@@ -58,11 +58,11 @@ void	print_tok(void *content)
 ** message for when the user types a command but $PATH is unset or not with it's
 ** correct paths.
 */
-int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
+int			execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 {
 	int		ret;
 
-	//print_cmd(cmd);//TEST - TO DELETE LATER
+//	print_cmd(cmd);//TEST - TO DELETE LATER
 
 	if ((ret = is_builtin(cmd)))
 		ret = execute_builtin(env, cmd, ret, export);
@@ -72,10 +72,10 @@ int		execute_cmd(t_list **env, t_command *cmd, t_list **export, char *s_path)
 	return (ret);
 }
 
-int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
+int			executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 {
-	int	ret;
-	int	ret2;
+	int		ret;
+	int		ret2;
 
 	while (cmd)
 	{
@@ -112,7 +112,7 @@ int		executer(t_list **env, t_list *cmd, t_list **export, char *saved_path)
 ** Here I'm outputing a message showing the current $PATH just so the user
 ** knows that the $PATH is not set as t should be.
 */
-char	*save_path_env(t_list **env)
+char		*save_path_env(t_list **env)
 {
 	char	*saved_path;
 
@@ -127,7 +127,7 @@ char	*save_path_env(t_list **env)
 	return (ft_strdup(saved_path));
 }
 
-int		main_loop(t_list **env, t_list **export)
+int			main_loop(t_list **env, t_list **export)
 {
 	t_list	*cmd;
 	char	*line;
