@@ -49,6 +49,7 @@ char		*check_options(t_list **env, char **cmd, int *fd, int *err)
 {
 	char	*path;
 
+	*err = 0;
 	path = NULL;
 	if (!cmd[1])
 		path = get_home(env, err);

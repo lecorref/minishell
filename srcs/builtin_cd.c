@@ -26,30 +26,51 @@ static int	update_pwd(t_list **env, char *cmd_arg)
 	return (RT_SUCCESS);
 }
 
+int			check_fd_n_path(char *path, t_command *cmd, int *err)
+{
+	struct stat	fd_check;
+	struct stat	path_check;
+
+	fstat(cmd->fd[1], &fd_check);
+	stat(path, &path_check);
+	if (!(S_ISDIR(path_check.st_mode)))
+	{
+		*err = ERRNO_CD;
+		return (1);
+	}
+	if (S_ISFIFO(fd_check.st_mode))
+	{
+		*err = CD_FIFO;
+		return (1);
+	}
+	return (0);
+}
+
 int			cd_builtin(t_list **env, t_command *cmd)
 {
 	char	*path;
 	char	cwd[300];
 	int		err;
 
-	err = 0;
 	update_underscore(env, last_arg(cmd));
 	path = check_options(env, cmd->command, cmd->fd, &err);
 	if (err)
-		return (cd_error(err, cmd->command));
+		return (cd_error(err, cmd->command[1]));
 	if (!path)
 		path = cmd->command[1];
 	ft_memset(cwd, 0, sizeof(cwd));
 	if (!*path)
 		if (!(path = getcwd(cwd, 300)) && (err == GETCWD_ERR))
-			return (cd_error(err, cmd->command));
+			return (cd_error(err, cmd->command[1]));
+	if (check_fd_n_path(path, cmd, &err))
+		return (cd_error(err, path));
 	if (chdir(path) == -1)
 		if ((err = ERRNO_CD))
-			return (cd_error(err, cmd->command));
+			return (cd_error(err, path));
 	if ((err = update_pwd(env, cmd->command[1])) == RT_FAIL)
 		return (RT_FAIL);
 	if (err)
-		return (cd_error(err, cmd->command));
+		return (cd_error(err, path));
 	g_exit_status = 0;
 	return (0);
 }

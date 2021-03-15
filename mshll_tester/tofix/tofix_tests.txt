@@ -1,5 +1,28 @@
-env | grep "_="
-pwd ; cd .. | echo "something" ; pwd
-pwd ; cd / | echo "something" ; pwd
-cd .. | pwd
-export TEST=123 | cat -e | cat -e ; echo $TEST
+eCho
+eChO
+eCHO
+ECHO
+echo ~
+echo ~/123
+echo ~/123/456
+echo $PWD; echo $OLDPWD; cd .; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ..; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ../..; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ../../..; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ../../../..; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ../../../../..; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ../../../../../..; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd /; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ''; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd '' ''; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd '' '' ''; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd /; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd /.; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd /./; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd /././././; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd //; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ///; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd ////; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd //////////////////////////////////////////////////////; pwd; echo $PWD; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd; echo $OLDPWD
+echo $PWD; echo $OLDPWD; cd //home; pwd; echo $PWD; echo $OLDPWD

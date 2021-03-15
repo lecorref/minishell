@@ -1,52 +1,5 @@
 #include "minishell.h"
 
-static int		echo_n_parser(char *str)
-{
-	if (*str != '-')
-		return (1);
-	while (*(str + 1))
-	{
-		if (*(str + 1) != 'n')
-			return (1);
-		str++;
-	}
-	return (0);
-}
-
-/*
-** space between strings but not ont he last one
-** there is no space after string whith -n
-*/
-
-int				echo_builtin(t_list **env, t_command *cmd)
-{
-	int			flag;
-	int			i;
-
-	i = 0;
-	update_underscore(env, last_arg(cmd));
-	g_exit_status = 0;
-	if (!cmd->command[i + 1] || (!cmd->command[2] &&
-										ft_strstr(cmd->command[i + 1], "-n")))
-	{
-		ft_putchar_fd('\n', cmd->fd[1]);
-		return (RT_SUCCESS);
-	}
-	flag = 0;
-	while (!echo_n_parser(cmd->command[++i]))
-		flag = 1;
-	while (cmd->command[i] != NULL)
-	{
-		ft_putstr_fd(cmd->command[i], cmd->fd[1]);
-		if (!flag && cmd->command[i + 1])
-			ft_putchar_fd(' ', cmd->fd[1]);
-		i++;
-	}
-	if (!flag)
-		ft_putchar_fd('\n', cmd->fd[1]);
-	return (RT_SUCCESS);
-}
-
 int				pwd_builtin(t_list **env, t_command *cmd)
 {
 	char		*stored;
