@@ -61,7 +61,14 @@ int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd)
 	char	dest[1];
 
 	i = 1;
-	memset(dest, '\0', 2);
+
+	ft_memset(dest, '\0', 2);
+	if (cmd->command[1][0] == '-')
+	{
+		error_msg("bash", cmd, ft_strncpy(dest, cmd->command[1], 2),
+															"invalid option");
+	//	printf("export: usage: export [-fn] [name[=value] ...] or export -p\n");
+	}
 	while (cmd->command[i])
 	{
 		g_exit_status = 0;

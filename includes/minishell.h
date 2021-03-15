@@ -56,6 +56,7 @@
 # define ERRNO_CD 5
 # define GETCWD_ERR 6
 # define DOUBLE_CD -2
+# define CD_FIFO 7
 
 /*
 ** tokenizer error magic numbers
@@ -259,7 +260,7 @@ int			echo_builtin(t_list **env, t_command *cmd);
 int			pwd_builtin(t_list **env, t_command *cmd);
 int			exit_builtin(t_command *cmd);
 int			cd_builtin(t_list **env, t_command *cmd);
-int			cd_error(int err, char **cmd);
+int			cd_error(int err, char *path);
 char		*check_options(t_list **env, char **cmd, int *fd, int *err);
 //char		*cd_args(t_list **env, char *arg, t_command *cmd);
 int			env_builtin(t_list **env, t_command *cmd);
