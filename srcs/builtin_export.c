@@ -17,10 +17,22 @@ static void	update_export_underscore(t_list **env, t_command *cmd)
 	free(needle);
 }
 
+void		print_export_2(char **alpha_order, int len, int i)
+{
+	char	*key;
+
+	key = ft_substr(alpha_order[i], 0, sizeof(char) * (len + 1));
+	ft_putstr_fd("declare -x ", 1);
+	ft_putstr_fd(key, 1);
+	ft_putchar_fd('\"', 1);
+	ft_putstr_fd(&alpha_order[i][len + 1], 1);
+	ft_putstr_fd("\"\n", 1);
+	free(key);
+}
+
 static void	print_export(char **export_tab)
 {
 	char	**alpha_order;
-	char	*key;
 	int		i;
 	int		len;
 
@@ -32,73 +44,55 @@ static void	print_export(char **export_tab)
 	{
 		len = ft_strclen(&alpha_order[i][0], '=');
 		if (ft_strchr(&alpha_order[i][0], '='))
-		{
-			key = ft_substr(alpha_order[i], 0, sizeof(char) * (len + 1));
-			printf("declare -x ");
-			printf("%s", key);
-			printf("\"%s\"\n", &alpha_order[i][len + 1]);
-			free(key);
-		}
+			print_export_2(alpha_order, len, i);
 		else if (ft_strchr(&alpha_order[i][0], '=') == NULL)
-			printf("declare -x %s\n", alpha_order[i]);
+		{
+			ft_putstr_fd("declare -x ", 1);
+			ft_putstr_fd(alpha_order[i], 1);
+			ft_putchar_fd('\n', 1);
+		}
 		i++;
 	}
 }
 
-static int	export_builtin_arg(t_list **env, t_list **export, t_command *cmd)
+int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd)
 {
 	int		i;
-	char	dest[2];
+	char	dest[1];
 
 	i = 1;
+
 	ft_memset(dest, '\0', 2);
 	if (cmd->command[1][0] == '-')
 	{
 		error_msg("bash", cmd, ft_strncpy(dest, cmd->command[1], 2),
 															"invalid option");
-		printf("export: usage: export [-fn] [name[=value] ...] or export -p\n");
+	//	printf("export: usage: export [-fn] [name[=value] ...] or export -p\n");
 	}
 	while (cmd->command[i])
 	{
-		if (ft_strchr(&cmd->command[i][0], '='))
+		g_exit_status = 0;
+		if (cmd->command[i][0] == '-')
 		{
+			error_msg("bash", cmd, ft_strncpy(dest, &cmd->command[1][0], 2),
+															"invalid option");
+			g_exit_status = 2;
+			break ;
+		}
+		if (ft_strchr(&cmd->command[i][0], '=') != NULL)
+		{
+			printf("\nthere is =\n");
 			add_env_variable(env, &cmd->command[i][0]);
 			add_env_variable(export, &cmd->command[i][0]);
 		}
 		else if (ft_strchr(&cmd->command[i][0], '=') == NULL)
+		{
+			printf("\nno  =\n");
 			add_env_variable(export, &cmd->command[i][0]);
+		}
 		i++;
 	}
-	g_exit_status = 0;
 	return (RT_SUCCESS);
-}
-
-static int	export_error(t_list **env, t_command *cmd, t_list **export)
-{
-	size_t	i;
-	int		ret;
-
-	i = 0;
-	ret = -1;
-	while (cmd->command[1][i] && (i < ft_strclen(cmd->command[1], '=')))
-	{
-		if (cmd->command[1][i] == '_')
-			i++;
-		else if ((ret = ft_isalnum((char)cmd->command[1][i])) == 0)
-			break ;
-		else
-			i++;
-	}
-	if ((ft_isdigit(cmd->command[1][0]) || ret == 0 ||
-				cmd->command[1][0] == '=') && cmd->command[1][0] != '-')
-	{
-		error_msg("bash", cmd, cmd->command[1], "not a valid identifier");
-		g_exit_status = 1;
-		return (RT_FAIL);
-	}
-	else
-		export_builtin_arg(env, export, cmd);
-	return (0);
 }
 
 int			export_builtin(t_list **env, t_command *cmd, t_list **export)
@@ -115,9 +109,9 @@ int			export_builtin(t_list **env, t_command *cmd, t_list **export)
 	}
 	if (cmd->command[0] && cmd->command[1])
 	{
-		if (export_error(env, cmd, export) == RT_FAIL)
+		if (export_unset_error(env, cmd, export) == RT_FAIL)
 			return (RT_FAIL);
 	}
-	g_exit_status = 0;
+//	g_exit_status = 0;
 	return (RT_SUCCESS);
 }

@@ -45,12 +45,12 @@ SRCPATH = ./srcs
 OBJPATH = $(SRCPATH)/obj
 
 #SRCS
-SRCS = $(addprefix $(SRCPATH)/, builtins_1.c builtins_2.c builtins_3.c \
-	   environment.c environment_2.c main.c main_loop.c signal_handler.c \
-	   executable_external.c executable_external_path.c \
-	   executable_external_path_2.c exit_error_manager.c \
-	   tokenizer.c token_spliters.c token_expand.c token_quotes.c \
-	   token_utils.c token_expander.c token_redirections.c \
+SRCS = $(addprefix $(SRCPATH)/, builtin_env_unset.c builtins_2.c \
+	   builtin_export.c environment.c environment_2.c main.c main_loop.c \
+	   signal_handler.c executable_external.c executable_external_path.c \
+	   executable_external_path_2.c executable_external_path_3.c \
+	   exit_error_manager.c tokenizer.c token_spliters.c token_expand.c \
+	   token_quotes.c token_utils.c token_expander.c token_redirections.c \
 	   clear_lists.c file_descriptor.c utils.c utils_2.c executable_builtin.c \
 	   token_pipeline_n_link.c token_utils_2.c gnl_ctrld.c \
 	   token_quotes_utils.c token_double_quotes.c token_no_quotes.c \

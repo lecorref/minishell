@@ -263,11 +263,11 @@ int			cd_builtin(t_list **env, t_command *cmd);
 int			cd_error(int err, char *path);
 char		*check_options(t_list **env, char **cmd, int *fd, int *err);
 //char		*cd_args(t_list **env, char *arg, t_command *cmd);
-
-
-int			export_builtin(t_list **env, t_command *cmd, t_list **export);
-int			unset_builtin(t_list **env, t_command *cmd, t_list **export);
 int			env_builtin(t_list **env, t_command *cmd);
+int			export_builtin(t_list **env, t_command *cmd, t_list **export);
+int			export_builtin_arg(t_list **env, t_list **export, t_command *cmd);
+int			unset_builtin(t_list **env, t_command *cmd, t_list **export);
+int			export_unset_error(t_list **env, t_command *cmd, t_list **export);
 
 /*
 ** Executable external functions
@@ -281,6 +281,7 @@ char		*absolute_path(t_command *cmd, char *home_path);
 char		*relative_path(t_command *cmd, char **split_path, char *saved_path);
 void		*test_path_left_right_2(t_command *cmd, char **split, int r, int j);
 int			test_cmd(char *env_path, char *executable);
+void		cmd_found_more_times(t_command *cmd, char **split_path);
 
 /* ------------------------------------------------------------------------- */
 
