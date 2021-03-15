@@ -7,9 +7,11 @@ static void	print_getcwd_err_message(void)
 	ft_putstr_fd(strerror(errno), 2);
 }
 
-int			cd_error(int err, char **cmd)
+int			cd_error(int err, char *path)
 {
 	g_exit_status = 1;
+	if (err == CD_FIFO)
+		return (0);
 	if (err < GETCWD_ERR)
 		ft_putstr_fd("bash: ", 2);
 	ft_putstr_fd("cd: ", 2);
@@ -23,7 +25,7 @@ int			cd_error(int err, char **cmd)
 		ft_putstr_fd("too many arguments", 2);
 	else if (err == ERRNO_CD)
 	{
-		ft_putstr_fd(cmd[1], 2);
+		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 	}
